@@ -1,0 +1,1 @@
+-- Intentionally empty: Sprint 1 tests create synthetic users and records transactionally.

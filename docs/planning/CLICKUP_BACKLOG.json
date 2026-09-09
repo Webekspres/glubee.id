@@ -1,0 +1,1741 @@
+{
+  "schema_version": "1.0",
+  "format_note": "Manifest impor oleh AI agent, bukan payload API ClickUp langsung.",
+  "project": {
+    "name": "Glubee.id",
+    "workspace_name": "Webekspres",
+    "workspace_id": "90181827111",
+    "space_id": "901813134902",
+    "space_url": "https://app.clickup.com/90181827111/v/s/901813134902",
+    "folder_name": "MVP 1.0",
+    "timezone": "Asia/Jakarta",
+    "source_thread_id": "01a084ed-4880-7c00-90d8-e63000f8bc7c"
+  },
+  "planning": {
+    "start_date": "2026-09-10",
+    "target_production_deadline": "2026-11-04",
+    "working_days": 40,
+    "workweek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "calendar_note": "Hitungan inklusif Senin–Jumat. Hari libur/cuti belum diterapkan; verifikasi kalender operasional sebelum mengunci tanggal. Semua due date adalah forecast awal, bukan bukti kapasitas atau status selesai.",
+    "capacity": "Satu developer; jam tersedia berubah dan tidak diasumsikan 8 jam/hari. Due date tanpa time estimate/story point. Jumlah task bukan ukuran kapasitas.",
+    "buffer": "Cadangkan sekitar 25% kapasitas aktual sprint untuk bug, review dan gangguan; bukan menambah 10 hari setelah 40 hari. Tidak bisa dibuktikan sebagai persentase jam tanpa data kapasitas. Sesuaikan commitment saat planning.",
+    "scope_rule": "Target semua fitur DISEPAKATI. Jika kapasitas turun, prioritaskan; pengurangan fitur kontraktual perlu keputusan klien/change request, bukan otomatis menghapus scope. Privasi, keamanan dan release gate tidak dikorbankan demi tanggal.",
+    "ui_rule": "Tunggu aset/brand/desain klien; backend dapat berjalan. Target aset 18 September adalah asumsi planning dari 'minggu depan'.",
+    "uat_rule": "Satu persetujuan eksplisit Fasty Nazzala Gisty atau Jesslyn Jevoncia terhadap kandidat final cukup; pihak kedua tetap diupayakan dan dicatat. Diam bukan persetujuan.",
+    "communication": "Pertanyaan/review dibundel sebelum jam makan siang dan follow-up sekitar 16.00 WIB; bukan SLA respons klien dan bukan izin mengirim pesan otomatis.",
+    "priority_rule": "MoSCoW memakai tag; Must untuk baseline rilis, Should untuk keputusan fitur opsional, Could untuk polish tambahan hanya bila diminta, Won't untuk item di luar scope. Tidak menambah fitur polish spekulatif.",
+    "status_rule": "Backlog → Ready → In Progress → Review → UAT → Done; Blocked untuk dependensi eksternal. Review = QA mandiri developer, bukan reviewer kedua; task teknis internal boleh Review → Done dengan bukti.",
+    "existing_work": "Scaffold dan file aplikasi terlihat saat perencanaan. Belum ada audit implementasi; semua task diimpor Backlog/Blocked lalu status diperbarui berdasarkan bukti, bukan diulang atau otomatis Done.",
+    "production_rule": "Pembuatan task tidak mengotorisasi deployment, DNS, pembelian, pengiriman email nyata atau publikasi legal. Ikuti gate dan otorisasi pada task pelaksanaan.",
+    "overrides": [
+      {
+        "source": "Percakapan PM terbaru",
+        "supersedes": "AGENTS/BRD/FRD/LEGAL_OPERATIONS masih mensyaratkan kedua reviewer UAT",
+        "decision": "Minimum satu approval kandidat final; task GLB-001 menyinkronkan dokumen."
+      }
+    ]
+  },
+  "sources": [
+    "AGENTS.MD",
+    "docs/product/BRD.MD",
+    "docs/product/FRD.MD",
+    "docs/engineering/SRS.MD",
+    "docs/legal/internal/LEGAL_OPERATIONS.MD",
+    "Percakapan PM pada task sumber",
+    "/home/developer/Documents/PROPOSAL/glubee.id/Proyek Pengembangan Website Pencatatan dan Pemantauan Gula Darah.pdf"
+  ],
+  "definition_of_ready": [
+    "Acceptance criteria dan dependensi jelas.",
+    "Aset tersedia untuk task UI; approval tersedia untuk perilaku pending.",
+    "Kapasitas sprint ditinjau sebelum commitment."
+  ],
+  "definition_of_done": [
+    "Acceptance criteria terpenuhi dan bukti hasil ditautkan.",
+    "Test/lint/typecheck/build yang relevan lulus; fitur data diuji lintas pengguna.",
+    "Tidak ada rahasia/data kesehatan nyata pada task/log/fixture.",
+    "Dokumen/traceability konsisten dan bug kritis terselesaikan.",
+    "Fitur pengguna mendapat penerimaan yang relevan; task internal mendapat QA teknis.",
+    "Pending tetap off kecuali bukti aktivasi dan pengujian tersedia."
+  ],
+  "sprints": [
+    {
+      "key": "S1",
+      "list_name": "Sprint 1",
+      "start_date": "2026-09-10",
+      "end_date": "2026-09-23",
+      "goal": "Fondasi teruji, autentikasi/profil dan pencatatan dapat didemokan melalui backend; dependensi aset dipantau.",
+      "working_days": 10,
+      "commitment": "Forecast; ditinjau pada awal sprint berdasarkan kapasitas aktual.",
+      "review_date": "2026-09-23"
+    },
+    {
+      "key": "S2",
+      "list_name": "Sprint 2",
+      "start_date": "2026-09-24",
+      "end_date": "2026-10-07",
+      "goal": "Pengguna dapat onboarding, mencatat, mengoreksi, melihat grafik dan mengunduh PDF dengan UI sesuai aset klien.",
+      "working_days": 10,
+      "commitment": "Forecast; ditinjau pada awal sprint berdasarkan kapasitas aktual.",
+      "review_date": "2026-10-07"
+    },
+    {
+      "key": "S3",
+      "list_name": "Sprint 3",
+      "start_date": "2026-10-08",
+      "end_date": "2026-10-21",
+      "goal": "Pengguna dapat mengelola jadwal, pengingat, kontak, ekspor/penghapusan akun; admin terbatas tersedia.",
+      "working_days": 10,
+      "commitment": "Forecast; ditinjau pada awal sprint berdasarkan kapasitas aktual.",
+      "review_date": "2026-10-21"
+    },
+    {
+      "key": "S4",
+      "list_name": "Sprint 4",
+      "start_date": "2026-10-22",
+      "end_date": "2026-11-04",
+      "goal": "QA/UAT tuntas, production sehat, pelatihan dan serah terima selesai.",
+      "working_days": 10,
+      "commitment": "Forecast; ditinjau pada awal sprint berdasarkan kapasitas aktual.",
+      "review_date": "2026-11-04"
+    }
+  ],
+  "lists": [
+    "Product Backlog",
+    "Sprint 1",
+    "Sprint 2",
+    "Sprint 3",
+    "Sprint 4",
+    "Bugs & Change Requests"
+  ],
+  "statuses": [
+    "Backlog",
+    "Ready",
+    "In Progress",
+    "Review",
+    "UAT",
+    "Done",
+    "Blocked"
+  ],
+  "tasks": [
+    {
+      "external_id": "GLB-001",
+      "name": "[GLB-001] Kunci baseline proyek dan sinkronkan keputusan terbaru",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "planning",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "planning",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-10",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [],
+      "requirement_refs": [
+        "BR-008"
+      ],
+      "description": "Kunci baseline proyek dan sinkronkan keputusan terbaru. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Catat 40 hari kerja, due date tanpa estimasi jam, satu developer, dan aturan UAT terbaru.",
+        "Selaraskan perbedaan UAT pada AGENTS, BRD, FRD, dan Legal Operations; bukti satu persetujuan cukup, pihak kedua tetap diupayakan."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-002",
+      "name": "[GLB-002] Verifikasi scaffold dan lengkapi quality checks",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "engineering",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "engineering",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-11",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-001"
+      ],
+      "requirement_refs": [
+        "SRS §3",
+        "§14"
+      ],
+      "description": "Verifikasi scaffold dan lengkapi quality checks. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Periksa scaffold yang sudah ada dan lanjutkan tanpa menimpa pekerjaan sebelumnya.",
+        "Aplikasi lokal, lint, typecheck, build, dan test relevan dapat dijalankan; konfigurasi rahasia tidak masuk Git."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-003",
+      "name": "[GLB-003] Siapkan database lokal dan migration inti",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "engineering",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "engineering",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-14",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-002"
+      ],
+      "requirement_refs": [
+        "SRS §4"
+      ],
+      "description": "Siapkan database lokal dan migration inti. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Migration profil, consent, catatan, jadwal, kontak, queue, deletion, audit dan export dapat direproduksi dengan data sintetis.",
+        "Constraint kepemilikan, append-only, satu deletion aktif, batas kontak dan dedupe terdokumentasi; struktur pending tidak mengaktifkan perilaku final."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-004",
+      "name": "[GLB-004] Terapkan isolasi data dan kontrak API dasar",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "engineering",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "engineering",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-15",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-003"
+      ],
+      "requirement_refs": [
+        "SRS §5",
+        "§6"
+      ],
+      "description": "Terapkan isolasi data dan kontrak API dasar. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "RLS allow/deny diuji untuk owner, pengguna lain, anon dan admin.",
+        "Sesi server, validasi input, respons error aman, pembatasan permintaan dan idempotency mutation kritis tersedia; service-role tidak masuk client."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-005",
+      "name": "[GLB-005] Bangun backend registrasi, sesi dan consent",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "engineering",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "engineering",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-16",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-004"
+      ],
+      "requirement_refs": [
+        "FR-AUTH-001",
+        "FR-AUTH-003"
+      ],
+      "description": "Bangun backend registrasi, sesi dan consent. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Registrasi, verifikasi, login/logout dan reset password diuji termasuk token kedaluwarsa.",
+        "Akses data ditolak sebelum verifikasi dan persetujuan wajib; receipt menyimpan versi, waktu dan metode; akun nonaktif dibatasi."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-006",
+      "name": "[GLB-006] Integrasikan Google OAuth dan backend profil",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "engineering",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "engineering",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-17",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-005"
+      ],
+      "requirement_refs": [
+        "FR-AUTH-002",
+        "FR-PROFILE-001"
+      ],
+      "description": "Integrasikan Google OAuth dan backend profil. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Callback dan linking mengikuti penyedia Auth; login Google tetap melewati onboarding wajib.",
+        "Profil nama, tanggal lahir, jenis kelamin dan WIB/WITA/WIT tervalidasi; usia di bawah 18 ditolak dan perubahan zona tidak memicu job lama."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-007",
+      "name": "[GLB-007] Bangun backend pencatatan dan koreksi",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "engineering",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "engineering",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-18",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-006"
+      ],
+      "requirement_refs": [
+        "FR-GLUCOSE-001",
+        "FR-GLUCOSE-002"
+      ],
+      "description": "Bangun backend pencatatan dan koreksi. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Nilai/satuan asli, waktu ukur dan waktu catat disimpan terpisah; konversi, historis, input invalid dan request duplikat diuji.",
+        "Koreksi menandai salah dan membuat pengganti tertaut, tanpa menimpa nilai; tidak ada alarm historis atau evaluasi medis pending."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-008",
+      "name": "[GLB-008] Bangun query riwayat, ringkasan dan grafik",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "engineering",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "engineering",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-21",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-007"
+      ],
+      "requirement_refs": [
+        "FR-GLUCOSE-003",
+        "FR-GLUCOSE-004"
+      ],
+      "description": "Bangun query riwayat, ringkasan dan grafik. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Pagination dan filter 7/14/30 hari serta rentang tanggal memakai zona pengguna dan waktu pengukuran.",
+        "Catatan salah dikecualikan dari ringkasan/grafik; rentang kosong tidak menghasilkan nilai nol palsu."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-009",
+      "name": "[GLB-009] Review Sprint 1 dan rencanakan Sprint 2",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "review",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "review",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-23",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-008"
+      ],
+      "requirement_refs": [
+        "SRS §14"
+      ],
+      "description": "Review Sprint 1 dan rencanakan Sprint 2. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Demo backend dan bukti test dicatat; kendala aset/vendor serta kapasitas aktual ditinjau.",
+        "Sisa 21–23 September menyerap perbaikan; carry-over dan tanggal forecast diperbarui tanpa menandai pekerjaan belum teruji sebagai selesai."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-010",
+      "name": "[GLB-010] Terjemahkan aset klien menjadi panduan desain dan komponen",
+      "list": "Sprint 2",
+      "sprint": "S2",
+      "type": "design",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "design",
+        "moscow-must"
+      ],
+      "status": "Blocked",
+      "due_date": "2026-09-24",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-008",
+        "GLB-E01"
+      ],
+      "requirement_refs": [
+        "BR-PEND-008"
+      ],
+      "description": "Terjemahkan aset klien menjadi panduan desain dan komponen. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "DESIGN.MD dan komponen memakai desain, brand guideline serta aset klien yang diterima; tidak membuat UI sementara.",
+        "Warna, tipografi, layout responsive, state error/loading/empty dan penggunaan maskot terdokumentasi."
+      ],
+      "completion_evidence": [],
+      "blocker": "Aset klien GLB-E01 harus lengkap sebelum UI dimulai.",
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-011",
+      "name": "[GLB-011] Integrasikan UI autentikasi, onboarding dan profil",
+      "list": "Sprint 2",
+      "sprint": "S2",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-25",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-010",
+        "GLB-006"
+      ],
+      "requirement_refs": [
+        "FR-AUTH-001",
+        "FR-AUTH-002",
+        "FR-AUTH-003",
+        "FR-PROFILE-001"
+      ],
+      "description": "Integrasikan UI autentikasi, onboarding dan profil. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Alur email/Google, verifikasi/reset, consent terpisah, usia 18+ dan profil berjalan end-to-end.",
+        "Form mempertahankan input saat validasi gagal; state akun nonaktif dan sesi kedaluwarsa jelas."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-012",
+      "name": "[GLB-012] Integrasikan UI catatan, koreksi dan riwayat",
+      "list": "Sprint 2",
+      "sprint": "S2",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-28",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-011",
+        "GLB-008"
+      ],
+      "requirement_refs": [
+        "FR-GLUCOSE-001",
+        "FR-GLUCOSE-002",
+        "FR-GLUCOSE-003"
+      ],
+      "description": "Integrasikan UI catatan, koreksi dan riwayat. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Pengguna membuat catatan, menandai salah, membuat pengganti dan memfilter riwayat miliknya.",
+        "Input historis tidak mengirim alarm; hasil pending tampil 'Status belum dievaluasi'; nilai asli tetap tersedia."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-013",
+      "name": "[GLB-013] Integrasikan dashboard dan grafik",
+      "list": "Sprint 2",
+      "sprint": "S2",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-29",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-012"
+      ],
+      "requirement_refs": [
+        "FR-GLUCOSE-003",
+        "FR-GLUCOSE-004"
+      ],
+      "description": "Integrasikan dashboard dan grafik. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Grafik 7/14/30 hari dan rentang tanggal konsisten dengan riwayat pada WIB/WITA/WIT.",
+        "Tooltip nilai/waktu/kondisi, tabel alternatif, empty state dan ringkasan data valid tersedia."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-014",
+      "name": "[GLB-014] Implementasikan laporan PDF dan unduh",
+      "list": "Sprint 2",
+      "sprint": "S2",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-09-30",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-013"
+      ],
+      "requirement_refs": [
+        "FR-REPORT-001"
+      ],
+      "description": "Implementasikan laporan PDF dan unduh. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "PDF berisi identitas dasar, periode, zona waktu, grafik, tabel catatan valid, timestamp dan disclaimer.",
+        "File hanya dapat diunduh pemilik; multi-page diperiksa visual; preset bulanan pending tidak diasumsikan."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-015",
+      "name": "[GLB-015] Implementasikan halaman legal dan cookie consent",
+      "list": "Sprint 2",
+      "sprint": "S2",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-01",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-011"
+      ],
+      "requirement_refs": [
+        "FR-COOKIE-001",
+        "BR-009"
+      ],
+      "description": "Implementasikan halaman legal dan cookie consent. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Banner accept/reject/preferences, perubahan/penarikan dan receipt versi berjalan; non-esensial tidak berjalan sebelum izin.",
+        "Halaman legal di staging memakai naskah draft berlabel; publikasi production menunggu E04; inventory storage berdasarkan implementasi nyata."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-016",
+      "name": "[GLB-016] QA dan demo alur pencatatan lengkap",
+      "list": "Sprint 2",
+      "sprint": "S2",
+      "type": "review",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "review",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-02",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-014",
+        "GLB-015"
+      ],
+      "requirement_refs": [
+        "UAT-001",
+        "UAT-002",
+        "UAT-003",
+        "UAT-004",
+        "UAT-011"
+      ],
+      "description": "QA dan demo alur pencatatan lengkap. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Auth → catat → koreksi → grafik → PDF dan cookie diuji dengan akun berbeda serta tiga zona.",
+        "Hasil demo dan feedback klien dicatat; regression bug menjadi task dengan langkah reproduksi."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-017",
+      "name": "[GLB-017] Review Sprint 2 dan tutup perbaikan modul pencatatan",
+      "list": "Sprint 2",
+      "sprint": "S2",
+      "type": "review",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "review",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-07",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-016"
+      ],
+      "requirement_refs": [
+        "BR-008"
+      ],
+      "description": "Review Sprint 2 dan tutup perbaikan modul pencatatan. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Buffer 5–7 Oktober digunakan untuk perbaikan dan review; blocker kritis dicatat sebelum sprint berikutnya.",
+        "Kapasitas, keputusan pending dan forecast sprint berikutnya diperbarui; tidak ada penurunan scope kontrak sepihak."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-018",
+      "name": "[GLB-018] Bangun jadwal dan kalender mingguan",
+      "list": "Sprint 3",
+      "sprint": "S3",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-08",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-017"
+      ],
+      "requirement_refs": [
+        "FR-SCHEDULE-001"
+      ],
+      "description": "Bangun jadwal dan kalender mingguan. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Buat/ubah/jeda/aktifkan/hapus jadwal mendatang untuk pemeriksaan, obat, insulin dan lainnya berjalan.",
+        "Nama obat/dosis berupa input bebas; WIB/WITA/WIT konsisten; recurrence dan tombol selesai tetap off sampai keputusan final."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-019",
+      "name": "[GLB-019] Bangun antrean dan dispatcher pengingat",
+      "list": "Sprint 3",
+      "sprint": "S3",
+      "type": "engineering",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "engineering",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-09",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-018"
+      ],
+      "requirement_refs": [
+        "FR-REMINDER-001",
+        "SRS §9"
+      ],
+      "description": "Bangun antrean dan dispatcher pengingat. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Job jatuh tempo diklaim atomik, dedupe dan retry terbatas berjalan; endpoint internal dilindungi.",
+        "Crash/timeout/kuota diuji; status queued/sent/failed/suppressed berbeda; akun nonaktif dan jadwal jeda tidak mengirim."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-020",
+      "name": "[GLB-020] Integrasikan push, pengingat dashboard dan email fallback",
+      "list": "Sprint 3",
+      "sprint": "S3",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-12",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-019",
+        "GLB-E02"
+      ],
+      "requirement_refs": [
+        "FR-REMINDER-001"
+      ],
+      "description": "Integrasikan push, pengingat dashboard dan email fallback. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Push aktif hanya untuk izin/subscription valid; email fallback diuji saat push tidak tersedia atau ditolak.",
+        "Dashboard tetap menampilkan pengingat; error/subscription invalid ditangani; uji provider menggunakan lingkungan dan penerima uji yang disetujui."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-021",
+      "name": "[GLB-021] Implementasikan undangan dan persetujuan kontak darurat",
+      "list": "Sprint 3",
+      "sprint": "S3",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-13",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-020"
+      ],
+      "requirement_refs": [
+        "FR-CONTACT-001"
+      ],
+      "description": "Implementasikan undangan dan persetujuan kontak darurat. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Maksimal dua kontak aktif/pending terjaga termasuk request bersamaan; undangan diterima/ditolak tanpa akun.",
+        "Token hash sekali pakai, expiry, receipt versi dan batas akses diuji; kontak belum setuju tidak menerima data kesehatan."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-022",
+      "name": "[GLB-022] Implementasikan pencabutan kontak dan suppression job",
+      "list": "Sprint 3",
+      "sprint": "S3",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-14",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-021"
+      ],
+      "requirement_refs": [
+        "FR-CONTACT-001",
+        "SRS §9"
+      ],
+      "description": "Implementasikan pencabutan kontak dan suppression job. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Pengguna dan kontak dapat mencabut hubungan; job belum terkirim disuppress.",
+        "Worker memeriksa ulang consent, status akun dan invalidasi tepat sebelum kirim; alert medis/keterlambatan pending tetap off."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-023",
+      "name": "[GLB-023] Implementasikan ekspor data portabel",
+      "list": "Sprint 3",
+      "sprint": "S3",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-15",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-022",
+        "GLB-014"
+      ],
+      "requirement_refs": [
+        "FR-EXPORT-001"
+      ],
+      "description": "Implementasikan ekspor data portabel. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Ekspor data milik sendiri tersedia sebagai JSON dengan re-authentication dan unduhan privat terbatas waktu.",
+        "Ekspor tersedia selama grace period; akses lintas pengguna ditolak dan file kedaluwarsa dibersihkan."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-024",
+      "name": "[GLB-024] Implementasikan penghapusan akun tujuh hari",
+      "list": "Sprint 3",
+      "sprint": "S3",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-16",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-023"
+      ],
+      "requirement_refs": [
+        "FR-DELETE-001",
+        "FR-DELETE-002"
+      ],
+      "description": "Implementasikan penghapusan akun tujuh hari. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Pengajuan menghentikan aktivitas/job; mode terbatas hanya ekspor, batal dan logout; admin diberi tahu tanpa hak veto.",
+        "Pembatalan milik pengguna tidak mengirim ulang job lama; eksekusi setelah tenggat idempotent, membersihkan data sesuai retensi dan membuat tombstone; kegagalan terpantau."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-025",
+      "name": "[GLB-025] Implementasikan administrasi status akun",
+      "list": "Sprint 3",
+      "sprint": "S3",
+      "type": "feature",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "feature",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-19",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-024"
+      ],
+      "requirement_refs": [
+        "FR-ADMIN-001"
+      ],
+      "description": "Implementasikan administrasi status akun. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Admin mencari identitas minimum dan mengubah status dengan alasan, actor, timestamp serta audit.",
+        "Query/response admin tidak memuat kesehatan, laporan, jadwal atau kontak; admin tidak bisa menunda/membatalkan deletion."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-026",
+      "name": "[GLB-026] Review Sprint 3 dan QA notifikasi serta siklus akun",
+      "list": "Sprint 3",
+      "sprint": "S3",
+      "type": "review",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "review",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-21",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-025"
+      ],
+      "requirement_refs": [
+        "UAT-005",
+        "UAT-006",
+        "UAT-007",
+        "UAT-008",
+        "UAT-009",
+        "UAT-010"
+      ],
+      "description": "Review Sprint 3 dan QA notifikasi serta siklus akun. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Uji job duplikat, pencabutan, akun nonaktif, grace period dan tenggat dengan jam uji terkontrol.",
+        "Sisa kapasitas 19–21 Oktober menyerap perbaikan; hasil demo, bug dan gate pending diperbarui."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-027",
+      "name": "[GLB-027] Jalankan regression, security dan compatibility QA",
+      "list": "Sprint 4",
+      "sprint": "S4",
+      "type": "quality",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "quality",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-22",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-026"
+      ],
+      "requirement_refs": [
+        "SRS §11",
+        "§13",
+        "§14"
+      ],
+      "description": "Jalankan regression, security dan compatibility QA. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "RLS/IDOR/admin isolation, token replay, CSRF, XSS input, rate limit, secret/log scan dan seluruh UAT-001..011 diverifikasi.",
+        "Chrome Android, Safari iPhone, Chrome/Edge/Firefox desktop versi aktual dan lebar 360 px diuji; keyboard, kontras, focus dan tabel grafik diperiksa; keterbatasan push dicatat."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-028",
+      "name": "[GLB-028] Uji backup, restore dan rollback",
+      "list": "Sprint 4",
+      "sprint": "S4",
+      "type": "operations",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "operations",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-23",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-027",
+        "GLB-E03",
+        "GLB-E04"
+      ],
+      "requirement_refs": [
+        "SRS §10",
+        "§15"
+      ],
+      "description": "Uji backup, restore dan rollback. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Backup otomatis minimal mingguan sesuai proposal serta frekuensi final sesuai RPO disetujui; database dan object storage tercakup.",
+        "Restore terisolasi merekonsiliasi tombstone agar data terhapus tidak hidup kembali; rollback dan pemulihan diukur terhadap RPO/RTO final."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-029",
+      "name": "[GLB-029] Siapkan release candidate dan paket UAT",
+      "list": "Sprint 4",
+      "sprint": "S4",
+      "type": "release",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "release",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-23",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-028",
+        "GLB-E02"
+      ],
+      "requirement_refs": [
+        "BR-008",
+        "UAT-001",
+        "UAT-011"
+      ],
+      "description": "Siapkan release candidate dan paket UAT. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Staging terpisah dengan data sintetis, skenario UAT, akun uji, daftar fitur pending-off dan known issues siap.",
+        "Commit/version kandidat dicatat; seluruh fitur baseline siap diuji dan tidak ada bug kritis diketahui."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-030",
+      "name": "[GLB-030] Jalankan UAT klien dan catat hasil",
+      "list": "Sprint 4",
+      "sprint": "S4",
+      "type": "uat",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "uat",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-27",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": "Fasty Nazzala Gisty atau Jesslyn Jevoncia",
+      "depends_on": [
+        "GLB-029"
+      ],
+      "requirement_refs": [
+        "UAT-001",
+        "UAT-002",
+        "UAT-003",
+        "UAT-004",
+        "UAT-005",
+        "UAT-006",
+        "UAT-007",
+        "UAT-008",
+        "UAT-009",
+        "UAT-010",
+        "UAT-011"
+      ],
+      "description": "Jalankan UAT klien dan catat hasil. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Jendela UAT 26–27 Oktober; bukti skenario, hasil, komentar dan reviewer dicatat; komunikasi diarahkan jam makan siang/sekitar 16.00.",
+        "Minimal satu dari Fasty/Jesslyn menerima kandidat yang jelas; pihak kedua tetap diupayakan; tidak ada balasan bukan persetujuan."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-031",
+      "name": "[GLB-031] Perbaiki temuan UAT dan regression ulang",
+      "list": "Sprint 4",
+      "sprint": "S4",
+      "type": "quality",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "quality",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-29",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-030"
+      ],
+      "requirement_refs": [
+        "SRS §14"
+      ],
+      "description": "Perbaiki temuan UAT dan regression ulang. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Buffer 28–29 Oktober memprioritaskan defect kritis/tinggi dan regression alur terdampak.",
+        "Perubahan material dimintakan penerimaan ulang untuk kandidat terbaru; issue tersisa punya keputusan tercatat dan tidak melanggar gate."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-032",
+      "name": "[GLB-032] Tutup checklist go-live dan persetujuan release",
+      "list": "Sprint 4",
+      "sprint": "S4",
+      "type": "release",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "release",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-10-30",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-031",
+        "GLB-E03",
+        "GLB-E04"
+      ],
+      "requirement_refs": [
+        "BR-008",
+        "LEGAL_OPERATIONS §12"
+      ],
+      "description": "Tutup checklist go-live dan persetujuan release. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "UAT kandidat final minimal satu reviewer, legal final, biaya/vendor, DNS/sender, retensi, backup/restore, monitoring dan rollback terverifikasi.",
+        "Persetujuan produksi eksplisit dan milestone pembayaran sebelum go-live diperiksa; pending off dibuktikan; blocker kritis berarti release ditahan dan forecast diperbarui."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-033",
+      "name": "[GLB-033] Deploy production dan jalankan smoke test",
+      "list": "Sprint 4",
+      "sprint": "S4",
+      "type": "release",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "release",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-11-02",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-032"
+      ],
+      "requirement_refs": [
+        "SRS §15"
+      ],
+      "description": "Deploy production dan jalankan smoke test. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Deploy kandidat yang disetujui ke glubee.id dengan lingkungan/data/secret terpisah dari staging.",
+        "Smoke auth, input, grafik, PDF, queue, isolasi dan deletion guard lulus; jika gagal gunakan rollback yang sudah diuji."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-034",
+      "name": "[GLB-034] Pantau rilis dan tangani defect awal",
+      "list": "Sprint 4",
+      "sprint": "S4",
+      "type": "operations",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "operations",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-11-03",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-033"
+      ],
+      "requirement_refs": [
+        "SRS §12"
+      ],
+      "description": "Pantau rilis dan tangani defect awal. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Pantau auth/error, antrean, kuota email, job deletion dan umur backup; log tidak memuat data kesehatan.",
+        "Defect produksi dicatat dengan severity, dampak dan penanganan; bukti kesehatan release tersedia."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-035",
+      "name": "[GLB-035] Serah terima, pelatihan dan mulai maintenance",
+      "list": "Sprint 4",
+      "sprint": "S4",
+      "type": "handover",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "handover",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": "2026-11-04",
+      "due_date_kind": "forecast_completion",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-034"
+      ],
+      "requirement_refs": [
+        "BR-008",
+        "Proposal maintenance/pelatihan"
+      ],
+      "description": "Serah terima, pelatihan dan mulai maintenance. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Source, runbook, panduan pengguna/admin dan pelatihan online diserahkan dengan bukti penerimaan.",
+        "Maintenance fix bug/update minor satu tahun, backup mingguan dan pemantauan keamanan dicatat; tanggal akhir dihitung dari tanggal mulai layanan yang disepakati, tidak diasumsikan sebagai SLA 24/7."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-E01",
+      "name": "[GLB-E01] Terima aset, brand guideline dan desain dari klien",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "external",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "external",
+        "moscow-must"
+      ],
+      "status": "Blocked",
+      "due_date": "2026-09-18",
+      "due_date_kind": "target_follow_up",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": "Pengelola/klien dan reviewer terkait",
+      "depends_on": [
+        "GLB-001"
+      ],
+      "requirement_refs": [
+        "BR-PEND-008"
+      ],
+      "description": "Terima aset, brand guideline dan desain dari klien. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Inventaris link/versi aset, halaman desain dan maskot diterima serta layak dipakai; tanggal ini target follow-up, bukan janji klien.",
+        "Jika belum lengkap, task UI tetap Blocked dan backend yang siap dilanjutkan; tidak membuat branding sementara."
+      ],
+      "completion_evidence": [],
+      "blocker": "Menunggu deliverable/keputusan eksternal; due date adalah target follow-up.",
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-E02",
+      "name": "[GLB-E02] Koordinasikan domain, sender, OAuth dan staging",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "external",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "external",
+        "moscow-must"
+      ],
+      "status": "Blocked",
+      "due_date": "2026-09-22",
+      "due_date_kind": "target_follow_up",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": "CS + Webekspres",
+      "depends_on": [
+        "GLB-002"
+      ],
+      "requirement_refs": [
+        "SRS §3"
+      ],
+      "description": "Koordinasikan domain, sender, OAuth dan staging. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "CS mengonfirmasi domain; akun vendor milik Webekspres diverifikasi tanpa menaruh kredensial di task.",
+        "DNS/sender/auth SMTP, OAuth callback, staging.glubee.id dan backend terpisah diuji setelah izin tindakan eksternal; SPF/DKIM/DMARC serta inbox/forwarder mengikuti keputusan operasional."
+      ],
+      "completion_evidence": [],
+      "blocker": "Menunggu deliverable/keputusan eksternal; due date adalah target follow-up.",
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-E03",
+      "name": "[GLB-E03] Putuskan paket produksi, biaya dan kapasitas vendor",
+      "list": "Sprint 2",
+      "sprint": "S2",
+      "type": "external",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "external",
+        "moscow-must"
+      ],
+      "status": "Blocked",
+      "due_date": "2026-10-02",
+      "due_date_kind": "target_follow_up",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": "Webekspres + pengelola",
+      "depends_on": [
+        "GLB-E02"
+      ],
+      "requirement_refs": [
+        "BR-PEND-010"
+      ],
+      "description": "Putuskan paket produksi, biaya dan kapasitas vendor. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Review paket/kuota/syarat aktual Vercel/Supabase/Brevo/GCP dan persetujuan anggaran; jangan menganggap free tier otomatis layak produksi.",
+        "Kapasitas auth/invite/reminder dihitung, billing/quota alert, ownership, MFA dan pemulihan akses dicatat; pembelian perlu otorisasi."
+      ],
+      "completion_evidence": [],
+      "blocker": "Menunggu deliverable/keputusan eksternal; due date adalah target follow-up.",
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-E04",
+      "name": "[GLB-E04] Selesaikan review legal, retensi dan kesiapan operasi",
+      "list": "Sprint 2",
+      "sprint": "S2",
+      "type": "external",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "external",
+        "moscow-must"
+      ],
+      "status": "Blocked",
+      "due_date": "2026-10-06",
+      "due_date_kind": "target_follow_up",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": "Pengelola/klien dan reviewer terkait",
+      "depends_on": [
+        "GLB-E03"
+      ],
+      "requirement_refs": [
+        "BR-PEND-011",
+        "LEGAL_OPERATIONS §12"
+      ],
+      "description": "Selesaikan review legal, retensi dan kesiapan operasi. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Pengelola/reviewer memfinalkan identitas publik, legal/consent, peran pemrosesan, PSE, vendor/transfer, retensi dan RPO/RTO; bukti persetujuan disimpan.",
+        "Jadwal backup minimal proposal diselaraskan dengan RPO, hak pengguna/insiden/runbook dan versi naskah siap; belum disetujui berarti gate production terblokir."
+      ],
+      "completion_evidence": [],
+      "blocker": "Menunggu deliverable/keputusan eksternal; due date adalah target follow-up.",
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-E05",
+      "name": "[GLB-E05] Kumpulkan keputusan fitur pending dan catat dampaknya",
+      "list": "Sprint 1",
+      "sprint": "S1",
+      "type": "external",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "external",
+        "moscow-must"
+      ],
+      "status": "Blocked",
+      "due_date": "2026-09-22",
+      "due_date_kind": "target_follow_up",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": "Pengelola/klien dan reviewer terkait",
+      "depends_on": [
+        "GLB-001"
+      ],
+      "requirement_refs": [
+        "BR-PEND-001",
+        "BR-PEND-002",
+        "BR-PEND-003",
+        "BR-PEND-004",
+        "BR-PEND-005",
+        "BR-PEND-006",
+        "BR-PEND-007"
+      ],
+      "description": "Kumpulkan keputusan fitur pending dan catat dampaknya. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Minta jawaban terkelompok tentang aturan medis/validasi, sebelum makan vs GDS, pemicu kontak, recurrence/completion dan definisi bulanan.",
+        "Catat keputusan yang ada dan pending yang belum terjawab; tugas selesai jika keputusan rilis off tercatat, bukan dianggap persetujuan fitur; implementasi bersyarat tetap backlog."
+      ],
+      "completion_evidence": [],
+      "blocker": "Menunggu deliverable/keputusan eksternal; due date adalah target follow-up.",
+      "activation_policy": null
+    },
+    {
+      "external_id": "GLB-P01",
+      "name": "[GLB-P01] Implementasikan evaluasi nilai setelah validasi medis",
+      "list": "Product Backlog",
+      "sprint": null,
+      "type": "conditional",
+      "moscow": "Should",
+      "tags": [
+        "glubee",
+        "conditional",
+        "moscow-should"
+      ],
+      "status": "Blocked",
+      "due_date": null,
+      "due_date_kind": "unscheduled",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-E05",
+        "GLB-007"
+      ],
+      "requirement_refs": [
+        "BR-PEND-001",
+        "BR-PEND-002",
+        "BR-PEND-003",
+        "BR-PEND-004"
+      ],
+      "description": "Implementasikan evaluasi nilai setelah validasi medis. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Hanya mulai setelah aturan tertulis, konteks pengukuran, istilah dan bukti validator disetujui; tidak mengarang threshold.",
+        "Versi rule serta batas/rentang diuji, tanpa label diagnosis atau evaluasi ulang historis otomatis; masuk sprint hanya setelah replanning."
+      ],
+      "completion_evidence": [],
+      "blocker": "Menunggu persetujuan tertulis kebutuhan dan penjadwalan ulang; tidak masuk commitment empat sprint.",
+      "activation_policy": "Jangan aktifkan karena tanggal lewat atau task keputusan selesai. Verifikasi bukti persetujuan tiap kebutuhan; baru masukkan ke sprint setelah replanning."
+    },
+    {
+      "external_id": "GLB-P02",
+      "name": "[GLB-P02] Implementasikan alert nilai ke kontak setelah persetujuan",
+      "list": "Product Backlog",
+      "sprint": null,
+      "type": "conditional",
+      "moscow": "Should",
+      "tags": [
+        "glubee",
+        "conditional",
+        "moscow-should"
+      ],
+      "status": "Blocked",
+      "due_date": null,
+      "due_date_kind": "unscheduled",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-P01",
+        "GLB-022"
+      ],
+      "requirement_refs": [
+        "FR-CONTACT-002",
+        "BR-PEND-005"
+      ],
+      "description": "Implementasikan alert nilai ke kontak setelah persetujuan. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Syarat rule dan pemicu disetujui; pengguna mengonfirmasi nilai sebelum maksimal satu alert per catatan/kontak.",
+        "Consent aktif, unit/nilai asli, waktu dan imbauan menghubungi pengguna diuji; historis/invalid/revoked/grace period tidak mengirim."
+      ],
+      "completion_evidence": [],
+      "blocker": "Menunggu persetujuan tertulis kebutuhan dan penjadwalan ulang; tidak masuk commitment empat sprint.",
+      "activation_policy": "Jangan aktifkan karena tanggal lewat atau task keputusan selesai. Verifikasi bukti persetujuan tiap kebutuhan; baru masukkan ke sprint setelah replanning."
+    },
+    {
+      "external_id": "GLB-P03",
+      "name": "[GLB-P03] Implementasikan alert keterlambatan pencatatan",
+      "list": "Product Backlog",
+      "sprint": null,
+      "type": "conditional",
+      "moscow": "Should",
+      "tags": [
+        "glubee",
+        "conditional",
+        "moscow-should"
+      ],
+      "status": "Blocked",
+      "due_date": null,
+      "due_date_kind": "unscheduled",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-E05",
+        "GLB-022"
+      ],
+      "requirement_refs": [
+        "FR-REMINDER-002",
+        "BR-PEND-005"
+      ],
+      "description": "Implementasikan alert keterlambatan pencatatan. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Definisi jadwal terlewat, cutoff dan pencatatan yang memenuhi jadwal disetujui sebelum implementasi.",
+        "Hanya pemicu yang disetujui aktif; input sebelum cutoff membatalkan antrean, dedupe dan zona waktu diuji."
+      ],
+      "completion_evidence": [],
+      "blocker": "Menunggu persetujuan tertulis kebutuhan dan penjadwalan ulang; tidak masuk commitment empat sprint.",
+      "activation_policy": "Jangan aktifkan karena tanggal lewat atau task keputusan selesai. Verifikasi bukti persetujuan tiap kebutuhan; baru masukkan ke sprint setelah replanning."
+    },
+    {
+      "external_id": "GLB-P04",
+      "name": "[GLB-P04] Implementasikan pengulangan mingguan dan status selesai",
+      "list": "Product Backlog",
+      "sprint": null,
+      "type": "conditional",
+      "moscow": "Should",
+      "tags": [
+        "glubee",
+        "conditional",
+        "moscow-should"
+      ],
+      "status": "Blocked",
+      "due_date": null,
+      "due_date_kind": "unscheduled",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-E05",
+        "GLB-018"
+      ],
+      "requirement_refs": [
+        "FR-SCHEDULE-001",
+        "BR-PEND-006"
+      ],
+      "description": "Implementasikan pengulangan mingguan dan status selesai. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Recurrence dan tombol selesai disetujui termasuk perubahan jadwal dan zona waktu.",
+        "Occurrence tidak duplikat; kejadian lama tidak diubah; obat/insulin tidak otomatis memicu kontak."
+      ],
+      "completion_evidence": [],
+      "blocker": "Menunggu persetujuan tertulis kebutuhan dan penjadwalan ulang; tidak masuk commitment empat sprint.",
+      "activation_policy": "Jangan aktifkan karena tanggal lewat atau task keputusan selesai. Verifikasi bukti persetujuan tiap kebutuhan; baru masukkan ke sprint setelah replanning."
+    },
+    {
+      "external_id": "GLB-P05",
+      "name": "[GLB-P05] Tambahkan preset laporan bulanan",
+      "list": "Product Backlog",
+      "sprint": null,
+      "type": "conditional",
+      "moscow": "Should",
+      "tags": [
+        "glubee",
+        "conditional",
+        "moscow-should"
+      ],
+      "status": "Blocked",
+      "due_date": null,
+      "due_date_kind": "unscheduled",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-E05",
+        "GLB-014"
+      ],
+      "requirement_refs": [
+        "FR-REPORT-001",
+        "BR-PEND-007"
+      ],
+      "description": "Tambahkan preset laporan bulanan. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Definisi bulan kalender atau 30 hari terakhir sudah tertulis.",
+        "Preset konsisten dengan filter tanggal/grafik/PDF pada tiga zona; rentang tanggal biasa tetap tersedia."
+      ],
+      "completion_evidence": [],
+      "blocker": "Menunggu persetujuan tertulis kebutuhan dan penjadwalan ulang; tidak masuk commitment empat sprint.",
+      "activation_policy": "Jangan aktifkan karena tanggal lewat atau task keputusan selesai. Verifikasi bukti persetujuan tiap kebutuhan; baru masukkan ke sprint setelah replanning."
+    },
+    {
+      "external_id": "GLB-M01",
+      "name": "[GLB-M01] Jalankan maintenance satu tahun sesuai proposal",
+      "list": "Product Backlog",
+      "sprint": null,
+      "type": "maintenance",
+      "moscow": "Must",
+      "tags": [
+        "glubee",
+        "maintenance",
+        "moscow-must"
+      ],
+      "status": "Backlog",
+      "due_date": null,
+      "due_date_kind": "unscheduled",
+      "assignee_clickup_id": null,
+      "owner_role": "Developer Webekspres (pengguna)",
+      "decision_owner": null,
+      "depends_on": [
+        "GLB-035"
+      ],
+      "requirement_refs": [
+        "Proposal maintenance/pelatihan"
+      ],
+      "description": "Jalankan maintenance satu tahun sesuai proposal. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "acceptance_criteria": [
+        "Catat periode aktual dan kanal tiket; fix bug/update minor, backup mingguan dan pemantauan keamanan mengikuti kontrak.",
+        "Buat tiket nyata sesuai temuan; fitur baru melalui change request; jangan mengarang tanggal akhir, SLA atau recurring automation."
+      ],
+      "completion_evidence": [],
+      "blocker": null,
+      "activation_policy": null
+    }
+  ],
+  "import": {
+    "browser_allowed": false,
+    "connector_required": "ClickUp",
+    "idempotency_key": "external_id; prefix [GLB-...] pada nama wajib dipertahankan",
+    "assignee_resolution": "Cari anggota workspace yang cocok dengan pengguna/developer. Jangan mengira nama akun dari GitHub adalah user ClickUp. Jika tidak pasti, biarkan unassigned dan laporkan.",
+    "procedure": [
+      "Verifikasi workspace_id dan space_id terhadap target; baca Folder/List/Task yang sudah ada dengan pagination lengkap pada scope target.",
+      "Gunakan folder MVP 1.0 bila sudah ada; buat hanya bila belum ada. Sediakan Lists sesuai manifest. Sprint adalah List biasa; fitur native Sprints opsional, jangan mengasumsikan paket mendukung.",
+      "Baca status yang tersedia. Tambah hanya status yang belum ada jika diizinkan; jangan hapus status existing atau ubah workflow Space lain. Jika tidak bisa, petakan ke status terdekat dan cantumkan desired_status dalam description/journal.",
+      "Buat/upsert task berdasarkan external_id di seluruh Lists folder agar pemindahan sprint tidak menyebabkan duplikasi. Bila ada lebih dari satu match, laporkan konflik dan jangan menulis match ambigu.",
+      "Masukkan description, acceptance criteria, refs, owner, blocker dan DoD yang relevan sebagai Markdown; gunakan checklist bila didukung.",
+      "Gunakan due date date-only di Asia/Jakarta; jika API meminta epoch, konversi sesuai dokumentasi API aktual dan periksa tanggal tampilan. Jangan set time estimate. Jangan isi due date null dengan tanggal hari ini.",
+      "Petakan MoSCoW sebagai tag; jangan menulis string MoSCoW ke enum native priority. Native priority dapat dibiarkan default.",
+      "Setelah seluruh ID ClickUp diketahui, hubungkan task depends_on → task prasyarat dalam arah 'waiting on'. Jika API dependency tidak ada, tulis tautan prasyarat eksplisit dan laporkan keterbatasan.",
+      "Simpan journal external_id → task_id/url/list_id. Pertahankan status maju, komentar, assignee dan tanggal yang sudah diubah manusia; laporkan perbedaan, jangan reset ke baseline saat rerun.",
+      "Baca kembali seluruh hasil, cek jumlah, tanggal, status, dependency, duplikasi dan URL; laporkan yang belum terimpor. Jangan mengklaim semua selesai jika ada gagal."
+    ],
+    "journal_file": "docs/planning/CLICKUP_IMPORT_LOG.json",
+    "journal_template": {
+      "state": "not_imported",
+      "folder_id": null,
+      "list_ids": {},
+      "task_ids": {},
+      "errors": []
+    }
+  }
+}

@@ -1,0 +1,451 @@
+{
+  "schema_version": "1.0",
+  "state": "prepared_not_applied",
+  "workspace_id": "90181827111",
+  "space_id": "901813134902",
+  "folder_id": "901816838165",
+  "source_manifest": "CLICKUP_BACKLOG.json",
+  "source_journal": "CLICKUP_IMPORT_LOG.json",
+  "total_dependencies": 61,
+  "resolved_dependencies": 60,
+  "direction": "task_id waits on depends_on_task_id. Verifikasi schema tool aktual sebelum memetakan parameter.",
+  "instructions": [
+    "Gunakan konektor ClickUp saja, tanpa browser. File ini daftar kerja, bukan payload API langsung.",
+    "Baca ulang journal terbaru dan resolve ID yang berubah; verifikasi task berada pada Folder/Space target sebelum menulis.",
+    "Baca dependency existing; tambahkan hanya pasangan waiting-on yang belum ada. Jangan hapus relasi tambahan buatan manusia.",
+    "GLB-M01 belum punya ID pada journal ini. Cari prefix exact di Product Backlog dengan pagination; reuse jika sudah ada. Jika belum ada, buat hanya task tersebut dari manifest dan simpan ID di journal.",
+    "Untuk kegagalan/rate limit simpan progres tiap pasangan. Waktu reset lama tidak dapat dihitung pasti karena timestamp percobaan tidak tercatat; ikuti retry-after aktual dan jangan retry berulang.",
+    "Setelah menulis, baca ulang dependency untuk setiap task. Bedakan applied_unverified, verified_existing, verified_added, failed dan blocked_missing_id di journal.",
+    "Verifikasi re-read 46 task terhadap manifest/journal masih tertunda; jangan menganggap pembuatan task sama dengan selesainya pekerjaan development.",
+    "Pertahankan due date, assignee, status, description dan task existing; pekerjaan sesi berikutnya fokus missing task, dependency dan verifikasi."
+  ],
+  "dependencies": [
+    {
+      "task_external_id": "GLB-002",
+      "task_id": "86eyvadgr",
+      "depends_on_external_id": "GLB-001",
+      "depends_on_task_id": "86eyvadg9",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-003",
+      "task_id": "86eyvadhp",
+      "depends_on_external_id": "GLB-002",
+      "depends_on_task_id": "86eyvadgr",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-004",
+      "task_id": "86eyvadj2",
+      "depends_on_external_id": "GLB-003",
+      "depends_on_task_id": "86eyvadhp",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-005",
+      "task_id": "86eyvadjd",
+      "depends_on_external_id": "GLB-004",
+      "depends_on_task_id": "86eyvadj2",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-006",
+      "task_id": "86eyvadjx",
+      "depends_on_external_id": "GLB-005",
+      "depends_on_task_id": "86eyvadjd",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-007",
+      "task_id": "86eyvadk5",
+      "depends_on_external_id": "GLB-006",
+      "depends_on_task_id": "86eyvadjx",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-008",
+      "task_id": "86eyvadke",
+      "depends_on_external_id": "GLB-007",
+      "depends_on_task_id": "86eyvadk5",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-009",
+      "task_id": "86eyvadkp",
+      "depends_on_external_id": "GLB-008",
+      "depends_on_task_id": "86eyvadke",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-010",
+      "task_id": "86eyvadnt",
+      "depends_on_external_id": "GLB-008",
+      "depends_on_task_id": "86eyvadke",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-010",
+      "task_id": "86eyvadnt",
+      "depends_on_external_id": "GLB-E01",
+      "depends_on_task_id": "86eyvadm8",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-011",
+      "task_id": "86eyvadp6",
+      "depends_on_external_id": "GLB-010",
+      "depends_on_task_id": "86eyvadnt",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-011",
+      "task_id": "86eyvadp6",
+      "depends_on_external_id": "GLB-006",
+      "depends_on_task_id": "86eyvadjx",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-012",
+      "task_id": "86eyvadpk",
+      "depends_on_external_id": "GLB-011",
+      "depends_on_task_id": "86eyvadp6",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-012",
+      "task_id": "86eyvadpk",
+      "depends_on_external_id": "GLB-008",
+      "depends_on_task_id": "86eyvadke",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-013",
+      "task_id": "86eyvadpy",
+      "depends_on_external_id": "GLB-012",
+      "depends_on_task_id": "86eyvadpk",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-014",
+      "task_id": "86eyvadq7",
+      "depends_on_external_id": "GLB-013",
+      "depends_on_task_id": "86eyvadpy",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-015",
+      "task_id": "86eyvadqf",
+      "depends_on_external_id": "GLB-011",
+      "depends_on_task_id": "86eyvadp6",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-016",
+      "task_id": "86eyvadra",
+      "depends_on_external_id": "GLB-014",
+      "depends_on_task_id": "86eyvadq7",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-016",
+      "task_id": "86eyvadra",
+      "depends_on_external_id": "GLB-015",
+      "depends_on_task_id": "86eyvadqf",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-017",
+      "task_id": "86eyvadv3",
+      "depends_on_external_id": "GLB-016",
+      "depends_on_task_id": "86eyvadra",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-018",
+      "task_id": "86eyvadw3",
+      "depends_on_external_id": "GLB-017",
+      "depends_on_task_id": "86eyvadv3",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-019",
+      "task_id": "86eyvadwc",
+      "depends_on_external_id": "GLB-018",
+      "depends_on_task_id": "86eyvadw3",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-020",
+      "task_id": "86eyvadwt",
+      "depends_on_external_id": "GLB-019",
+      "depends_on_task_id": "86eyvadwc",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-020",
+      "task_id": "86eyvadwt",
+      "depends_on_external_id": "GLB-E02",
+      "depends_on_task_id": "86eyvadmv",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-021",
+      "task_id": "86eyvadx7",
+      "depends_on_external_id": "GLB-020",
+      "depends_on_task_id": "86eyvadwt",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-022",
+      "task_id": "86eyvadxf",
+      "depends_on_external_id": "GLB-021",
+      "depends_on_task_id": "86eyvadx7",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-023",
+      "task_id": "86eyvadxq",
+      "depends_on_external_id": "GLB-022",
+      "depends_on_task_id": "86eyvadxf",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-023",
+      "task_id": "86eyvadxq",
+      "depends_on_external_id": "GLB-014",
+      "depends_on_task_id": "86eyvadq7",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-024",
+      "task_id": "86eyvady6",
+      "depends_on_external_id": "GLB-023",
+      "depends_on_task_id": "86eyvadxq",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-025",
+      "task_id": "86eyvadyj",
+      "depends_on_external_id": "GLB-024",
+      "depends_on_task_id": "86eyvady6",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-026",
+      "task_id": "86eyvadz3",
+      "depends_on_external_id": "GLB-025",
+      "depends_on_task_id": "86eyvadyj",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-027",
+      "task_id": "86eyvadzt",
+      "depends_on_external_id": "GLB-026",
+      "depends_on_task_id": "86eyvadz3",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-028",
+      "task_id": "86eyvae04",
+      "depends_on_external_id": "GLB-027",
+      "depends_on_task_id": "86eyvadzt",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-028",
+      "task_id": "86eyvae04",
+      "depends_on_external_id": "GLB-E03",
+      "depends_on_task_id": "86eyvadvf",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-028",
+      "task_id": "86eyvae04",
+      "depends_on_external_id": "GLB-E04",
+      "depends_on_task_id": "86eyvadvw",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-029",
+      "task_id": "86eyvae0f",
+      "depends_on_external_id": "GLB-028",
+      "depends_on_task_id": "86eyvae04",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-029",
+      "task_id": "86eyvae0f",
+      "depends_on_external_id": "GLB-E02",
+      "depends_on_task_id": "86eyvadmv",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-030",
+      "task_id": "86eyvae0w",
+      "depends_on_external_id": "GLB-029",
+      "depends_on_task_id": "86eyvae0f",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-031",
+      "task_id": "86eyvaee2",
+      "depends_on_external_id": "GLB-030",
+      "depends_on_task_id": "86eyvae0w",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-032",
+      "task_id": "86eyvaeeg",
+      "depends_on_external_id": "GLB-031",
+      "depends_on_task_id": "86eyvaee2",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-032",
+      "task_id": "86eyvaeeg",
+      "depends_on_external_id": "GLB-E03",
+      "depends_on_task_id": "86eyvadvf",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-032",
+      "task_id": "86eyvaeeg",
+      "depends_on_external_id": "GLB-E04",
+      "depends_on_task_id": "86eyvadvw",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-033",
+      "task_id": "86eyvaeev",
+      "depends_on_external_id": "GLB-032",
+      "depends_on_task_id": "86eyvaeeg",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-034",
+      "task_id": "86eyvaefh",
+      "depends_on_external_id": "GLB-033",
+      "depends_on_task_id": "86eyvaeev",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-035",
+      "task_id": "86eyvaeh6",
+      "depends_on_external_id": "GLB-034",
+      "depends_on_task_id": "86eyvaefh",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-E01",
+      "task_id": "86eyvadm8",
+      "depends_on_external_id": "GLB-001",
+      "depends_on_task_id": "86eyvadg9",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-E02",
+      "task_id": "86eyvadmv",
+      "depends_on_external_id": "GLB-002",
+      "depends_on_task_id": "86eyvadgr",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-E03",
+      "task_id": "86eyvadvf",
+      "depends_on_external_id": "GLB-E02",
+      "depends_on_task_id": "86eyvadmv",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-E04",
+      "task_id": "86eyvadvw",
+      "depends_on_external_id": "GLB-E03",
+      "depends_on_task_id": "86eyvadvf",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-E05",
+      "task_id": "86eyvadn7",
+      "depends_on_external_id": "GLB-001",
+      "depends_on_task_id": "86eyvadg9",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-P01",
+      "task_id": "86eyvaejn",
+      "depends_on_external_id": "GLB-E05",
+      "depends_on_task_id": "86eyvadn7",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-P01",
+      "task_id": "86eyvaejn",
+      "depends_on_external_id": "GLB-007",
+      "depends_on_task_id": "86eyvadk5",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-P02",
+      "task_id": "86eyvaekg",
+      "depends_on_external_id": "GLB-P01",
+      "depends_on_task_id": "86eyvaejn",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-P02",
+      "task_id": "86eyvaekg",
+      "depends_on_external_id": "GLB-022",
+      "depends_on_task_id": "86eyvadxf",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-P03",
+      "task_id": "86eyvaemh",
+      "depends_on_external_id": "GLB-E05",
+      "depends_on_task_id": "86eyvadn7",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-P03",
+      "task_id": "86eyvaemh",
+      "depends_on_external_id": "GLB-022",
+      "depends_on_task_id": "86eyvadxf",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-P04",
+      "task_id": "86eyvaemz",
+      "depends_on_external_id": "GLB-E05",
+      "depends_on_task_id": "86eyvadn7",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-P04",
+      "task_id": "86eyvaemz",
+      "depends_on_external_id": "GLB-018",
+      "depends_on_task_id": "86eyvadw3",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-P05",
+      "task_id": "86eyvaenc",
+      "depends_on_external_id": "GLB-E05",
+      "depends_on_task_id": "86eyvadn7",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-P05",
+      "task_id": "86eyvaenc",
+      "depends_on_external_id": "GLB-014",
+      "depends_on_task_id": "86eyvadq7",
+      "state": "not_verified"
+    },
+    {
+      "task_external_id": "GLB-M01",
+      "task_id": null,
+      "depends_on_external_id": "GLB-035",
+      "depends_on_task_id": "86eyvaeh6",
+      "state": "not_verified"
+    }
+  ]
+}
