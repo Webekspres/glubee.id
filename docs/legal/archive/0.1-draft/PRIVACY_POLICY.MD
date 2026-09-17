@@ -1,7 +1,7 @@
 # Draf Kebijakan Privasi Glubee
 
 Status: **DRAF UNTUK REVIEW HUKUM - BELUM UNTUK DIPUBLIKASIKAN**
-Versi: 0.2-draft-2026-09-15
+Versi: 0.1-draft
 Tanggal berlaku: [diisi saat disetujui]
 
 Kebijakan ini harus diperiksa penasihat hukum Indonesia dan dicocokkan kembali dengan implementasi, kontrak vendor, lokasi pemrosesan, serta status pendaftaran PSE sebelum dipublikasikan.
@@ -22,8 +22,6 @@ sebagai perorangan. Kontak dukungan dan pengaduan privasi:
 PT Webekspres Teknologi Indonesia membantu pengembangan dan operasi teknis sesuai instruksi serta perjanjian dengan pengelola. Pembagian peran pengendali/prosesor data harus dipastikan dalam review hukum dan kontrak tertulis.
 
 ## 2. Cakupan dan kelayakan
-
-PT Webekspres Teknologi Indonesia menyediakan implementasi teknis berdasarkan aturan yang ditetapkan pengelola Glubee dan tidak memberikan diagnosis atau menetapkan keputusan medis. Hasil dapat mengandung kesalahan dan perlu dikonfirmasi kepada tenaga medis. Pembatasan tanggung jawab berlaku sepanjang diizinkan hukum dan tidak menghapus hak pengguna atau kewajiban yang tidak dapat dikesampingkan.
 
 Glubee ditujukan bagi pengguna berusia 18 tahun atau lebih di Indonesia. Layanan bukan alat diagnosis, bukan fasilitas pelayanan kesehatan, dan bukan pengganti konsultasi tenaga medis.
 

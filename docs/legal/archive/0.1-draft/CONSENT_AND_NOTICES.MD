@@ -1,7 +1,6 @@
 # Katalog Persetujuan dan Pemberitahuan Glubee
 
 Status: internal draft untuk product + legal review
-Versi naskah legal/data kesehatan: 0.2-draft-2026-09-15. Naskah 0.1 disimpan di docs/legal/archive/0.1-draft.
 Aturan: teks final harus sesuai implementasi dan diberi version ID tetap. Checkbox persetujuan tidak boleh pre-checked atau digabung dengan pemasaran.
 
 ## 1. Bukti persetujuan
@@ -34,10 +33,6 @@ Momen: registrasi/onboarding. Wajib.
 > Saya telah membaca dan menyetujui Syarat dan Ketentuan Glubee serta menyatakan telah menerima Kebijakan Privasi versi yang ditampilkan.
 
 UI wajib menautkan versi dokumen, bukan sekadar nama.
-
-Sebelum checkbox ditampilkan, sajikan pemberitahuan peran pengembang berikut dan mintakan penerimaan S&K versi baru:
-
-> PT Webekspres Teknologi Indonesia menyediakan implementasi teknis berdasarkan aturan yang ditetapkan pengelola Glubee dan tidak memberikan diagnosis atau menetapkan keputusan medis. Hasil dapat mengandung kesalahan dan perlu dikonfirmasi kepada tenaga medis. Pembatasan tanggung jawab berlaku sepanjang diizinkan hukum dan tidak menghapus hak pengguna atau kewajiban yang tidak dapat dikesampingkan.
 
 ## 4. CNT-HEALTH-001 - Pemrosesan data kesehatan
 

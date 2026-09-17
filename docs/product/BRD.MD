@@ -98,24 +98,33 @@ Proposal revisi yang menjadi baseline komersial memuat dua modul, nilai proyek R
 
 | ID | Sumber/pemberi keputusan | Keputusan yang diperlukan | Dampak dan syarat aktivasi |
 |---|---|---|---|
-| BR-PEND-001 | Klien + validator medis | Batas pasti kritis tinggi: >=240 atau >=300 mg/dL, termasuk konversinya. | Semua klasifikasi/alert nilai sangat tinggi nonaktif sampai aturan tertulis disetujui. |
-| BR-PEND-002 | Klien + validator medis | Kategori 54-69 mg/dL dan relasinya dengan <54 mg/dL. | Status rendah/kritis rendah nonaktif sampai disetujui. |
-| BR-PEND-003 | Klien | Persetujuan istilah non-diagnostik: dalam/di bawah/di atas rentang, sangat rendah, sangat tinggi. | UI tidak boleh memakai label diabetes/prediabetes. |
+| BR-PEND-001 | Klien + validator medis | Pemicu nilai berbahaya untuk kontak darurat belum memiliki batas pasti; klien tidak menetapkan kategori kritis. | Alert nilai tetap nonaktif; tidak membuat kategori kritis baru. |
+| BR-PEND-002 | Klien + validator medis | Status 60–69 mg/dL untuk puasa/setelah makan dan penggunaan input keluhan pada aturan <80 mg/dL. | Evaluasi tinggi/normal/rendah tetap nonaktif sampai tabel aturan lengkap. |
 | BR-PEND-004 | Klien | Bukti validasi aturan oleh tenaga medis kompeten. | Mesin evaluasi medis tidak boleh dirilis tanpa bukti review. |
 | BR-PEND-005 | Klien | Penegasan seluruh aturan kontak darurat dan apakah obat/insulin terlewat juga memicu kontak. | Hanya pemicu keterlambatan pencatatan yang ada pada baseline; pemicu lain nonaktif. |
 | BR-PEND-006 | Klien | Jadwal berulang mingguan dan tombol "Sudah dilakukan" untuk obat/insulin. | Recurrence/completion final tidak diaktifkan sampai disetujui. |
-| BR-PEND-007 | Klien | Laporan bulanan berarti bulan kalender atau 30 hari terakhir. | Filter rentang tanggal tetap tersedia; preset bulanan tidak diberi makna final. |
 | BR-PEND-008 | Klien | Brand guideline, desain, dan variasi maskot tiap status. | `docs/design/DESIGN.MD` dan UI final ditunda. |
 | BR-PEND-010 | Klien/Webekspres | Paket produksi Vercel/Supabase/Brevo/GCP dan anggaran berulang. Kepemilikan akun Webekspres telah ditentukan, tetapi paket masih free tier/belum final. | Tidak ada pembelian/deployment produksi tanpa persetujuan. |
 | BR-PEND-011 | Klien/legal counsel | Alamat pengelola yang boleh dipublikasikan dan hasil legal review. | Dokumen publik tetap draft. |
 
 ### 7.1 Keputusan terselesaikan
 
+Pembaruan 15 September 2026 berdasarkan kutipan WhatsApp 9 September yang diberikan pengguna:
+
+- BR-PEND-003: tiga istilah yang disepakati adalah tinggi, normal, rendah; tanpa diagnosis.
+- BR-PEND-004: klien menyatakan aturan sudah divalidasi. Identitas validator/dokumen review belum disertakan pada kutipan.
+- BR-PEND-007: laporan mengikuti bulan kalender, tanggal 1 sampai akhir bulan.
+- Pengguna menyetujui UI sementara pada 15 September; UI final dan aset BR-PEND-008 tetap menunggu klien.
+- Arahan pengguna untuk kondisi sebelum makan/lainnya: sewaktu. Evaluasi belum diaktifkan karena kategori 60–69 pada puasa/setelah makan serta input keluhan untuk aturan <80 belum jelas. BR-PEND-001/002 tetap perlu kelengkapan tersebut; tidak dibuat kategori kritis baru.
+- Jawaban kontak darurat menyatakan lima ketentuan berlaku. Implementasinya tetap Sprint 3; jawaban jadwal belum menetapkan aturan recurrence/completion secara rinci.
+
+Rincian bukti dan batas aktivasi dicatat di review Sprint 2.
+
 | ID | Status | Keputusan | Bukti keputusan |
 |---|---|---|---|
 | BR-PEND-009 | DISEPAKATI | Nama dan ejaan produk final adalah **Glubee**. | Konfirmasi klien disampaikan melalui Webekspres pada 9 September 2026. |
 
-Catatan khusus: proposal menyebut kondisi pengukuran **sebelum makan**, sedangkan algoritma klien menyebut **gula darah sewaktu (GDS)**. Keduanya bukan sinonim dan tidak boleh dipetakan diam-diam.
+Catatan khusus: label kondisi pengukuran asli tetap disimpan terpisah. Arahan pengguna agar **sebelum makan/lainnya** dievaluasi sebagai **sewaktu** telah dicatat; pemetaan evaluasi baru diterapkan setelah sisa aturan lengkap, bukan mengganti data kondisi asli.
 
 ## 8. Risiko dan dependensi
 

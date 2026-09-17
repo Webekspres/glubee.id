@@ -103,6 +103,12 @@ Nilai default pada SRS adalah usulan, bukan keputusan hukum. Legal hold harus te
 
 ## 10. Publikasi dan versioning dokumen
 
+### Klarifikasi tanggung jawab pengembang — 15 September 2026
+
+Pengguna meminta penjelasan bahwa PT Webekspres Teknologi Indonesia bukan penentu algoritma medis atau pemberi diagnosis. Draf 0.2 menambahkan pemberitahuan peran tersebut pada website, consent, PDF, S&K, dan Kebijakan Privasi. Tidak ada jaminan bebas tuntutan. Reviewer wajib memeriksa pembagian tanggung jawab teknis/medis dalam perjanjian dengan klien serta batas klausula baku menurut Pasal 18 UU 8/1999 (https://peraturan.go.id/id/uu-no-8-tahun-1999). Kewajiban hukum dan hak pengguna yang tidak dapat dikesampingkan tetap berlaku. Publikasi produksi tetap menunggu review.
+
+Naskah versi lama diarsipkan. Receipt lama tidak diubah; pengguna diminta menerima versi baru. Registration intent baru menyimpan versi saat registrasi, sehingga verifikasi email tidak menerima versi berikutnya secara diam-diam.
+
 - Legal counsel/reviewer menyetujui naskah final.
 - Simpan immutable copy, version ID, hash, approver, tanggal publikasi/berlaku.
 - Product config menunjuk versi aktif.

@@ -1,7 +1,7 @@
 # Draf Syarat dan Ketentuan Glubee
 
 Status: **DRAF UNTUK REVIEW HUKUM - BELUM UNTUK DIPUBLIKASIKAN**
-Versi: 0.2-draft-2026-09-15
+Versi: 0.1-draft
 Tanggal berlaku: [diisi saat disetujui]
 
 ## 1. Tentang layanan
@@ -44,10 +44,6 @@ Catatan gula darah tidak diedit atau dihapus satu per satu. Jika salah, pengguna
 Pengguna bertanggung jawab memeriksa kembali nilai, satuan, tanggal, kondisi, dan waktu input.
 
 ## 6. Bukan layanan medis
-
-PT Webekspres Teknologi Indonesia menyediakan implementasi teknis berdasarkan aturan yang ditetapkan pengelola Glubee dan tidak memberikan diagnosis atau menetapkan keputusan medis. Hasil dapat mengandung kesalahan dan perlu dikonfirmasi kepada tenaga medis. Pembatasan tanggung jawab berlaku sepanjang diizinkan hukum dan tidak menghapus hak pengguna atau kewajiban yang tidak dapat dikesampingkan.
-
-Pengelola Glubee bertanggung jawab menetapkan dan memperoleh validasi aturan referensi medis yang disampaikan kepada pengembang. PT Webekspres Teknologi Indonesia bukan pihak pemberi diagnosis dan tidak menjamin ketepatan klinis aturan tersebut. Pembagian tanggung jawab teknis dan medis harus dituangkan dalam perjanjian dengan pengelola, dengan tetap memperhatikan kewajiban hukum yang berlaku.
 
 Glubee bukan alat diagnosis, tenaga medis, fasilitas pelayanan kesehatan, layanan gawat darurat, atau pengganti pemeriksaan profesional. Informasi status, bila nantinya diaktifkan, hanya memakai aturan referensi yang telah disetujui dan tidak menyatakan pengguna memiliki/tidak memiliki penyakit.
 

@@ -169,6 +169,8 @@ Kebijakan wajib:
 
 ## 6. Kontrak API
 
+Implementasi Sprint 2 (15 September 2026): PDF disajikan langsung oleh POST /api/reports sebagai attachment milik pemanggil, tanpa penyimpanan file atau endpoint ID download. Maksimal 5.000 catatan, 5 permintaan/menit. Grafik dan PDF memakai snapshot query get_my_glucose_range agar tidak terpotong batas PostgREST 1.000 baris. Cookie preferences memakai GET/POST /api/consents/cookie; hanya kategori esensial tersedia. UI sementara disetujui pengguna. Desain final, evaluasi medis lengkap, dan publikasi legal tetap menunggu gate terkait.
+
 Format JSON konsisten: sukses `{ data, meta? }`; gagal `{ error: { code, message, fieldErrors?, correlationId } }`. Pesan publik tidak mengandung stack/provider secret. Mutasi kritis menerima `Idempotency-Key`. Pagination cursor-based.
 
 | Method dan route | Auth | Ringkasan | FR |

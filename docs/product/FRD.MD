@@ -138,7 +138,7 @@ Status: DISEPAKATI. Tautan: `BR-002`, `BR-PEND-007`.
 - Judul memakai "Laporan Pemantauan Gula Darah", bukan "rekam medis".
 - PDF memuat timestamp pembuatan dan disclaimer non-diagnosis.
 - Catatan salah tidak masuk isi klinis; laporan dapat menyebut jumlah catatan yang dikecualikan tanpa nilainya.
-- Preset "bulanan" tidak diberi definisi sampai `BR-PEND-007` selesai.
+- Preset bulanan mengikuti bulan kalender (konfirmasi klien 9 September, disampaikan pengguna 15 September 2026). Rentang tanggal manual tetap tersedia.
 
 ## 6. Jadwal dan pengingat
 
