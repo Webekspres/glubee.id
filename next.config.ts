@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: process.cwd(),
   },
+  outputFileTracingIncludes: {
+    "/api/reports": ["./assets/fonts/*.ttf"],
+    "/terms": ["./docs/legal/**/*.MD"],
+    "/privacy": ["./docs/legal/**/*.MD"],
+  },
 };
 
 export default nextConfig;
