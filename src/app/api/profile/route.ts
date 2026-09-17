@@ -5,9 +5,15 @@ import { validateProfile } from "@/lib/domain/profile";
 export async function GET() {
   const auth = await authenticatedRequest();
   if (auth.response) return auth.response;
+  const { error: statusError } = await auth.supabase.rpc(
+    "refresh_my_account_status",
+  );
+  if (statusError) return safeDatabaseFailure();
   const { data, error } = await auth.supabase
     .from("profiles")
-    .select("name,birth_date,sex,timezone_code,account_status,created_at,updated_at")
+    .select(
+      "name,birth_date,sex,timezone_code,account_status,created_at,updated_at",
+    )
     .single();
   return error ? safeDatabaseFailure() : success(data);
 }
@@ -15,9 +21,16 @@ export async function GET() {
 export async function PATCH(request: Request) {
   const auth = await authenticatedRequest();
   if (auth.response) return auth.response;
-  if (await rateLimited(auth.supabase, "profile", 20)) return failure("RATE_LIMITED", "Terlalu banyak permintaan.", 429);
+  if (await rateLimited(auth.supabase, "profile", 20))
+    return failure("RATE_LIMITED", "Terlalu banyak permintaan.", 429);
   const validated = validateProfile(await readJson(request));
-  if (!validated.data) return failure("VALIDATION_ERROR", "Periksa kembali profil.", 422, validated.errors);
+  if (!validated.data)
+    return failure(
+      "VALIDATION_ERROR",
+      "Periksa kembali profil.",
+      422,
+      validated.errors,
+    );
   const { data, error } = await auth.supabase
     .from("profiles")
     .update({
@@ -30,6 +43,8 @@ export async function PATCH(request: Request) {
     .select("name,birth_date,sex,timezone_code,account_status,updated_at")
     .single();
   if (error) return safeDatabaseFailure("Profil belum dapat diperbarui.");
-  const { data: accountStatus } = await auth.supabase.rpc("refresh_my_account_status");
+  const { data: accountStatus } = await auth.supabase.rpc(
+    "refresh_my_account_status",
+  );
   return success({ ...data, account_status: accountStatus });
 }

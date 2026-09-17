@@ -6,7 +6,8 @@ import { cookies } from "next/headers";
 function publicConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key) throw new Error("Supabase public environment is not configured");
+  if (!url || !key)
+    throw new Error("Supabase public environment is not configured");
   return { url, key };
 }
 
@@ -15,6 +16,12 @@ export async function createSupabaseServerClient() {
   const store = await cookies();
 
   return createServerClient(url, key, {
+    cookieOptions: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NEXT_PUBLIC_APP_URL?.startsWith("https://") ?? false,
+      path: "/",
+    },
     cookies: {
       getAll: () => store.getAll(),
       setAll: (items) => {

@@ -5,20 +5,35 @@ import { glucoseSummary, resolveRange } from "@/lib/domain/glucose";
 export async function GET(request: Request) {
   const auth = await authenticatedRequest();
   if (auth.response) return auth.response;
-  if (await rateLimited(auth.supabase, "glucose.summary", 120)) return failure("RATE_LIMITED", "Terlalu banyak permintaan.", 429);
+  if (await rateLimited(auth.supabase, "glucose.summary", 120))
+    return failure("RATE_LIMITED", "Terlalu banyak permintaan.", 429);
   const url = new URL(request.url);
-  if (!url.searchParams.has("period") && !url.searchParams.has("from")) url.searchParams.set("period", "7");
-  const { data: profile } = await auth.supabase.from("profiles").select("timezone_code").single();
+  if (
+    !url.searchParams.has("period") &&
+    !url.searchParams.has("month") &&
+    !url.searchParams.has("from")
+  )
+    url.searchParams.set("period", "7");
+  const { data: profile } = await auth.supabase
+    .from("profiles")
+    .select("timezone_code")
+    .single();
   const timezone = profile?.timezone_code as "WIB" | "WITA" | "WIT" | undefined;
-  if (!timezone) return failure("PROFILE_REQUIRED", "Lengkapi profil terlebih dahulu.", 409);
+  if (!timezone)
+    return failure("PROFILE_REQUIRED", "Lengkapi profil terlebih dahulu.", 409);
   const range = resolveRange(url.searchParams, timezone);
-  if (!range) return failure("INVALID_RANGE", "Rentang tanggal tidak valid.", 400);
-  const { data, error } = await auth.supabase
-    .from("glucose_entries")
-    .select("normalized_mg_dl,original_value,original_unit,measurement_context,measured_at")
-    .eq("status", "valid")
-    .gte("measured_at", range.from)
-    .lt("measured_at", range.toExclusive)
-    .order("measured_at", { ascending: true });
-  return error ? safeDatabaseFailure() : success(glucoseSummary(data ?? []), 200, { range, timezone });
+  if (!range)
+    return failure("INVALID_RANGE", "Rentang tanggal tidak valid.", 400);
+  const { data, error } = await auth.supabase.rpc("get_my_glucose_range", {
+    p_from: range.from,
+    p_to: range.toExclusive,
+  });
+  if (error) return safeDatabaseFailure();
+  if (data.tooLarge)
+    return failure(
+      "RANGE_TOO_LARGE",
+      "Rentang memuat lebih dari 5.000 catatan. Pilih rentang lebih pendek.",
+      422,
+    );
+  return success(glucoseSummary(data.entries), 200, { range, timezone });
 }

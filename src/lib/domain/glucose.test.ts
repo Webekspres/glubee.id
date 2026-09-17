@@ -1,25 +1,62 @@
 import { describe, expect, test } from "bun:test";
-import { decodeCursor, encodeCursor, glucoseSummary, resolveRange, toMgDl, validateGlucoseInput } from "./glucose";
+import {
+  decodeCursor,
+  encodeCursor,
+  glucoseSummary,
+  resolveRange,
+  toMgDl,
+  validateGlucoseInput,
+} from "./glucose";
 
 describe("glucose domain", () => {
+  test("calendar months include the full local month, including leap years", () => {
+    for (const [zone, hour] of [
+      ["WIB", 17],
+      ["WITA", 16],
+      ["WIT", 15],
+    ] as const) {
+      expect(
+        resolveRange(new URLSearchParams({ month: "2024-02" }), zone),
+      ).toEqual({
+        from: "2024-01-31T" + hour + ":00:00.000Z",
+        toExclusive: "2024-02-29T" + hour + ":00:00.000Z",
+      });
+    }
+    expect(
+      resolveRange(
+        new URLSearchParams({ period: "current_month" }),
+        "WIT",
+        new Date("2026-09-30T16:00:00Z"),
+      )?.from,
+    ).toBe("2026-09-30T15:00:00.000Z");
+    expect(
+      resolveRange(new URLSearchParams({ month: "2026-13" }), "WIB"),
+    ).toBeNull();
+  });
   test("converts mmol/L without changing the original value", () => {
     expect(toMgDl(5.5, "mmol/L")).toBe(99);
     expect(toMgDl(99, "mg/dL")).toBe(99);
   });
 
   test("rejects invalid and far-future measurements", () => {
-    const result = validateGlucoseInput({
-      originalValue: -1,
-      originalUnit: "mg/dL",
-      measurementContext: "random",
-      measuredAt: "2026-09-09T12:06:00Z",
-    }, new Date("2026-09-09T12:00:00Z"));
+    const result = validateGlucoseInput(
+      {
+        originalValue: -1,
+        originalUnit: "mg/dL",
+        measurementContext: "random",
+        measuredAt: "2026-09-09T12:06:00Z",
+      },
+      new Date("2026-09-09T12:00:00Z"),
+    );
     expect(result.errors.originalValue).toBeDefined();
     expect(result.errors.measuredAt).toBeDefined();
   });
 
   test("uses local day boundaries for WIB, WITA, and WIT", () => {
-    const params = new URLSearchParams({ from: "2026-09-09", to: "2026-09-09" });
+    const params = new URLSearchParams({
+      from: "2026-09-09",
+      to: "2026-09-09",
+    });
     expect(resolveRange(params, "WIB")?.from).toBe("2026-09-08T17:00:00.000Z");
     expect(resolveRange(params, "WITA")?.from).toBe("2026-09-08T16:00:00.000Z");
     expect(resolveRange(params, "WIT")?.from).toBe("2026-09-08T15:00:00.000Z");
@@ -28,25 +65,45 @@ describe("glucose domain", () => {
   test("round-trips a pagination cursor", () => {
     const measuredAt = "2026-09-09T12:00:00.000Z";
     const id = "00000000-0000-4000-8000-000000000001";
-    expect(decodeCursor(encodeCursor(measuredAt, id))).toEqual({ measuredAt, id });
+    expect(decodeCursor(encodeCursor(measuredAt, id))).toEqual({
+      measuredAt,
+      id,
+    });
   });
 
   test("rejects malformed date ranges without throwing", () => {
-    expect(resolveRange(new URLSearchParams({ from: "2026-99-99", to: "2026-09-09" }), "WIB")).toBeNull();
+    expect(
+      resolveRange(
+        new URLSearchParams({ from: "2026-99-99", to: "2026-09-09" }),
+        "WIB",
+      ),
+    ).toBeNull();
   });
 
   test("returns null aggregates for an empty range", () => {
-    expect(glucoseSummary([])).toEqual({ count: 0, minimumMgDl: null, maximumMgDl: null, averageMgDl: null, points: [] });
+    expect(glucoseSummary([])).toEqual({
+      count: 0,
+      minimumMgDl: null,
+      maximumMgDl: null,
+      averageMgDl: null,
+      points: [],
+    });
   });
 
   test("keeps original display data on graph points", () => {
-    const summary = glucoseSummary([{
-      normalized_mg_dl: 99,
-      original_value: 5.5,
-      original_unit: "mmol/L",
-      measurement_context: "random",
-      measured_at: "2026-09-09T12:00:00Z",
-    }]);
-    expect(summary.points[0]).toMatchObject({ originalValue: 5.5, originalUnit: "mmol/L", measurementContext: "random" });
+    const summary = glucoseSummary([
+      {
+        normalized_mg_dl: 99,
+        original_value: 5.5,
+        original_unit: "mmol/L",
+        measurement_context: "random",
+        measured_at: "2026-09-09T12:00:00Z",
+      },
+    ]);
+    expect(summary.points[0]).toMatchObject({
+      originalValue: 5.5,
+      originalUnit: "mmol/L",
+      measurementContext: "random",
+    });
   });
 });
