@@ -139,11 +139,11 @@ Jalankan dengan `bun run db:start` aktif; login, input gula darah, dan unduh PDF
 2. Enkripsi stream dengan `age -r <public key>` → `glubee.id.dump.age`.
 3. `rclone copy` ke `gdrive:backup website/glubee.id/$(TZ=Asia/Jakarta date +%d-%m-%Y-%H%M)/`.
 4. Hapus folder tertua sampai tersisa 7.
-5. Bila semua sukses: ping `$HC_PING_URL`. Bila langkah mana pun gagal: ping `$HC_PING_URL/fail` dengan 1 KB terakhir log sebagai body, lalu exit non-zero. Log ke `/var/log/glubee-backup.log`.
+5. Bila semua sukses: ping `$HC_PING_URL`. Bila langkah mana pun gagal: ping `$HC_PING_URL/fail` dengan 1 KB terakhir log sebagai body, lalu exit non-zero. Log ke `/opt/glubee/backup/backup.log` (adminweb tidak bisa menulis `/var/log`).
 6. Tidak ada pengiriman email dari script; alert email dikirim Healthchecks.io (gagal **atau** tidak jalan sampai lewat grace 30 menit).
 
 #### 5.2 Jadwal
-- systemd timer atau cron `0 2 * * *` dengan `TZ=Asia/Jakarta` (02:00 WIB).
+- Crontab `adminweb`: `0 2 * * * /opt/glubee/backup/backup.sh glubee.id /opt/glubee` (zona server sudah Asia/Jakarta, tanpa sudo).
 
 #### 5.3 Restore drill (wajib sebelum go-live, SRS §10.2)
 - Unduh backup, dekripsi dengan private key, restore ke Supabase lokal (`pg_restore`), jalankan pgTAP dan login dengan akun uji. Catat tanggal dan hasil di `docs/planning/`.

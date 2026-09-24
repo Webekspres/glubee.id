@@ -70,6 +70,32 @@ Fitur baru yang memanggil Supabase langsung dari browser (realtime, OAuth provid
 - nginx: `glubee.id/api/auth/` 10 request/menit per IP (burst 5); path publik `api.glubee.id` 30/menit per IP (burst 10).
 - GoTrue melihat semua panggilan server sebagai satu IP (container app), jadi limit per-IP-nya dilonggarkan. Limit email tetap 100/jam global untuk menjaga kuota Brevo.
 
+## Backup
+
+`backup/backup.sh` berjalan lewat crontab `adminweb` pukul 02:00 (zona server WIB):
+
+```cron
+0 2 * * * /opt/glubee/backup/backup.sh glubee.id /opt/glubee
+```
+
+- `pg_dump -Fc` langsung dienkripsi dengan `age` (plaintext tidak pernah menyentuh disk), diunggah ke `gdrive:backup website/glubee.id/dd-mm-yyyy-HHmm/`, lalu hanya 7 folder terbaru yang disimpan.
+- Healthchecks.io menerima ping `/start`, sukses, atau `/fail` (dengan 1 KB log terakhir). Email alert datang bila gagal **atau** tidak berjalan.
+- Log: `/opt/glubee/backup/backup.log`.
+- Menambah domain lain: jalankan script yang sama dengan `<domain> <stack-dir>` miliknya, dengan variabel `BACKUP_*` di `.env` stack tersebut.
+
+### Restore (drill wajib sebelum go-live, SRS §10.2)
+
+Di laptop yang memegang private key, ke Supabase lokal (`bun run db:start`):
+
+```bash
+rclone copy "gdrive:backup website/glubee.id/<dd-mm-yyyy-HHmm>" ./restore
+age -d -i ~/glubee-backup.agekey ./restore/glubee.id.dump.age > ./restore/glubee.dump
+pg_restore -h 127.0.0.1 -p 54322 -U postgres -d postgres --clean --if-exists --no-owner ./restore/glubee.dump
+bun run db:test
+```
+
+Setelah restore, jalankan rekonsiliasi `deletion_tombstones` (SRS §10.2) sebelum data dipakai. Hapus `./restore` setelah selesai.
+
 ## Update image (sebulan sekali, di luar jam puncak)
 
 1. Bandingkan tag di `docker-compose.yml` dengan `supabase/docker/docker-compose.yml` upstream; baca changelog GoTrue, PostgREST, dan `supabase/postgres`.
