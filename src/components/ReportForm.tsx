@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { api, type Profile } from "@/lib/ui";
+import { ApiError, type Profile } from "@/lib/ui";
 import { PageHeading, ErrorMessage } from "./Ui";
 import { RangeFilter } from "./RangeFilter";
 import { APP_CONFIG } from "@/lib/config";
@@ -16,10 +16,30 @@ export function ReportForm({ profile }: { profile: Profile }) {
     setBusy(true);
     setError(null);
     try {
-      const res = await api<void>("/api/reports?" + query);
-      const url = URL.createObjectURL(
-        new Blob([res as unknown as BlobPart], { type: "application/pdf" }),
-      );
+      // Route menerima POST JSON dan mengembalikan PDF biner, jadi tidak memakai helper `api` (JSON).
+      let res: Response;
+      try {
+        res = await fetch("/api/reports", {
+          method: "POST",
+          cache: "no-store",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(
+            Object.fromEntries(new URLSearchParams(query)),
+          ),
+        });
+      } catch {
+        throw new ApiError("Koneksi terputus. Silakan coba lagi.");
+      }
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new ApiError(
+          res.status === 401
+            ? "Sesi berakhir atau akun belum terverifikasi. Silakan masuk kembali."
+            : (body?.error?.message ?? "Laporan belum dapat dibuat. Coba lagi."),
+          res.status,
+        );
+      }
+      const url = URL.createObjectURL(await res.blob());
       const a = document.createElement("a");
       a.href = url;
       a.download = `laporan-glubee-${profile.name?.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "pemantauan"}.pdf`;

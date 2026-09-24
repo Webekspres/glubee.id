@@ -61,11 +61,11 @@ export function htmlToPlainText(html: string): string {
 
 /**
  * Membaca konfigurasi SMTP dari environment variable.
- * Default disesuaikan untuk Mailpit lokal (host 127.0.0.1, port 1025).
+ * Default disesuaikan untuk Mailpit bawaan Supabase CLI (host 127.0.0.1, port 54325).
  */
 export function getSmtpConfig(): SmtpConfig {
   const host = process.env.SMTP_HOST || "127.0.0.1";
-  const port = parseInt(process.env.SMTP_PORT || "1025", 10);
+  const port = parseInt(process.env.SMTP_PORT || "54325", 10);
   const secure =
     process.env.SMTP_SECURE === "true" || (!process.env.SMTP_SECURE && port === 465);
 
@@ -90,7 +90,7 @@ export function getSmtpConfig(): SmtpConfig {
 
 /**
  * Membuat nodemailer transporter berdasarkan konfigurasi SMTP.
- * Mendukung Mailpit lokal (tanpa auth, port 1025) dan Brevo (STARTTLS port 587 / SSL 465).
+ * Mendukung Mailpit lokal (tanpa auth, port 54325) dan Brevo (STARTTLS port 587 / SSL 465).
  */
 export function createEmailTransporter(customConfig?: Partial<SmtpConfig>) {
   const config = { ...getSmtpConfig(), ...customConfig };

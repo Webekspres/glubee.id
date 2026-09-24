@@ -105,11 +105,11 @@ openai_api_key = "env(OPENAI_API_KEY)"
 enabled = true
 # Port to use for the email testing server web interface.
 port = 54324
-# Uncomment to expose additional ports for testing user applications that send emails.
-# smtp_port = 54325
+# SMTP Mailpit bawaan diekspos agar email aplikasi (nodemailer, SMTP_PORT=54325) masuk ke inbox yang sama.
+smtp_port = 54325
 # pop3_port = 54326
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+admin_email = "no-reply@glubee.id"
+sender_name = "Glubee"
 
 [storage]
 enabled = true
@@ -233,8 +233,11 @@ otp_length = 6
 otp_expiry = 3600
 
 # Use a production-ready SMTP server
+# Lokal: nonaktif agar GoTrue memakai Mailpit bawaan Supabase ([local_smtp], UI 54324).
+# `host.docker.internal` tidak dapat dijangkau dari container pada podman rootless.
+# Production memakai SMTP Brevo lewat environment GoTrue self-hosted (ADR-0001).
 [auth.email.smtp]
-enabled = true
+enabled = false
 host = "host.docker.internal"
 port = 1025
 user = "local"

@@ -60,7 +60,7 @@ test("Sprint 2 user journey, isolation, three zones, PDF and privacy", async ({
   for (const c of await page.locator('input[type="checkbox"]').all())
     await c.check();
   await page.getByRole("button", { name: "Daftar akun", exact: true }).click();
-  await expect(page).toHaveURL(/\/auth\/verify$/);
+  await expect(page).toHaveURL(/\/auth\/verify(\?email=.+)?$/);
   let messageId = "";
   await expect
     .poll(async () => {
@@ -295,7 +295,7 @@ test("Sprint 2 user journey, isolation, three zones, PDF and privacy", async ({
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true);
-  await page.getByRole("button", { name: "Menu", exact: true }).click();
+  await page.getByRole("button", { name: "Buka menu navigasi", exact: true }).click();
   await expect(
     page.getByRole("navigation", { name: "Navigasi utama" }),
   ).toBeVisible();
@@ -327,7 +327,7 @@ test("Sprint 2 user journey, isolation, three zones, PDF and privacy", async ({
   await expect(
     page.getByRole("heading", { name: "Bukti persetujuan", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Menu", exact: true }).click();
+  await page.getByRole("button", { name: "Buka menu navigasi", exact: true }).click();
   await page.getByRole("button", { name: "Keluar", exact: true }).click();
   await expect(page).toHaveURL(/\/login/);
   await page.getByLabel("Email", { exact: true }).fill(email);

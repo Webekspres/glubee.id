@@ -16,7 +16,7 @@ describe("email SMTP configuration", () => {
     try {
       const config = getSmtpConfig();
       expect(config.host).toBe("127.0.0.1");
-      expect(config.port).toBe(1025);
+      expect(config.port).toBe(54325);
       expect(config.secure).toBe(false);
       expect(config.user).toBeUndefined();
       expect(config.pass).toBeUndefined();

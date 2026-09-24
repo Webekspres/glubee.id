@@ -1,6 +1,12 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState, useSyncExternalStore, type FormEvent } from "react";
+import {
+  useEffect,
+  useId,
+  useState,
+  useSyncExternalStore,
+  type FormEvent,
+} from "react";
 import { useRouter } from "next/navigation";
 import { APP_CONFIG } from "@/lib/config";
 import { accountDestination, api } from "@/lib/ui";
@@ -43,6 +49,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
       )
     : null;
 
+  const fieldId = useId();
   const [busy, setBusy] = useState(false),
     [error, setError] = useState<unknown>(null),
     [message, setMessage] = useState(""),
@@ -175,10 +182,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
             </label>
           )}
           {["login", "register", "update-password"].includes(mode) && (
-            <label className="field">
-              Password
+            <div className="field">
+              {/* Tombol lihat berada di luar <label> agar nama aksesibel input tetap "Password". */}
+              <label htmlFor={`${fieldId}-password`}>Password</label>
               <div className="input-group">
                 <input
+                  id={`${fieldId}-password`}
+                  aria-describedby={`${fieldId}-password-hint`}
                   name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete={
@@ -196,14 +206,17 @@ export function AuthForm({ mode }: { mode: Mode }) {
                   {showPassword ? "Sembunyikan" : "Lihat"}
                 </button>
               </div>
-              <small>Minimal 8 karakter.</small>
-            </label>
+              <small id={`${fieldId}-password-hint`}>Minimal 8 karakter.</small>
+            </div>
           )}
           {["register", "update-password"].includes(mode) && (
-            <label className="field">
-              Konfirmasi password
+            <div className="field">
+              <label htmlFor={`${fieldId}-password-confirmation`}>
+                Konfirmasi password
+              </label>
               <div className="input-group">
                 <input
+                  id={`${fieldId}-password-confirmation`}
                   name="passwordConfirmation"
                   type={showPasswordConfirmation ? "text" : "password"}
                   autoComplete="new-password"
@@ -225,7 +238,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
                   {showPasswordConfirmation ? "Sembunyikan" : "Lihat"}
                 </button>
               </div>
-            </label>
+            </div>
           )}
           {mode === "register" && (
             <>
@@ -259,7 +272,9 @@ export function AuthForm({ mode }: { mode: Mode }) {
                   ? "Daftar akun"
                   : mode === "update-password"
                     ? "Simpan password baru"
-                    : cooldown > 0
+                    : mode === "reset-password"
+                      ? "Kirim tautan"
+                      : cooldown > 0
                       ? `Kirim ulang (${cooldown}s)`
                       : "Kirim ulang tautan verifikasi"}
           </button>
