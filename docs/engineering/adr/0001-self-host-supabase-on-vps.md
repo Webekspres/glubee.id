@@ -29,7 +29,7 @@
    - TLS oleh certbot/Let's Encrypt pada nginx yang sudah ada.
    - Rate limit: GoTrue hanya melihat IP container app untuk panggilan server, sehingga limit per-IP GoTrue dilonggarkan dan pembatasan per IP pengguna dipindah ke nginx (`limit_req` pada `glubee.id/api/auth/`). Tanpa perubahan kode aplikasi. Limit email GoTrue tetap (100/jam) untuk kuota Brevo.
    - Key: memakai JWT HS256 model lama (`ANON_KEY`/`SERVICE_ROLE_KEY` dari `JWT_SECRET`); key `sb_publishable_…`/`sb_secret_…` butuh gateway.
-4. Build image Next.js di GitHub Actions, push ke GHCR, deploy ke VPS dengan trigger manual (`workflow_dispatch`).
+4. Build image Next.js di GitHub Actions, push ke GHCR, deploy ke VPS dengan trigger manual (`workflow_dispatch`). Build memakai Bun, **runtime memakai Node.js 22**: CPU VPS adalah `QEMU Virtual CPU version 2.5+` tanpa SSE4.2/POPCNT/AVX, sehingga Bun (termasuk build baseline) berputar 100% CPU tanpa pernah berjalan. Dev lokal dan test tetap Bun.
 5. Backup harian 02:00 WIB: `pg_dump` terenkripsi, upload ke Google Drive `mk.webekspres@gmail.com` di `backup website/glubee.id/dd-mm-yyyy-HHmm`, simpan 7 versi harian terakhir.
 6. Monitoring sejak development: Healthchecks.io free untuk job backup, UptimeRobot free untuk uptime app/API, SSL, dan domain.
 7. Deploy dari GitHub Actions memakai user VPS `adminweb` dengan SSH key khusus yang terpisah dari key pribadi.

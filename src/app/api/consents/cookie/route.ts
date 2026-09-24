@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
-import { APP_CONFIG } from "@/lib/config";
+import { APP_CONFIG, appUrl } from "@/lib/config";
 import { failure, objectValue, readJson, success } from "@/lib/api";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 const COOKIE = "glubee_privacy";
@@ -72,7 +72,8 @@ export async function POST(request: Request) {
   (await cookies()).set(COOKIE, value + "~" + sign(value), {
     httpOnly: true,
     sameSite: "lax",
-    secure: new URL(request.url).protocol === "https:",
+    // Di belakang nginx request.url selalu http; ikuti URL publik seperti cookie sesi.
+    secure: appUrl().startsWith("https://"),
     path: "/",
   });
   return success({ preferences, version: APP_CONFIG.cookieNoticeVersion });

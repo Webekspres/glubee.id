@@ -1,4 +1,6 @@
 # Image aplikasi Glubee untuk deployment VPS (ADR-0001).
+# Build memakai Bun; runtime memakai Node.js karena CPU VPS (QEMU Virtual CPU 2.5+, tanpa SSE4.2/POPCNT/AVX)
+# tidak dapat menjalankan Bun, termasuk build baseline-nya.
 # NEXT_PUBLIC_* di-inline saat build, jadi wajib diberikan sebagai build args.
 
 FROM oven/bun:1.4 AS builder
@@ -20,7 +22,7 @@ ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL \
     NEXT_TELEMETRY_DISABLED=1
 RUN bun run build
 
-FROM oven/bun:1.4-slim AS runner
+FROM node:22-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
@@ -28,12 +30,12 @@ ENV NODE_ENV=production \
     PORT=3000
 
 # Standalone output sudah memuat docs/legal dan assets/fonts (outputFileTracingIncludes).
-COPY --from=builder --chown=bun:bun /app/.next/standalone ./
-COPY --from=builder --chown=bun:bun /app/.next/static ./.next/static
-COPY --from=builder --chown=bun:bun /app/public ./public
+COPY --from=builder --chown=node:node /app/.next/standalone ./
+COPY --from=builder --chown=node:node /app/.next/static ./.next/static
+COPY --from=builder --chown=node:node /app/public ./public
 
-USER bun
+USER node
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD bun -e "fetch('http://127.0.0.1:3000/').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
-CMD ["bun", "server.js"]
+  CMD node -e "fetch('http://127.0.0.1:3000/').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+CMD ["node", "server.js"]

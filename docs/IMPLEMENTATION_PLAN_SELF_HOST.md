@@ -67,7 +67,8 @@ Agent memberi tahu Sultan setiap kali satu prasyarat menjadi blocker, lalu lanju
 - Builder `oven/bun:1.4`: `bun install --frozen-lockfile`, `bun run build`.
 - `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` dipasang sebagai **build args** karena di-inline saat build.
 - Copy `supabase/templates/*.html` ke `public/_auth-templates/` agar GoTrue dapat mengambilnya melalui network internal (`http://app:3000/_auth-templates/...`).
-- Runner `oven/bun:1.4-slim`, user non-root, `EXPOSE 3000`, `CMD ["bun", "server.js"]`, `HEALTHCHECK` ke `/`.
+- Runner `node:22-slim` (CPU VPS tidak mendukung Bun, lihat ADR-0001 poin 4), user non-root `node`, `EXPOSE 3000`, `CMD ["node", "server.js"]`, `HEALTHCHECK` ke `/`.
+- Redirect dan flag cookie `Secure` memakai `NEXT_PUBLIC_APP_URL`, bukan `request.url` (di standalone berisi `http://0.0.0.0:3000`).
 - `.dockerignore`: `node_modules`, `.next`, `.git`, `tests`, `.env*`, `playwright-report`, `test-results`.
 
 #### 1.3 Verifikasi lokal
