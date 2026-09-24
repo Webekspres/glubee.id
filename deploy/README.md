@@ -53,6 +53,8 @@ Keputusan arsitektur: [ADR-0001](../docs/engineering/adr/0001-self-host-supabase
    ```
 6. Deploy app pertama kali lewat GitHub Actions (workflow **Deploy**), atau manual: `docker compose up -d app`.
 
+Deploy key GitHub Actions di `~adminweb/.ssh/authorized_keys` memakai opsi `restrict,port-forwarding,permitopen="127.0.0.1:54329"`: tanpa PTY dan hanya boleh tunnel ke Postgres. Jangan buka forwarding ke port lain.
+
 ## Administrasi database
 
 Tidak ada Studio. Pakai SSH tunnel di atas, lalu `psql` atau DBeaver/TablePlus ke `127.0.0.1:54329`, user `postgres`, SSL nonaktif.
