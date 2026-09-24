@@ -36,7 +36,7 @@ Supabase Cron
        -> records result and retry
 ```
 
-Topologi deployment (ADR-0001): nginx VPS → `glubee.id` ke Next.js `127.0.0.1:3000` dan `api.glubee.id` ke Kong `127.0.0.1:8000` (GoTrue + PostgREST). PostgreSQL hanya bind ke `127.0.0.1` dan tidak pernah terekspos ke internet. Supabase Cron pada diagram di atas memakai `pg_cron` pada image `supabase/postgres` self-hosted saat fitur antrean diimplementasikan.
+Topologi deployment (ADR-0001): nginx VPS → `glubee.id` ke Next.js `127.0.0.1:3000` dan `api.glubee.id` langsung ke GoTrue dan PostgREST tanpa API gateway; dari internet hanya path auth untuk link email dan Google OAuth yang terbuka, path lain hanya dari network container Glubee. PostgreSQL hanya bind ke `127.0.0.1` dan tidak pernah terekspos ke internet. Supabase Cron pada diagram di atas memakai `pg_cron` pada image `supabase/postgres` self-hosted saat fitur antrean diimplementasikan.
 
 Prinsip:
 

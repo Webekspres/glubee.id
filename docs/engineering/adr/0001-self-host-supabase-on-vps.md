@@ -17,14 +17,18 @@
 
 1. Jalankan **Supabase self-hosted (Docker Compose)** dan **Next.js (container)** di VPS Webekspres.
 2. Service Supabase yang dipakai:
-   - selalu aktif: `db`, `auth` (GoTrue), `rest` (PostgREST), `kong` (API gateway);
-   - on-demand (dinyalakan manual untuk administrasi, akses via SSH tunnel): `studio`, `meta`;
-   - tidak dipasang: realtime, storage, imgproxy, analytics/logflare, vector, functions, supavisor.
+   - dipasang: `db`, `auth` (GoTrue), `rest` (PostgREST), plus `app`;
+   - **tanpa API gateway** (Kong/Envoy): nginx host yang sudah ada merutekan path langsung (lihat poin 3);
+   - tidak dipasang: studio, meta, realtime, storage, imgproxy, analytics/logflare, vector, functions, supavisor. Administrasi DB lewat SSH tunnel + `psql`/klien DB di laptop.
 3. Topologi jaringan:
    - `glubee.id` → nginx → Next.js `127.0.0.1:3000`;
-   - `api.glubee.id` → nginx → Kong `127.0.0.1:8000`;
+   - `api.glubee.id` → nginx: `/auth/v1/*` → GoTrue `127.0.0.1:9999`, `/rest/v1/*` → PostgREST `127.0.0.1:3001`;
+   - dari internet hanya `/auth/v1/{health,verify,authorize,callback}` yang terbuka; path lain hanya dari subnet network Glubee (`172.30.10.0/24`, dicek dari `$remote_addr`);
+   - container app memanggil `https://api.glubee.id` lewat nginx host (`extra_hosts: api.glubee.id:host-gateway`), sehingga satu URL publik tetap dipakai (dibutuhkan `signInWithOAuth`) tanpa perubahan kode;
    - Postgres hanya di-publish ke `127.0.0.1` host (untuk migration/admin via SSH tunnel), tidak pernah ke `0.0.0.0`. Semua port container Glubee memakai bind `127.0.0.1` karena port Docker yang di-publish ke `0.0.0.0` melewati aturan `ufw`.
    - TLS oleh certbot/Let's Encrypt pada nginx yang sudah ada.
+   - Rate limit: GoTrue hanya melihat IP container app untuk panggilan server, sehingga limit per-IP GoTrue dilonggarkan dan pembatasan per IP pengguna dipindah ke nginx (`limit_req` pada `glubee.id/api/auth/`). Tanpa perubahan kode aplikasi. Limit email GoTrue tetap (100/jam) untuk kuota Brevo.
+   - Key: memakai JWT HS256 model lama (`ANON_KEY`/`SERVICE_ROLE_KEY` dari `JWT_SECRET`); key `sb_publishable_…`/`sb_secret_…` butuh gateway.
 4. Build image Next.js di GitHub Actions, push ke GHCR, deploy ke VPS dengan trigger manual (`workflow_dispatch`).
 5. Backup harian 02:00 WIB: `pg_dump` terenkripsi, upload ke Google Drive `mk.webekspres@gmail.com` di `backup website/glubee.id/dd-mm-yyyy-HHmm`, simpan 7 versi harian terakhir.
 6. Monitoring sejak development: Healthchecks.io free untuk job backup, UptimeRobot free untuk uptime app/API, SSL, dan domain.
@@ -40,6 +44,7 @@
 | Membatasi akses DB dengan CORS | CORS hanya dipatuhi browser untuk request HTTP. Koneksi Postgres/MySQL adalah TCP langsung dan tidak dilindungi CORS. |
 | MySQL | RLS, `security definer`, dan RPC adalah fitur Postgres; migrasi berarti menulis ulang seluruh migration dan otorisasi. |
 | Vercel + Postgres di VPS yang dibuka ke internet | IP Vercel dinamis sehingga allowlist tidak praktis; DB kesehatan terekspos publik; Supabase Auth tetap harus diganti. |
+| Gateway Kong atau Envoy (default upstream sejak 2026) | Menambah lapisan proxy di belakang nginx yang sudah ada; fungsi yang dipakai hanya routing path. Pemeriksaan `apikey` bukan batas keamanan karena anon key publik; otorisasi tetap JWT + RLS. |
 | Postgres polos + ganti Auth (mis. Better Auth) | Menuntut rewrite auth, RLS `auth.uid()`, dan RPC (±1–2 sprint) tanpa keuntungan berarti karena RAM VPS cukup. |
 | Supabase Cloud (pause project demo / Pro $25) | Pause memerlukan keputusan pemilik demo yang belum tersedia; Pro melebihi anggaran Rp0. Tetap menjadi jalur keluar. |
 | Hosting shared (Plesk/cPanel) + SSG | Glubee tidak dapat di-SSG. |
@@ -48,6 +53,7 @@
 
 - Positif: biaya Rp0; kode aplikasi, migration, dan test hampir tidak berubah (hanya URL dan key); Postgres tidak pernah terekspos.
 - Negatif: Webekspres menanggung operasi (update image, patch keamanan, disk, TLS, backup, restore drill); satu VPS menjadi single point of failure bersama app lain; tidak ada SLA vendor.
+- Negatif (tanpa gateway): routing `api.glubee.id` dirawat sendiri di nginx dan berbeda dari upstream; fitur baru yang memanggil Supabase dari browser wajib membuka path-nya secara eksplisit.
 - Mitigasi: `mem_limit` per container, jadwal deploy di luar jam puncak app pesantren, backup off-site terenkripsi, restore drill sebelum go-live.
 - Jalur keluar: karena tetap memakai Supabase, migrasi ke Supabase Cloud cukup `pg_dump`/restore dan pergantian environment variable.
 - Dokumen legal: register vendor diperbarui di `LEGAL_OPERATIONS.MD` §8. Privacy Policy publik masih menyebut Vercel/Supabase dan menunggu review legal (TODO).

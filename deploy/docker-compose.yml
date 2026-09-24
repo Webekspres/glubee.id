@@ -1,0 +1,197 @@
+# Stack Glubee di VPS Webekspres (ADR-0001).
+# Basis: supabase/docker/docker-compose.yml (master, 24 September 2026), dipangkas ke db + auth + rest.
+# Tanpa gateway (Kong/Envoy): nginx host merutekan api.glubee.id langsung ke auth dan rest.
+#
+# Aturan:
+#   - Semua port hanya di-bind ke 127.0.0.1 (port Docker di 0.0.0.0 melewati ufw).
+#   - Setiap service punya mem_limit karena VPS dipakai bersama app production lain.
+#   - Image di-pin; update manual sebulan sekali di luar jam puncak (lihat README).
+#
+# Pakai: cd /opt/glubee && docker compose up -d
+
+name: glubee
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+networks:
+  default:
+    name: glubee
+    ipam:
+      config:
+        # Subnet tetap: nginx hanya mengizinkan path internal dari subnet ini.
+        - subnet: ${GLUBEE_SUBNET:-172.30.10.0/24}
+
+volumes:
+  db-data:
+  db-config:
+
+services:
+  db:
+    image: supabase/postgres:17.6.1.136
+    restart: unless-stopped
+    mem_limit: 1g
+    logging: *logging
+    ports:
+      - 127.0.0.1:${DB_HOST_PORT:-54329}:5432
+    volumes:
+      - ./db/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:ro
+      - ./db/jwt.sql:/docker-entrypoint-initdb.d/init-scripts/99-jwt.sql:ro
+      - db-data:/var/lib/postgresql/data
+      # Menyimpan kunci pgsodium antar restart.
+      - db-config:/etc/postgresql-custom
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    environment:
+      POSTGRES_HOST: /var/run/postgresql
+      PGPORT: 5432
+      POSTGRES_PORT: 5432
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: postgres
+      POSTGRES_DB: postgres
+      JWT_EXP: ${JWT_EXPIRY:-3600}
+    command:
+      ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf", "-c", "log_min_messages=fatal"]
+
+  auth:
+    image: supabase/gotrue:v2.196.0
+    restart: unless-stopped
+    mem_limit: 256m
+    logging: *logging
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 127.0.0.1:${AUTH_HOST_PORT:-9999}:9999
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      # Tanpa /auth/v1: GoTrue menambahkan MAILER_URLPATHS_* sendiri.
+      API_EXTERNAL_URL: ${API_EXTERNAL_URL}
+
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@db:5432/postgres
+
+      GOTRUE_SITE_URL: ${SITE_URL}
+      GOTRUE_URI_ALLOW_LIST: ${SITE_URL}/**
+      GOTRUE_DISABLE_SIGNUP: "false"
+
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_JWT_ISSUER: ${API_EXTERNAL_URL}/auth/v1
+
+      # Dipetakan dari supabase/config.toml [auth], [auth.email].
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED: "false"
+      GOTRUE_EXTERNAL_PHONE_ENABLED: "false"
+      GOTRUE_MAILER_AUTOCONFIRM: "false"
+      GOTRUE_MAILER_SECURE_EMAIL_CHANGE_ENABLED: "true"
+      GOTRUE_MAILER_OTP_EXP: 3600
+      GOTRUE_PASSWORD_MIN_LENGTH: 8
+      GOTRUE_SECURITY_REFRESH_TOKEN_ROTATION_ENABLED: "true"
+      GOTRUE_SECURITY_REFRESH_TOKEN_REUSE_INTERVAL: 10
+
+      GOTRUE_SMTP_HOST: ${SMTP_HOST}
+      GOTRUE_SMTP_PORT: ${SMTP_PORT}
+      GOTRUE_SMTP_USER: ${SMTP_USER}
+      GOTRUE_SMTP_PASS: ${SMTP_PASS}
+      GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_FROM_EMAIL}
+      GOTRUE_SMTP_SENDER_NAME: ${SMTP_FROM_NAME}
+      GOTRUE_SMTP_MAX_FREQUENCY: 60s
+
+      GOTRUE_MAILER_URLPATHS_INVITE: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_CONFIRMATION: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_RECOVERY: /auth/v1/verify
+      GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE: /auth/v1/verify
+      # Template disajikan image app (Dockerfile menyalin supabase/templates/*.html).
+      GOTRUE_MAILER_TEMPLATES_CONFIRMATION: http://app:3000/_auth-templates/confirmation.html
+      GOTRUE_MAILER_TEMPLATES_RECOVERY: http://app:3000/_auth-templates/recovery.html
+      GOTRUE_MAILER_TEMPLATES_INVITE: http://app:3000/_auth-templates/invite.html
+      GOTRUE_MAILER_SUBJECTS_CONFIRMATION: Verifikasi Alamat Email Anda untuk Glubee.id
+      GOTRUE_MAILER_SUBJECTS_RECOVERY: Permintaan Pemulihan Kata Sandi Glubee.id
+      GOTRUE_MAILER_SUBJECTS_INVITE: Undangan Bergabung ke Glubee.id
+
+      GOTRUE_EXTERNAL_GOOGLE_ENABLED: ${GOOGLE_ENABLED:-false}
+      GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOTRUE_EXTERNAL_GOOGLE_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: ${API_EXTERNAL_URL}/auth/v1/callback
+
+      # Rate limit (ADR-0001). nginx selalu menimpa X-Real-IP dengan IP koneksi langsung.
+      # Path publik (verify, callback, authorize) -> IP pengguna asli.
+      # Panggilan dari server Next -> IP container app, jadi limit per-IP berlaku untuk semua pengguna sekaligus
+      # dan dilonggarkan; pembatasan per pengguna ada di nginx (limit_req pada glubee.id/api/auth/).
+      GOTRUE_RATE_LIMIT_HEADER: X-Real-IP
+      GOTRUE_RATE_LIMIT_OTP: 1000            # signup, recover, resend, update user; per 5 menit per IP
+      GOTRUE_RATE_LIMIT_TOKEN_REFRESH: 3000  # login password + refresh token; per 5 menit per IP
+      GOTRUE_RATE_LIMIT_VERIFY: 30           # publik, per IP pengguna asli
+      GOTRUE_RATE_LIMIT_EMAIL_SENT: 100      # global per jam; menjaga kuota Brevo Free 300/hari
+
+  rest:
+    image: postgrest/postgrest:v14.17
+    restart: unless-stopped
+    mem_limit: 256m
+    logging: *logging
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 127.0.0.1:${REST_HOST_PORT:-3001}:3000
+    healthcheck:
+      test: ["CMD", "postgrest", "--ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@db:5432/postgres
+      PGRST_DB_SCHEMAS: public,graphql_public
+      PGRST_DB_MAX_ROWS: 1000
+      PGRST_DB_EXTRA_SEARCH_PATH: public,extensions
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_ADMIN_SERVER_PORT: 3001
+      PGRST_ADMIN_SERVER_HOST: localhost
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_EXP: ${JWT_EXPIRY:-3600}
+    command: ["postgrest"]
+
+  app:
+    image: ghcr.io/webekspres/glubee:${APP_TAG:-latest}
+    restart: unless-stopped
+    mem_limit: 768m
+    logging: *logging
+    ports:
+      - 127.0.0.1:${APP_HOST_PORT:-3000}:3000
+    extra_hosts:
+      # Panggilan server ke Supabase lewat nginx host, tidak keluar ke internet.
+      # nginx melihat IP container (subnet glubee) sehingga path internal diizinkan.
+      - ${API_HOSTNAME:-api.glubee.id}:host-gateway
+    # Variabel eksplisit (bukan env_file) agar secret DB/JWT tidak masuk container app.
+    environment:
+      NEXT_PUBLIC_APP_URL: ${SITE_URL}
+      NEXT_PUBLIC_SUPABASE_URL: ${API_EXTERNAL_URL}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME}
+      SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
+      SMTP_REPLY_TO: ${SMTP_REPLY_TO}
+      CRON_SECRET: ${CRON_SECRET}

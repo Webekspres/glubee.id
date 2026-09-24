@@ -1,0 +1,95 @@
+# Build image aplikasi, push ke GHCR, lalu deploy manual ke VPS Webekspres (ADR-0001).
+# Jalankan dari tab Actions -> "Deploy" -> pilih branch -> Run workflow.
+#
+# Secrets : VPS_HOST, VPS_USER (adminweb), VPS_SSH_KEY (key khusus Actions), VPS_KNOWN_HOSTS,
+#           NEXT_PUBLIC_APP_URL, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+# Variable: GO_LIVE = "true" setelah ada pengguna aktif -> deploy hanya boleh dari main.
+
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/webekspres/glubee
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tolak branch selain main setelah go-live
+        if: vars.GO_LIVE == 'true' && github.ref_name != 'main'
+        run: |
+          echo "::error::Setelah go-live, deploy hanya dari main (sekarang: ${{ github.ref_name }})."
+          exit 1
+      - name: Tolak jam puncak app lain di VPS (WIB)
+        run: |
+          now=$(TZ=Asia/Jakarta date +%H%M)
+          if { [ "$now" -ge 0530 ] && [ "$now" -lt 0730 ]; } || { [ "$now" -ge 1430 ] && [ "$now" -lt 1530 ]; }; then
+            echo "::error::Sekarang $now WIB, di dalam jam puncak (05:30-07:30, 14:30-15:30). Deploy dibatalkan."
+            exit 1
+          fi
+
+  build:
+    needs: guard
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun install --frozen-lockfile
+      # Production build dijalankan di dalam docker build, jadi tidak diulang di sini.
+      - run: bun run lint && bun run typecheck && bun test
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ github.ref_name == 'main' && format('{0}:latest', env.IMAGE) || '' }}
+          build-args: |
+            NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}
+            NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Siapkan SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+      - name: Pull dan restart app
+        run: |
+          ssh -i ~/.ssh/id_deploy "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" bash -s <<'EOF'
+          set -euo pipefail
+          cd /opt/glubee
+          # Tag disimpan di .env agar `docker compose up` manual berikutnya tidak kembali ke tag lama.
+          sed -i "s/^APP_TAG=.*/APP_TAG=${{ github.sha }}/" .env
+          docker compose pull app
+          docker compose up -d app
+          EOF
+      - name: Smoke check
+        run: |
+          for i in $(seq 1 20); do
+            curl -fsS -o /dev/null https://glubee.id/ && break
+            sleep 3
+          done
+          curl -fsS -o /dev/null https://glubee.id/
+          curl -fsS -o /dev/null https://api.glubee.id/auth/v1/health

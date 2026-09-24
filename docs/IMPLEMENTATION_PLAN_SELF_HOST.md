@@ -23,7 +23,9 @@ Dokumen ini adalah panduan implementasi teknis siap eksekusi untuk memindahkan t
 | Topik | Keputusan | Implementasi |
 |---|---|---|
 | Platform | VPS Webekspres, Rp0 | Docker Compose di `/opt/glubee` |
-| DB + Auth | Supabase self-hosted | `db`, `auth`, `rest`, `kong` selalu aktif; `studio` + `meta` pakai profile `admin` |
+| DB + Auth | Supabase self-hosted | `db`, `auth`, `rest` + `app`; tanpa gateway, Studio, meta |
+| Routing API | nginx host langsung ke GoTrue/PostgREST | 4 path auth publik; sisanya hanya dari subnet `172.30.10.0/24` |
+| Rate limit | GoTrue dilonggarkan; `limit_req` nginx per IP pengguna | Tanpa perubahan kode aplikasi |
 | Domain | `glubee.id` (app), `api.glubee.id` (Supabase API) | nginx vhost baru + certbot |
 | Build/deploy | GitHub Actions → GHCR → deploy manual | `workflow_dispatch` dengan guard jam puncak |
 | Backup | Harian 02:00 WIB, terenkripsi, 7 versi | `pg_dump` → `age` → `rclone` ke GDrive `backup website/glubee.id/dd-mm-yyyy-HHmm` |
@@ -77,11 +79,11 @@ Jalankan dengan `bun run db:start` aktif; login, input gula darah, dan unduh PDF
 ### Tahap 2: Konfigurasi deploy di repo (`deploy/`)
 
 #### 2.1 `deploy/docker-compose.yml`
-- Basis: `docker/docker-compose.yml` resmi Supabase (pin versi image, catat di komentar), dipangkas menjadi `db`, `auth`, `rest`, `kong`, `meta`, `studio`, plus `app`.
+- Basis: `docker/docker-compose.yml` resmi Supabase (pin versi image, catat di komentar), dipangkas menjadi `db`, `auth`, `rest`, plus `app`.
 - `db`: image `supabase/postgres` major 17 (sama dengan `supabase/config.toml`), volume `glubee_db`, ports `127.0.0.1:54329:5432`.
-- `kong`: ports `127.0.0.1:8000:8000`. `app`: ports `127.0.0.1:3000:3000`, image `ghcr.io/webekspres/glubee:${APP_TAG}`.
-- `meta` + `studio`: `profiles: ["admin"]`, studio ports `127.0.0.1:54323:3000`.
-- `mem_limit`: db 1g, auth 256m, rest 256m, kong 384m, app 768m, meta 256m, studio 512m.
+- `auth`: `127.0.0.1:9999`. `rest`: `127.0.0.1:3001`. `app`: `127.0.0.1:3000`, image `ghcr.io/webekspres/glubee:${APP_TAG}`, `extra_hosts: api.glubee.id:host-gateway`.
+- Network `glubee` dengan subnet tetap `172.30.10.0/24`.
+- `mem_limit`: db 1g, auth 256m, rest 256m, app 768m (total maks ±2,3 GB).
 - `restart: unless-stopped` untuk service selalu aktif.
 - Logging semua service: driver `json-file` dengan `max-size: 10m`, `max-file: 3` agar disk tidak penuh.
 - Semua image di-pin ke versi eksak (tidak memakai `latest` untuk Supabase). Update manual sebulan sekali di luar jam puncak, dicatat di `deploy/README.md`.
@@ -92,35 +94,39 @@ Jalankan dengan `bun run db:start` aktif; login, input gula darah, dan unduh PDF
   - `GOTRUE_MAILER_SUBJECTS_*` sesuai subject di `config.toml`;
   - SMTP Brevo dan `GOTRUE_EXTERNAL_GOOGLE_*` dari `.env`.
 
-#### 2.2 `deploy/kong.yml`, `deploy/.env.example`, `deploy/README.md`
-- `kong.yml` hanya merutekan `/auth/v1/*` dan `/rest/v1/*` (hapus route storage/realtime/functions/analytics).
+#### 2.2 `deploy/nginx/*.conf`, `deploy/.env.example`, `deploy/generate-keys.sh`, `deploy/README.md`
+- `nginx/api.glubee.id.conf` menggantikan gateway: `/auth/v1/{health,verify,authorize,callback}` publik, sisanya 403 kecuali dari subnet Glubee. Selalu menimpa `X-Real-IP` (dipakai `GOTRUE_RATE_LIMIT_HEADER`).
+- `nginx/glubee.id.conf`: proxy ke app + `limit_req` 10 r/m per IP pada `/api/auth/`.
+- `generate-keys.sh` membuat `JWT_SECRET` dan menandatangani `ANON_KEY`/`SERVICE_ROLE_KEY` (HS256) hanya dengan `openssl`.
 - `.env.example`: `POSTGRES_PASSWORD`, `JWT_SECRET`, `ANON_KEY`, `SERVICE_ROLE_KEY`, `SMTP_*`, `GOOGLE_CLIENT_ID/SECRET`, `APP_TAG`, variabel `SMTP_*` aplikasi (`src/lib/email.ts`).
-- `deploy/README.md`: cara generate `JWT_SECRET` dan menurunkan `ANON_KEY`/`SERVICE_ROLE_KEY` darinya, cara start profile admin, cara SSH tunnel.
+- `deploy/README.md`: provision, SSH tunnel untuk administrasi DB, daftar path publik, rate limit, update image, rollback.
 
 #### 2.3 `.github/workflows/deploy.yml`
-- Trigger: `workflow_dispatch` (input `ref`, default `main`). Selama dev boleh `ref=dev`; setelah go-live job gagal bila `ref` bukan `main`.
-- Job `build`: `bun run check` → `docker build` dengan build args dari secrets → push `ghcr.io/webekspres/glubee:<sha>` dan `:latest`.
-- Job `deploy`: guard jam WIB (gagal bila di 05:30–07:30 atau 14:30–15:30), SSH ke VPS, `APP_TAG=<sha> docker compose pull app && docker compose up -d app`, lalu smoke check `curl -fsS https://glubee.id/`.
-- Secrets: `VPS_HOST`, `VPS_USER` (`adminweb`), `VPS_SSH_KEY` (key khusus GitHub Actions), `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. VPS login ke GHCR memakai PAT `read:packages`.
+- Trigger: `workflow_dispatch`; branch dipilih di UI Actions. Selama dev boleh `dev`; setelah repo variable `GO_LIVE=true`, job gagal bila branch bukan `main`.
+- Job `guard`: tolak jam puncak WIB (05:30–07:30, 14:30–15:30) dan aturan branch.
+- Job `build`: lint + typecheck + unit test (production build terjadi di `docker build`) → push `ghcr.io/webekspres/glubee:<sha>` (plus `:latest` dari `main`).
+- Job `deploy`: SSH ke VPS (host key dipin lewat `VPS_KNOWN_HOSTS`), tulis `APP_TAG=<sha>` ke `.env`, `docker compose pull app && docker compose up -d app`, smoke check `glubee.id` dan `api.glubee.id/auth/v1/health`.
+- Secrets: `VPS_HOST`, `VPS_USER` (`adminweb`), `VPS_SSH_KEY` (key khusus GitHub Actions), `VPS_KNOWN_HOSTS` (`ssh-keyscan <vps>`), `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (= `ANON_KEY`). VPS login ke GHCR memakai PAT `read:packages`.
 - Rollback: jalankan ulang job `deploy` dengan `APP_TAG` sha sebelumnya.
 
 ### Tahap 3: Provision stack di VPS (butuh P1, P6)
 
 1. Cek prasyarat VPS: `docker compose version` (wajib Compose v2) dan `adminweb` anggota grup `docker`.
 2. `/opt/glubee` milik `adminweb`, isi dari folder `deploy/`, `.env` dengan `chmod 600`.
-3. `docker compose up -d db auth rest kong` → cek `docker compose ps` sehat dan `free -h` masih menyisakan headroom untuk app lain.
+3. `docker compose up -d db auth rest` → cek `docker compose ps` sehat dan `free -h` masih menyisakan headroom untuk app lain.
 4. Terapkan migration lewat SSH tunnel:
    ```bash
    ssh -L 54329:127.0.0.1:54329 adminweb@<vps>
-   bunx supabase db push --db-url "postgresql://postgres:<password>@127.0.0.1:54329/postgres"
+   bunx supabase db push --db-url "postgresql://postgres:<password>@127.0.0.1:54329/postgres?sslmode=disable"
    ```
 5. Jalankan pgTAP terhadap DB VPS (`bunx supabase test db --db-url ...`); semua harus lulus.
-6. Verifikasi dari luar VPS bahwa port 54329, 8000, 3000 **tidak** dapat dijangkau (`nc -zv <ip> 54329` gagal).
+6. Verifikasi dari luar VPS bahwa port 54329, 9999, 3001, 3000 **tidak** dapat dijangkau (`nc -zv <ip> 54329` gagal).
 
 ### Tahap 4: nginx + TLS (butuh P2)
 
 - Buat `/etc/nginx/sites-available/glubee.id` dan `api.glubee.id` (template disimpan di `deploy/nginx/`), symlink ke `sites-enabled`.
-- `glubee.id` → `proxy_pass http://127.0.0.1:3000`; `api.glubee.id` → `proxy_pass http://127.0.0.1:8000`. Teruskan `Host`, `X-Forwarded-For`, `X-Forwarded-Proto`.
+- Pakai template `deploy/nginx/glubee.id.conf` dan `deploy/nginx/api.glubee.id.conf` apa adanya.
+- Verifikasi dari internet: `/auth/v1/health` 200, `/rest/v1/` dan `/auth/v1/admin/users` 403. Dari container app: `docker compose exec app bun -e "fetch('https://api.glubee.id/rest/v1/').then(r=>console.log(r.status))"` bukan 403.
 - `certbot --nginx -d glubee.id -d api.glubee.id`.
 - Selalu `nginx -t` sebelum `systemctl reload nginx`; jangan `restart` (site lain ikut terputus).
 
@@ -153,7 +159,7 @@ Jalankan dengan `bun run db:start` aktif; login, input gula darah, dan unduh PDF
 
 Monitor UptimeRobot, interval 5 menit, alert email ke `mk.webekspres@gmail.com`:
 1. HTTP keyword `https://glubee.id`, keyword `Glubee`.
-2. HTTP `https://api.glubee.id/auth/v1/health` (GoTrue; lewat Kong butuh header `apikey` anon, atau tambahkan route health tanpa key di `kong.yml`).
+2. HTTP `https://api.glubee.id/auth/v1/health` (path publik, tanpa `apikey`).
 3. SSL expiry `glubee.id` dan `api.glubee.id`.
 4. Domain expiry `glubee.id`.
 
@@ -177,8 +183,8 @@ Masih TODO (butuh review legal, **jangan** diubah agent):
 
 1. `bun run check` dan `bun run db:test` lulus di lokal (tidak ada regresi).
 2. Image dibangun di GitHub Actions dan ter-push ke GHCR; deploy manual berhasil dan guard jam puncak terbukti menolak.
-3. Di VPS: `docker compose ps` semua service selalu-aktif `healthy`; `studio`/`meta` tidak berjalan.
-4. Dari luar VPS: hanya 80/443 terbuka; 54329/8000/3000/54323 tertutup.
+3. Di VPS: `docker compose ps` menunjukkan `db`, `auth`, `rest`, `app` `healthy`.
+4. Dari luar VPS: hanya 80/443 terbuka; 54329/9999/3001/3000 tertutup; path internal `api.glubee.id` 403.
 5. pgTAP terhadap DB VPS lulus.
 6. Semua alur Tahap 6 lulus di `https://glubee.id`.
 7. Backup 02:00 WIB muncul di GDrive dengan format folder benar; rotasi 7 versi terverifikasi; restore drill tercatat.
