@@ -73,6 +73,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
+      # Dicek ulang karena build bisa berjalan beberapa menit setelah job guard.
+      - name: Tolak jam puncak app lain di VPS (WIB)
+        run: |
+          now=$(TZ=Asia/Jakarta date +%H%M)
+          if { [ "$now" -ge 0530 ] && [ "$now" -lt 0730 ]; } || { [ "$now" -ge 1430 ] && [ "$now" -lt 1530 ]; }; then
+            echo "::error::Sekarang $now WIB, di dalam jam puncak (05:30-07:30, 14:30-15:30). Image sudah di GHCR; jalankan ulang setelah jam puncak."
+            exit 1
+          fi
       - name: Siapkan SSH
         run: |
           install -m 700 -d ~/.ssh
