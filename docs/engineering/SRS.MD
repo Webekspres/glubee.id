@@ -7,6 +7,8 @@ Status arsitektur: USULAN TEKNIS untuk review sebelum implementasi.
 
 Membangun MVP yang aman dan dapat diaudit untuk data kesehatan sensitif, dengan jumlah komponen minimum. Arsitektur awal adalah satu aplikasi Next.js + TypeScript; UI dan Route Handlers berada dalam satu codebase. PostgreSQL/Auth menggunakan Supabase. Email transaksional menggunakan Brevo. Browser push menggunakan Web Push API melalui server aplikasi. Tidak ada microservice terpisah pada tahap awal.
 
+Target deployment: Next.js dan Supabase self-hosted (Docker) pada VPS Webekspres, sesuai [ADR-0001](adr/0001-self-host-supabase-on-vps.md) tanggal 24 September 2026. Rujukan Vercel/Supabase Cloud di dokumen ini yang belum diperbarui tunduk pada ADR tersebut.
+
 Rujukan teknis yang harus diverifikasi kembali saat implementasi:
 
 - Next.js Route Handlers: https://nextjs.org/docs/app/getting-started/route-handlers
@@ -34,6 +36,8 @@ Supabase Cron
        -> records result and retry
 ```
 
+Topologi deployment (ADR-0001): nginx VPS → `glubee.id` ke Next.js `127.0.0.1:3000` dan `api.glubee.id` ke Kong `127.0.0.1:8000` (GoTrue + PostgREST). PostgreSQL hanya bind ke `127.0.0.1` dan tidak pernah terekspos ke internet. Supabase Cron pada diagram di atas memakai `pg_cron` pada image `supabase/postgres` self-hosted saat fitur antrean diimplementasikan.
+
 Prinsip:
 
 - Client memakai publishable/anon key; service-role key hanya pada server dan hanya untuk operasi terpilih.
@@ -44,7 +48,7 @@ Prinsip:
 
 ## 3. Lingkungan dan konfigurasi
 
-Minimum environment: local, preview/staging, production. Setiap environment memiliki project database, OAuth callback, sender, VAPID key, secret, dan dataset terpisah. Production tidak boleh memakai data/credentials staging.
+Minimum environment: local, preview/staging, production. Selama development, staging ditunda sesuai §3.2 dan ADR-0001. Setiap environment memiliki project database, OAuth callback, sender, VAPID key, secret, dan dataset terpisah. Production tidak boleh memakai data/credentials staging.
 
 Konfigurasi terpusat minimum:
 
@@ -65,20 +69,22 @@ Konfigurasi terpusat minimum:
 | Google dan Google Cloud Platform | `mk.webekspres@gmail.com` | Milik Webekspres; masih free tier. Dipakai untuk project GCP dan konfigurasi Google OAuth yang disetujui. |
 | GitHub user | `sultanwebekspres` | Milik Webekspres. |
 | GitHub organization | `webekspres` | Belum Enterprise; repository project sudah dibuat dan siap digunakan di organisasi ini. |
-| Vercel, Supabase, Brevo | Akun operasional Webekspres menggunakan `mk.webekspres@gmail.com`, kecuali diputuskan lain | Paket produksi dan biaya masih menunggu persetujuan. |
+| Vercel, Supabase, Brevo | Akun operasional Webekspres menggunakan `mk.webekspres@gmail.com`, kecuali diputuskan lain | Paket produksi dan biaya masih menunggu persetujuan. Vercel dan Supabase Cloud tidak dipakai untuk deployment per ADR-0001. |
+| VPS Webekspres | Webekspres | Menjalankan Next.js + Supabase self-hosted Glubee bersama app production lain (ADR-0001). |
+| Google Drive (backup) | `mk.webekspres@gmail.com` | Menyimpan backup terenkripsi `backup website/glubee.id/`. |
+| GHCR | Organisasi GitHub `webekspres` | Registry image aplikasi. |
 
 Password, recovery code, MFA secret, API key, service account key, dan token tidak boleh ditulis di repository atau dokumentasi. Akun vendor wajib mengaktifkan MFA dan memiliki recovery/ownership procedure. Free tier GCP maupun vendor lain hanya untuk development/evaluasi sampai kuota, syarat komersial, billing alert, DPA, lokasi data, backup, dan kesiapan produksi disetujui.
 
 ### 3.2 Strategi staging dan production
 
-- Gunakan satu project Vercel dengan branch production `main` pada domain `glubee.id` dan branch `staging` pada `staging.glubee.id`.
-- Branch `staging` menggunakan Vercel Preview environment/branch-specific environment variables; `main` menggunakan Production environment variables.
-- Subdomain hanya memisahkan alamat deployment. Staging wajib memakai Supabase project, Auth configuration, OAuth callback, Brevo/test sender, VAPID key, cron secret, dan data yang terpisah dari production.
-- Staging hanya memakai data sintetis. Database atau backup production tidak boleh disalin ke staging.
-- Deployment dari feature branch tetap memakai preview URL sementara; hanya branch `staging` yang diarahkan ke subdomain staging tetap.
-- Production promotion dilakukan melalui merge/release yang telah lulus QA dan UAT, bukan dengan menyalin environment variable staging ke production.
+Mengikuti [ADR-0001](adr/0001-self-host-supabase-on-vps.md):
 
-Pola branch-domain dan environment variable ini mengikuti kemampuan Vercel Preview/Production. Custom Environment Vercel bernama `staging` tidak wajib; fitur tersebut memerlukan paket Pro/Enterprise, sedangkan branch `staging` dapat menggunakan Preview environment dengan domain dan variable khusus branch.
+- **Selama development (belum ada pengguna aktif)**: tidak ada staging terpisah. Environment live `glubee.id` boleh dipakai untuk uji dengan data sintetis, dan database live boleh dikosongkan setelah uji.
+- **Setelah ada pengguna aktif**: setiap perubahan wajib melewati staging terpisah (`staging.glubee.id`) sebelum production. Database production tidak boleh dikosongkan. Staging memakai stack Supabase, Auth configuration, OAuth callback, sender, VAPID key, cron secret, dan data yang terpisah dari production.
+- Staging hanya memakai data sintetis. Database atau backup production tidak boleh disalin ke staging.
+- Deploy production dilakukan manual melalui GitHub Actions (`workflow_dispatch`) dari branch `main` (selama development boleh dari `dev`), di luar jam puncak app lain di VPS yang sama (05:30–07:30 dan 14:30–15:30 WIB).
+- Production promotion dilakukan melalui merge/release yang telah lulus QA dan UAT, bukan dengan menyalin environment variable staging ke production.
 
 ### 3.3 Rekomendasi alamat email
 
@@ -244,7 +250,7 @@ Status: PENDING, default-off.
 
 ### 10.2 Backup/restore
 
-- Supabase Free tidak memiliki backup otomatis; bila dipakai sementara, jadwalkan `db dump` terenkripsi ke lokasi off-site terkontrol.
+- Supabase self-hosted (ADR-0001) tidak memiliki backup otomatis. Backup harian 02:00 WIB: `pg_dump` (schema `auth` + `public`) dienkripsi dengan `age` (private key disimpan di luar VPS), diunggah ke Google Drive `mk.webekspres@gmail.com` pada `backup website/glubee.id/dd-mm-yyyy-HHmm`, dan hanya 7 versi harian terakhir yang disimpan.
 - Production tier dan RPO/RTO harus disetujui sebelum go-live; usulan awal untuk review: RPO <=24 jam, RTO <=8 jam.
 - Restore drill dilakukan sebelum rilis dan berkala; hasil dicatat.
 - Restore wajib menjalankan deletion-tombstone reconciliation agar akun/data yang sudah dihapus tidak aktif kembali.
@@ -280,6 +286,8 @@ Metric minimum:
 - deletion due/failed/overdue;
 - backup age dan restore-drill age.
 
+Implementasi awal (ADR-0001, aktif sejak development): Healthchecks.io free memantau job backup (gagal atau tidak jalan), UptimeRobot free memantau `glubee.id`, `api.glubee.id/auth/v1/health`, masa berlaku SSL, dan domain. Alert email ke `mk.webekspres@gmail.com`. Kedua layanan tidak menerima data pengguna. Ketentuan penggunaan komersial paket free wajib diverifikasi sebelum go-live.
+
 Log terstruktur memakai correlation ID, actor class, event type, object ID pseudonymous, dan outcome. Alert operasional tidak membawa nilai gula darah atau isi pesan. Akses log dibatasi dan memiliki retensi.
 
 ## 13. Kinerja, aksesibilitas, dan kompatibilitas
@@ -310,6 +318,8 @@ Log terstruktur memakai correlation ID, actor class, event type, object ID pseud
 5. Rollback aplikasi ke artifact sebelumnya; schema memakai backward-compatible forward-fix atau rollback yang telah diuji.
 6. Validasi smoke test auth, input, isolation, queue, dan deletion guard.
 
+Pelaksanaan (ADR-0001): image dibangun di GitHub Actions, di-push ke GHCR, lalu di-deploy manual ke VPS melalui `workflow_dispatch` di luar 05:30–07:30 dan 14:30–15:30 WIB. Rollback aplikasi = deploy ulang tag image sebelumnya. Detail di [IMPLEMENTATION_PLAN_SELF_HOST](../IMPLEMENTATION_PLAN_SELF_HOST.md).
+
 Tidak ada deployment produksi sebelum UAT, checklist legal, paket vendor, backup/restore, sender domain, DNS, monitoring, dan persetujuan eksplisit selesai.
 
 ## 16. Batas paket vendor per 9 September 2026
@@ -319,6 +329,7 @@ Tidak ada deployment produksi sebelum UAT, checklist legal, paket vendor, backup
 - Brevo Free menyediakan 300 pengiriman email per hari; pesan lebih dari kapasitas dapat tertunda/tidak terkirim. Sistem harus memantau dan menampilkan kegagalan.
 - Jumlah pengguna awal dan volume notifikasi belum dapat dipastikan. Karena itu tidak ada angka kapasitas yang dijanjikan; rilis dilakukan terbatas dengan metric penggunaan, antrean, error, dan kuota, lalu paket dinaikkan berdasarkan data nyata.
 - Harga, kuota, lokasi pemrosesan, DPA, subprocessor, dan ketentuan vendor wajib diverifikasi lagi tepat sebelum keputusan produksi.
+- Per 24 September 2026 (ADR-0001): batas Vercel Hobby dan Supabase Free di atas tidak lagi relevan untuk deployment karena aplikasi dan Supabase di-host sendiri di VPS Webekspres. Batas yang berlaku adalah kapasitas VPS bersama (±7,75 GB RAM, dibagi dengan app production lain) dengan `mem_limit` per container. Supabase Cloud tetap menjadi jalur keluar.
 
 ## 17. Traceability ringkas
 

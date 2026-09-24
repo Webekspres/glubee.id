@@ -95,6 +95,20 @@ Account owner operasional yang disepakati adalah Webekspres: Google/GCP serta ak
 
 Per 9 September 2026: Vercel Hobby tidak sesuai untuk penggunaan komersial; Supabase Free dapat dijeda dan tidak menyediakan backup otomatis; Brevo Free dibatasi 300 email/hari. Batas harus diverifikasi ulang sebelum produksi.
 
+### 8.1 Register vendor per 24 September 2026 (ADR-0001)
+
+Keputusan teknis: [ADR-0001](../../engineering/adr/0001-self-host-supabase-on-vps.md). Vercel dan Supabase Cloud tidak dipakai untuk deployment.
+
+| Pemroses | Data | Lokasi/transfer | Status due diligence |
+|---|---|---|---|
+| VPS Webekspres (penyedia: Arvacloud, perlu dikonfirmasi) | Seluruh data akun dan kesehatan (DB, Auth), log aplikasi | Indonesia, Jakarta, tanpa transfer lintas negara untuk data utama | Belum: kontrak/ketentuan Arvacloud, enkripsi disk, dan daftar akses admin perlu dicatat. VPS dipakai bersama app production lain. |
+| Google Drive (`mk.webekspres@gmail.com`) | Backup DB terenkripsi `age`; Google tidak memegang kunci | Global (Google) | Belum: kebijakan akses akun, MFA, dan penyimpanan private key perlu dicatat. |
+| GitHub / GHCR (`webekspres`) | Source code dan image aplikasi; tanpa data pengguna | Global (GitHub) | Tidak memproses data pribadi pengguna. |
+| Brevo | Alamat email dan isi email transaksional | [verifikasi] | Tetap seperti di atas. |
+| Healthchecks.io, UptimeRobot | Tidak ada data pengguna: hanya status job backup, URL publik, dan status HTTP | Global | Ketentuan komersial paket free wajib diverifikasi sebelum go-live. |
+
+**TODO (legal review):** [PRIVACY_POLICY.MD](../public/PRIVACY_POLICY.MD) §7 masih menyebut Vercel dan Supabase sebagai penyedia. Teks publik belum diubah dan wajib diperbarui melalui review legal sebelum go-live.
+
 ## 9. Retensi
 
 Buat schedule final sebelum go-live untuk setiap tabel, object, log, email-provider record, consent, admin audit, security evidence, export, backup, dan tombstone. Schedule menentukan owner, trigger awal, durasi, dasar, metode deletion/anonymization, legal hold, dan verifikasi.

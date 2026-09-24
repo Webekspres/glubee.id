@@ -1,0 +1,53 @@
+# ADR-0001: Self-host Supabase dan Next.js di VPS Webekspres
+
+- Status: DISEPAKATI
+- Tanggal: 24 September 2026
+- Pengambil keputusan: Sultan (Webekspres)
+- Menggantikan: asumsi Vercel + Supabase Cloud pada SRS 0.1-draft §1, §2, §3.2, §10.2, §15, §16
+
+## Konteks
+
+- Supabase Free dibatasi dua project aktif per akun. Kedua slot di akun `mk.webekspres@gmail.com` sudah terpakai oleh app demo lain, dan dampak pause/hapus project tersebut belum diketahui.
+- Anggaran infrastruktur Glubee saat ini Rp0.
+- Hosting shared Plesk/cPanel tidak dapat menjalankan Glubee: aplikasi memakai Route Handlers, callback OAuth, cookie session, dan PDF server-side sehingga tidak dapat di-export sebagai SSG.
+- VPS Webekspres (4 vCPU, ±7,75 GB RAM, ±61 GB disk kosong, Docker terpasang, nginx pada 80/443) sudah tersedia tanpa biaya tambahan. VPS ini juga menjalankan production app lain, termasuk `miprogresifbumishalawat.web.id` (absensi pesantren, puncak trafik ±05:30–07:30 dan ±14:30–15:30 WIB).
+- Kode bergantung erat pada Supabase: 9 pemanggilan `supabase.auth.*`, 13 `supabase.rpc`, serta migration dengan 17 RLS, 16 policy, 52 `auth.uid()`, dan 16 fungsi `security definer`. Tidak ada dependensi ke Storage, Realtime, `pg_cron`, atau `pg_net`.
+
+## Keputusan
+
+1. Jalankan **Supabase self-hosted (Docker Compose)** dan **Next.js (container)** di VPS Webekspres.
+2. Service Supabase yang dipakai:
+   - selalu aktif: `db`, `auth` (GoTrue), `rest` (PostgREST), `kong` (API gateway);
+   - on-demand (dinyalakan manual untuk administrasi, akses via SSH tunnel): `studio`, `meta`;
+   - tidak dipasang: realtime, storage, imgproxy, analytics/logflare, vector, functions, supavisor.
+3. Topologi jaringan:
+   - `glubee.id` → nginx → Next.js `127.0.0.1:3000`;
+   - `api.glubee.id` → nginx → Kong `127.0.0.1:8000`;
+   - Postgres hanya di-publish ke `127.0.0.1` host (untuk migration/admin via SSH tunnel), tidak pernah ke `0.0.0.0`. Semua port container Glubee memakai bind `127.0.0.1` karena port Docker yang di-publish ke `0.0.0.0` melewati aturan `ufw`.
+   - TLS oleh certbot/Let's Encrypt pada nginx yang sudah ada.
+4. Build image Next.js di GitHub Actions, push ke GHCR, deploy ke VPS dengan trigger manual (`workflow_dispatch`).
+5. Backup harian 02:00 WIB: `pg_dump` terenkripsi, upload ke Google Drive `mk.webekspres@gmail.com` di `backup website/glubee.id/dd-mm-yyyy-HHmm`, simpan 7 versi harian terakhir.
+6. Monitoring sejak development: Healthchecks.io free untuk job backup, UptimeRobot free untuk uptime app/API, SSL, dan domain.
+7. Deploy dari GitHub Actions memakai user VPS `adminweb` dengan SSH key khusus yang terpisah dari key pribadi.
+8. Staging:
+   - selama development (belum ada pengguna aktif), environment live boleh dipakai untuk uji dan database boleh dikosongkan;
+   - setelah ada pengguna aktif, setiap perubahan wajib melalui staging terpisah sebelum ke production, dan database production tidak boleh dikosongkan.
+
+## Opsi yang ditolak
+
+| Opsi | Alasan ditolak |
+|---|---|
+| Membatasi akses DB dengan CORS | CORS hanya dipatuhi browser untuk request HTTP. Koneksi Postgres/MySQL adalah TCP langsung dan tidak dilindungi CORS. |
+| MySQL | RLS, `security definer`, dan RPC adalah fitur Postgres; migrasi berarti menulis ulang seluruh migration dan otorisasi. |
+| Vercel + Postgres di VPS yang dibuka ke internet | IP Vercel dinamis sehingga allowlist tidak praktis; DB kesehatan terekspos publik; Supabase Auth tetap harus diganti. |
+| Postgres polos + ganti Auth (mis. Better Auth) | Menuntut rewrite auth, RLS `auth.uid()`, dan RPC (±1–2 sprint) tanpa keuntungan berarti karena RAM VPS cukup. |
+| Supabase Cloud (pause project demo / Pro $25) | Pause memerlukan keputusan pemilik demo yang belum tersedia; Pro melebihi anggaran Rp0. Tetap menjadi jalur keluar. |
+| Hosting shared (Plesk/cPanel) + SSG | Glubee tidak dapat di-SSG. |
+
+## Konsekuensi
+
+- Positif: biaya Rp0; kode aplikasi, migration, dan test hampir tidak berubah (hanya URL dan key); Postgres tidak pernah terekspos.
+- Negatif: Webekspres menanggung operasi (update image, patch keamanan, disk, TLS, backup, restore drill); satu VPS menjadi single point of failure bersama app lain; tidak ada SLA vendor.
+- Mitigasi: `mem_limit` per container, jadwal deploy di luar jam puncak app pesantren, backup off-site terenkripsi, restore drill sebelum go-live.
+- Jalur keluar: karena tetap memakai Supabase, migrasi ke Supabase Cloud cukup `pg_dump`/restore dan pergantian environment variable.
+- Dokumen legal: register vendor diperbarui di `LEGAL_OPERATIONS.MD` §8. Privacy Policy publik masih menyebut Vercel/Supabase dan menunggu review legal (TODO).

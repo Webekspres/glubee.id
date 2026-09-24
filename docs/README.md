@@ -10,7 +10,9 @@ docs/
 │   ├── BRD.MD
 │   └── FRD.MD
 ├── engineering/
-│   └── SRS.MD
+│   ├── SRS.MD
+│   └── adr/
+│       └── 0001-self-host-supabase-on-vps.md
 ├── planning/
 │   ├── CLICKUP_BACKLOG.json
 │   ├── CLICKUP_DEPENDENCIES.json
@@ -32,7 +34,7 @@ docs/
 
 1. [BRD](product/BRD.MD)
 2. [FRD](product/FRD.MD)
-3. [SRS](engineering/SRS.MD)
+3. [SRS](engineering/SRS.MD) dan [ADR](engineering/adr/)
 4. [Consent and Notices](legal/internal/CONSENT_AND_NOTICES.MD)
 5. [Privacy Policy](legal/public/PRIVACY_POLICY.MD) dan [Terms and Conditions](legal/public/TERMS_AND_CONDITIONS.MD)
 6. [Legal Operations](legal/internal/LEGAL_OPERATIONS.MD)
