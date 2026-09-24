@@ -15,7 +15,7 @@ Keputusan arsitektur: [ADR-0001](../docs/engineering/adr/0001-self-host-supabase
 
 ## Aturan VPS
 
-- Jangan deploy, restart, atau update pada **05:30–07:30** dan **14:30–15:30 WIB** (jam puncak app absensi pesantren di VPS yang sama).
+- Jangan deploy, restart, atau update pada **06:00–07:30** dan **12:45–14:45 WIB** (jam puncak app absensi pesantren di VPS yang sama).
 - Semua port hanya bind ke `127.0.0.1`. Jangan ubah ke `0.0.0.0`: port Docker yang di-publish melewati `ufw`.
 - Jangan mengubah file nginx milik site lain. Selalu `sudo nginx -t` lalu `sudo systemctl reload nginx` (bukan `restart`).
 

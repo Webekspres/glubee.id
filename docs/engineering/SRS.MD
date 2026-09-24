@@ -83,7 +83,7 @@ Mengikuti [ADR-0001](adr/0001-self-host-supabase-on-vps.md):
 - **Selama development (belum ada pengguna aktif)**: tidak ada staging terpisah. Environment live `glubee.id` boleh dipakai untuk uji dengan data sintetis, dan database live boleh dikosongkan setelah uji.
 - **Setelah ada pengguna aktif**: setiap perubahan wajib melewati staging terpisah (`staging.glubee.id`) sebelum production. Database production tidak boleh dikosongkan. Staging memakai stack Supabase, Auth configuration, OAuth callback, sender, VAPID key, cron secret, dan data yang terpisah dari production.
 - Staging hanya memakai data sintetis. Database atau backup production tidak boleh disalin ke staging.
-- Deploy production dilakukan manual melalui GitHub Actions (`workflow_dispatch`) dari branch `main` (selama development boleh dari `dev`), di luar jam puncak app lain di VPS yang sama (05:30–07:30 dan 14:30–15:30 WIB).
+- Deploy production dilakukan manual melalui GitHub Actions (`workflow_dispatch`) dari branch `main` (selama development boleh dari `dev`), di luar jam puncak app lain di VPS yang sama (06:00–07:30 dan 12:45–14:45 WIB).
 - Production promotion dilakukan melalui merge/release yang telah lulus QA dan UAT, bukan dengan menyalin environment variable staging ke production.
 
 ### 3.3 Rekomendasi alamat email
@@ -318,7 +318,7 @@ Log terstruktur memakai correlation ID, actor class, event type, object ID pseud
 5. Rollback aplikasi ke artifact sebelumnya; schema memakai backward-compatible forward-fix atau rollback yang telah diuji.
 6. Validasi smoke test auth, input, isolation, queue, dan deletion guard.
 
-Pelaksanaan (ADR-0001): image dibangun di GitHub Actions, di-push ke GHCR, lalu di-deploy manual ke VPS melalui `workflow_dispatch` di luar 05:30–07:30 dan 14:30–15:30 WIB. Rollback aplikasi = deploy ulang tag image sebelumnya. Detail di [IMPLEMENTATION_PLAN_SELF_HOST](../IMPLEMENTATION_PLAN_SELF_HOST.md).
+Pelaksanaan (ADR-0001): image dibangun di GitHub Actions, di-push ke GHCR, lalu di-deploy manual ke VPS melalui `workflow_dispatch` di luar 06:00–07:30 dan 12:45–14:45 WIB. Rollback aplikasi = deploy ulang tag image sebelumnya. Detail di [IMPLEMENTATION_PLAN_SELF_HOST](../IMPLEMENTATION_PLAN_SELF_HOST.md).
 
 Tidak ada deployment produksi sebelum UAT, checklist legal, paket vendor, backup/restore, sender domain, DNS, monitoring, dan persetujuan eksplisit selesai.
 

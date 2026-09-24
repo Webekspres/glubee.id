@@ -10,7 +10,7 @@
 - Supabase Free dibatasi dua project aktif per akun. Kedua slot di akun `mk.webekspres@gmail.com` sudah terpakai oleh app demo lain, dan dampak pause/hapus project tersebut belum diketahui.
 - Anggaran infrastruktur Glubee saat ini Rp0.
 - Hosting shared Plesk/cPanel tidak dapat menjalankan Glubee: aplikasi memakai Route Handlers, callback OAuth, cookie session, dan PDF server-side sehingga tidak dapat di-export sebagai SSG.
-- VPS Webekspres (4 vCPU, ±7,75 GB RAM, ±61 GB disk kosong, Docker terpasang, nginx pada 80/443) sudah tersedia tanpa biaya tambahan. VPS ini juga menjalankan production app lain, termasuk `miprogresifbumishalawat.web.id` (absensi pesantren, puncak trafik ±05:30–07:30 dan ±14:30–15:30 WIB).
+- VPS Webekspres (4 vCPU, ±7,75 GB RAM, ±61 GB disk kosong, Docker terpasang, nginx pada 80/443) sudah tersedia tanpa biaya tambahan. VPS ini juga menjalankan production app lain, termasuk `miprogresifbumishalawat.web.id` (absensi pesantren, jadwal presensi: masuk 06:45, batas hadir 07:00, pulang awal 13:00, pulang 13:30, batas scan 14:30; jam puncak yang dilindungi 06:00–07:30 dan 12:45–14:45 WIB).
 - Kode bergantung erat pada Supabase: 9 pemanggilan `supabase.auth.*`, 13 `supabase.rpc`, serta migration dengan 17 RLS, 16 policy, 52 `auth.uid()`, dan 16 fungsi `security definer`. Tidak ada dependensi ke Storage, Realtime, `pg_cron`, atau `pg_net`.
 
 ## Keputusan

@@ -11,7 +11,7 @@ Dokumen ini adalah panduan implementasi teknis siap eksekusi untuk memindahkan t
 - **VPS dipakai bersama production app lain.** Wajib:
   - setiap port Glubee bind ke `127.0.0.1`, tidak pernah `0.0.0.0`;
   - setiap container memiliki `mem_limit`;
-  - deploy/restart/maintenance **dilarang** pada 05:30–07:30 dan 14:30–15:30 WIB;
+  - deploy/restart/maintenance **dilarang** pada 06:00–07:30 dan 12:45–14:45 WIB;
   - jangan mengubah file nginx milik site lain di `/etc/nginx/sites-enabled/`.
 - **Secret tidak pernah masuk git.** Repo hanya berisi `.env.example` dengan placeholder.
 - **Data uji sintetis.** Tidak ada data kesehatan asli sebelum go-live checklist SRS §15 terpenuhi.
@@ -103,7 +103,7 @@ Jalankan dengan `bun run db:start` aktif; login, input gula darah, dan unduh PDF
 
 #### 2.3 `.github/workflows/deploy.yml`
 - Trigger: `workflow_dispatch`; branch dipilih di UI Actions. Selama dev boleh `dev`; setelah repo variable `GO_LIVE=true`, job gagal bila branch bukan `main`.
-- Job `guard`: tolak jam puncak WIB (05:30–07:30, 14:30–15:30) dan aturan branch.
+- Job `guard`: tolak jam puncak WIB (06:00–07:30, 12:45–14:45) dan aturan branch.
 - Job `build`: lint + typecheck + unit test (production build terjadi di `docker build`) → push `ghcr.io/webekspres/glubee:<sha>` (plus `:latest` dari `main`).
 - Job `deploy`: SSH ke VPS (host key dipin lewat `VPS_KNOWN_HOSTS`), tulis `APP_TAG=<sha>` ke `.env`, `docker compose pull app && docker compose up -d app`, smoke check `glubee.id` dan `api.glubee.id/auth/v1/health`.
 - Secrets: environment `production` (branch `dev` + `main`): `VPS_HOST`, `VPS_PORT` (8288), `VPS_USER` (`adminweb`), `VPS_SSH_KEY` (key khusus GitHub Actions), `VPS_KNOWN_HOSTS` (`ssh-keyscan -p 8288 <vps>`, dicocokkan dengan known_hosts tepercaya), `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (= `ANON_KEY`). Package GHCR dibuat public (repo publik), jadi VPS tidak butuh login GHCR.
