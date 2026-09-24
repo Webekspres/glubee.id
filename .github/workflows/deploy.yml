@@ -1,8 +1,10 @@
 # Build image aplikasi, push ke GHCR, lalu deploy manual ke VPS Webekspres (ADR-0001).
 # Jalankan dari tab Actions -> "Deploy" -> pilih branch -> Run workflow.
 #
-# Secrets : VPS_HOST, VPS_USER (adminweb), VPS_SSH_KEY (key khusus Actions), VPS_KNOWN_HOSTS,
+# Secrets (environment "production", hanya branch dev + main):
+#           VPS_HOST, VPS_PORT, VPS_USER (adminweb), VPS_SSH_KEY (key khusus Actions), VPS_KNOWN_HOSTS,
 #           NEXT_PUBLIC_APP_URL, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+# Repo publik: log Actions bisa dilihat siapa pun, jadi output langkah SSH dibuat minimal.
 # Variable: GO_LIVE = "true" setelah ada pengguna aktif -> deploy hanya boleh dari main.
 
 name: Deploy
@@ -37,6 +39,7 @@ jobs:
   build:
     needs: guard
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: read
       packages: write
@@ -68,6 +71,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Siapkan SSH
         run: |
@@ -77,13 +81,13 @@ jobs:
           printf '%s\n' "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
       - name: Pull dan restart app
         run: |
-          ssh -i ~/.ssh/id_deploy "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" bash -s <<'EOF'
+          ssh -i ~/.ssh/id_deploy -p "${{ secrets.VPS_PORT }}" "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" bash -s <<'EOF'
           set -euo pipefail
           cd /opt/glubee
           # Tag disimpan di .env agar `docker compose up` manual berikutnya tidak kembali ke tag lama.
           sed -i "s/^APP_TAG=.*/APP_TAG=${{ github.sha }}/" .env
-          docker compose pull app
-          docker compose up -d app
+          docker compose pull --quiet app
+          docker compose up -d --quiet-pull app 2>&1 | tail -n 1
           EOF
       - name: Smoke check
         run: |

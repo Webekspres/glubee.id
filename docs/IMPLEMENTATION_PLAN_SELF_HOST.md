@@ -106,7 +106,7 @@ Jalankan dengan `bun run db:start` aktif; login, input gula darah, dan unduh PDF
 - Job `guard`: tolak jam puncak WIB (05:30–07:30, 14:30–15:30) dan aturan branch.
 - Job `build`: lint + typecheck + unit test (production build terjadi di `docker build`) → push `ghcr.io/webekspres/glubee:<sha>` (plus `:latest` dari `main`).
 - Job `deploy`: SSH ke VPS (host key dipin lewat `VPS_KNOWN_HOSTS`), tulis `APP_TAG=<sha>` ke `.env`, `docker compose pull app && docker compose up -d app`, smoke check `glubee.id` dan `api.glubee.id/auth/v1/health`.
-- Secrets: `VPS_HOST`, `VPS_USER` (`adminweb`), `VPS_SSH_KEY` (key khusus GitHub Actions), `VPS_KNOWN_HOSTS` (`ssh-keyscan <vps>`), `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (= `ANON_KEY`). VPS login ke GHCR memakai PAT `read:packages`.
+- Secrets: environment `production` (branch `dev` + `main`): `VPS_HOST`, `VPS_PORT` (8288), `VPS_USER` (`adminweb`), `VPS_SSH_KEY` (key khusus GitHub Actions), `VPS_KNOWN_HOSTS` (`ssh-keyscan -p 8288 <vps>`, dicocokkan dengan known_hosts tepercaya), `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (= `ANON_KEY`). Package GHCR dibuat public (repo publik), jadi VPS tidak butuh login GHCR.
 - Rollback: jalankan ulang job `deploy` dengan `APP_TAG` sha sebelumnya.
 
 ### Tahap 3: Provision stack di VPS (butuh P1, P6)
