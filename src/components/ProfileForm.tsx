@@ -68,6 +68,9 @@ export function ProfileForm({
             }),
           });
         }
+      // Segarkan agar percobaan ulang (mis. PATCH profil gagal) tidak mencatat persetujuan ganda.
+      if (needed.length)
+        setReceipts((await api<Receipt[]>("/api/consents")).data);
       const r = await api<Profile>("/api/profile", {
         method: "PATCH",
         body: JSON.stringify(Object.fromEntries(f)),
