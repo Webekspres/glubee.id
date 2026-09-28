@@ -1,6 +1,6 @@
 {
   "state": "partially_imported",
-  "last_updated": "2026-09-09",
+  "last_updated": "2026-09-28",
   "note": "45 dari 46 task berhasil dibuat. GLB-M01 gagal karena ClickUp rate limit (pesan API: tunggu ~1383 menit sejak percobaan pukul rate-limit-hit). Dependency (depends_on) antar-task BELUM dihubungkan via API ClickUp — tercatat sebagai teks 'Depends on:' di description tiap task saja. Tags manifest (glubee, engineering, dst) TIDAK dibuat sebagai native ClickUp tag karena tag belum terdaftar di Space dan tool yang tersedia tidak bisa membuat tag baru; tercatat sebagai teks di description. Status manifest (Backlog/Ready/In Progress/Review/UAT/Done/Blocked) tidak match status native Space ini (to do/planning/in progress/at risk/update required/on hold/complete/cancelled); dipetakan Backlog->'to do', Blocked->'on hold', dicatat di description sebagai 'Target status (manifest)'. Belum ada verifikasi re-read lengkap terhadap seluruh hasil.",
   "workspace_id": "90181827111",
   "space_id": "901813134902",
@@ -17,7 +17,11 @@
   "status_mapping": {
     "Backlog": "to do",
     "Blocked": "on hold",
-    "note": "Ready/In Progress/Review/UAT/Done belum dipetakan karena belum ada task yang mencapai status tersebut saat impor. Kandidat terdekat saat dibutuhkan: Ready->planning, In Progress->in progress, Review->update required, UAT->at risk (tidak ideal, tinjau ulang), Done->complete."
+    "note": "Ready/In Progress/Review/UAT/Done belum dipetakan karena belum ada task yang mencapai status tersebut saat impor. Kandidat terdekat saat dibutuhkan: Ready->planning, In Progress->in progress, Review->update required, UAT->at risk (tidak ideal, tinjau ulang), Done->complete.",
+    "Ready": "planning",
+    "In Progress": "in progress",
+    "Review/UAT pending": "update required",
+    "Done": "complete"
   },
   "task_ids": {
     "GLB-001": "86eyvadg9",
@@ -65,7 +69,12 @@
     "GLB-P03": "86eyvaemh",
     "GLB-P04": "86eyvaemz",
     "GLB-P05": "86eyvaenc",
-    "GLB-M01": null
+    "GLB-M01": null,
+    "GLB-036": "z8v9xngmtv",
+    "GLB-037": "z8v9xngmtw",
+    "GLB-038": "z8v9xngmty",
+    "GLB-039": "z8v9xngmtz",
+    "GLB-040": "z8v9xngmu0"
   },
   "errors": [
     "GLB-M01: 'Failed to create task: Rate limit exceeded. Please wait 1383 minutes before trying again.'"
@@ -75,5 +84,6 @@
     "Hubungkan seluruh depends_on antar task_ids di atas via clickup_add_task_dependency (arah waiting-on).",
     "Verifikasi re-read seluruh 46 task: jumlah, tanggal, status, dependency, tidak ada duplikasi.",
     "Pertimbangkan native tag/status jika ingin match manifest persis, atau terima pemetaan yang sudah dicatat."
-  ]
+  ],
+  "sync_2026_09_28": "Status disinkronkan dengan SPRINT_1_REVIEW, SPRINT_2_REVIEW, deploy VPS (ADR-0001) dan CR masa jeda 3 hari. GLB-024 diganti nama ke 'tiga hari'. Task baru GLB-036..040."
 }
