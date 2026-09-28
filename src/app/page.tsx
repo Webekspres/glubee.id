@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { APP_CONFIG } from "@/lib/config";
 export default function Home() {
@@ -30,6 +31,14 @@ export default function Home() {
           </p>
         </div>
         <div className="hero-visual" aria-label="Ilustrasi pencatatan">
+          <Image
+            className="mascot hero-mascot"
+            src="/brand/mascot-hero.png"
+            alt=""
+            width={156}
+            height={188}
+            priority
+          />
           <div className="panel stack">
             <div className="section-heading">
               <h3>Perjalanan pencatatan Anda</h3>
@@ -42,13 +51,13 @@ export default function Home() {
             >
               <path
                 d="M10 40H390 M10 85H390 M10 130H390"
-                stroke="#dfe9e6"
+                stroke="#d3e2dd"
                 strokeDasharray="4 5"
               />
               <path
                 d="M10 110L70 85L130 95L190 55L250 72L310 45L390 62"
                 fill="none"
-                stroke="#32796b"
+                stroke="#4d612d"
                 strokeWidth="3"
               />
               {[
@@ -65,7 +74,7 @@ export default function Home() {
                   cx={x}
                   cy={y}
                   r="5"
-                  fill="#16605b"
+                  fill="#4d612d"
                   stroke="white"
                   strokeWidth="2"
                 />

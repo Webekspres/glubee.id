@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -154,13 +155,27 @@ export function Records({
               ". Lihat perjalanan pencatatan Anda."
         }
       >
-        <button className="button primary" onClick={() => setModal(true)}>
-          + Catat gula darah
-        </button>
+        <div className="page-heading-aside">
+          {!history && (
+            <Image
+              className="mascot"
+              src="/brand/mascot-hero.png"
+              alt=""
+              width={156}
+              height={188}
+              priority
+            />
+          )}
+          <button className="button primary" onClick={() => setModal(true)}>
+            + Catat gula darah
+          </button>
+        </div>
       </PageHeading>
 
       <div className="notice mobile-disclaimer-card" role="note">
-        <span className="disclaimer-icon" aria-hidden="true">ℹ️</span>
+        <span className="disclaimer-icon" aria-hidden="true">
+          ℹ️
+        </span>
         <p>{APP_CONFIG.disclaimer}</p>
       </div>
 

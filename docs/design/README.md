@@ -2,6 +2,30 @@
 
 Folder ini disiapkan untuk `DESIGN.MD` dan aset referensi desain yang telah disetujui.
 
-`DESIGN.MD` belum dibuat karena brand guideline, desain UI, serta variasi aset maskot masih menunggu klien. Jangan menetapkan identitas visual final sebelum `BR-PEND-008` selesai.
+`DESIGN.MD` belum dibuat karena brand guideline dan aset final (file font berlisensi, logo, PNG maskot) masih menunggu klien. `BR-PEND-008` baru terpenuhi sebagian.
 
-Pada 15 September 2026 pengguna mengizinkan versi visual sementara. Sprint 2 menggunakan tipografi sistem, panel netral, aksen teal, wordmark teks Glubee, dan ilustrasi grafik sintetis berbasis HTML/CSS/SVG. Tidak ada maskot atau logo final yang dibuat. Label pratinjau tampil pada aplikasi. Palet/komposisi ini bukan persetujuan brand; komponen dan CSS terpusat dapat disesuaikan setelah aset diterima. Lihat `docs/planning/SPRINT_2_REVIEW.md` untuk hasil QA dan batas penerimaan.
+## Riwayat
+
+- **15 September 2026** — pengguna mengizinkan versi visual sementara untuk Sprint 2: tipografi sistem, panel netral, aksen teal, wordmark teks, ilustrasi grafik sintetis. Lihat `docs/planning/SPRINT_2_REVIEW.md`.
+- **28 September 2026** — klien mengirim brief visual (`DESAIN VISUAL GLUBEE.pdf`: font, palet, empat ekspresi maskot, mockup dashboard varian A–D). Setelah membandingkan prototype keempat varian, pengguna memilih **varian B**. UI diperbarui mengikuti brief tersebut.
+
+## Visual saat ini (varian B)
+
+| Unsur | Nilai | Catatan |
+| --- | --- | --- |
+| Halaman | `#002A45` Prussian blue | Header, footer, dan bottom bar `#011B2F` Oxford blue |
+| Permukaan/kartu | `#F7FBF9`, kartu metrik `#DCECE6` | Kartu rata-rata `#FFD358` Mustard |
+| Aksen/tombol utama | `#FFB915` Selective yellow, teks navy | Judul di atas navy `#FFD358` |
+| Pelengkap | `#88BBAA`, `#306771`, `#4D612D`, `#0C2A33` | Garis grafik `#4D612D` |
+| Font judul | Titan One | **Pengganti** Ellak (berbayar, belum ada file) |
+| Font teks | Fraunces | **Pengganti** Morally Serif (berbayar, belum ada file) |
+| Logo | Wordmark "glubee", huruf b digambar sebagai lebah menghadap kanan | **Placeholder** SVG di `src/components/Shell.tsx` |
+| Maskot | `public/brand/mascot-*.png` | Potongan dari PDF, resolusi rendah |
+
+Token warna ada di `:root` pada `src/app/globals.css`. Permukaan terang (`.panel`, `.dialog`, `.notice`, dan lainnya) mendefinisikan ulang token teks, sehingga komponen tidak perlu tahu sedang berada di atas latar gelap atau terang.
+
+## Belum diterapkan
+
+- **Ekspresi maskot per status** (aman, krisis tinggi, krisis rendah, bahaya) dan kartu "Status hari ini". Evaluasi tinggi/normal/rendah masih nonaktif sampai `BR-PEND-002` selesai.
+- **Jadwal perawatan dan pengingat** di dashboard mockup. Fiturnya masuk scope (BRD Modul 2, FRD §6), dijadwalkan Sprint 3.
+- **Aset final.** Setelah diterima: ganti file font lewat `next/font/local` di `src/app/layout.tsx`, logo di komponen `Wordmark`, dan PNG maskot transparan di `public/brand/`.

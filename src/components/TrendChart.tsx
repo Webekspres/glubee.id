@@ -56,7 +56,7 @@ export function TrendChart({
           role="group"
           aria-label="Grafik tren gula darah dalam mg/dL"
         >
-          <text x="5" y="17" fill="#52676a" fontSize="11">
+          <text x="5" y="17" fill="#53686c" fontSize="11">
             mg/dL
           </text>
           {[0, 0.25, 0.5, 0.75, 1].map((r) => (
@@ -66,7 +66,7 @@ export function TrendChart({
                 x2="800"
                 y1={250 - r * 210}
                 y2={250 - r * 210}
-                stroke="#dee7e5"
+                stroke="#d3e2dd"
                 strokeDasharray="4 4"
               />
               <text
@@ -74,7 +74,7 @@ export function TrendChart({
                 y={254 - r * 210}
                 textAnchor="end"
                 fontSize="11"
-                fill="#52676a"
+                fill="#53686c"
               >
                 {Math.round(max * r)}
               </text>
@@ -83,7 +83,7 @@ export function TrendChart({
           <polyline
             points={points.map((p) => x(p) + "," + y(p)).join(" ")}
             fill="none"
-            stroke="#26736b"
+            stroke="#4d612d"
             strokeWidth="2.5"
           />
           {points.map((p, i) => (
@@ -92,7 +92,7 @@ export function TrendChart({
               cx={x(p)}
               cy={y(p)}
               r="5"
-              fill="#16605b"
+              fill="#4d612d"
               stroke="white"
               strokeWidth="2"
               tabIndex={0}
@@ -111,10 +111,10 @@ export function TrendChart({
               <title>{describe(p)}</title>
             </circle>
           ))}
-          <text x="55" y="281" fontSize="11" fill="#52676a">
+          <text x="55" y="281" fontSize="11" fill="#53686c">
             {dateTime(points[0].measuredAt, zone)}
           </text>
-          <text x="800" y="281" textAnchor="end" fontSize="11" fill="#52676a">
+          <text x="800" y="281" textAnchor="end" fontSize="11" fill="#53686c">
             {dateTime(points.at(-1)!.measuredAt, zone)}
           </text>
         </svg>

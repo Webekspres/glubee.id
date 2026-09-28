@@ -7,6 +7,64 @@ import { api } from "@/lib/ui";
 import { ErrorMessage } from "./Ui";
 import { CookieConsent } from "./CookieConsent";
 
+// Placeholder logo: huruf "b" sebagai lebah menghadap kanan, sayap panjang jadi batang huruf.
+function Wordmark() {
+  return (
+    <span className="wordmark">
+      glu
+      <svg viewBox="0 0 60 80" aria-hidden="true">
+        <ellipse
+          cx="17"
+          cy="30"
+          rx="9"
+          ry="27"
+          transform="rotate(-8 17 30)"
+          fill="#bfe3d4"
+          stroke="currentColor"
+          strokeWidth="3.5"
+        />
+        <ellipse
+          cx="30"
+          cy="36"
+          rx="7"
+          ry="18"
+          transform="rotate(22 30 36)"
+          fill="#dff1ea"
+          stroke="currentColor"
+          strokeWidth="3"
+        />
+        <ellipse cx="33" cy="57" rx="22" ry="19" fill="currentColor" />
+        <path
+          d="M22 40c-3 10-3 24 0 34M33 38.5c-2 12-2 25 0 37"
+          stroke="#003f66"
+          strokeWidth="5.5"
+          fill="none"
+        />
+        <circle cx="46" cy="52" r="3.4" fill="#011b2f" />
+        <circle cx="47.2" cy="50.8" r="1.1" fill="#fff" />
+        <path
+          d="M44 61q4 3 8-1"
+          stroke="#011b2f"
+          strokeWidth="2.2"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <path
+          d="M48 40q3-9 10-10M42 39q-1-9 4-14"
+          stroke="#003f66"
+          strokeWidth="3"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <circle cx="58" cy="30" r="2.5" fill="#003f66" />
+        <circle cx="46" cy="25" r="2.5" fill="#003f66" />
+      </svg>
+      <span className="sr-only">b</span>
+      ee
+    </span>
+  );
+}
+
 const links = [
   ["/dashboard", "Ringkasan"],
   ["/log", "Catat gula darah"],
@@ -76,10 +134,8 @@ export default function Shell({ children }: { children: ReactNode }) {
       <header className="site-header">
         <div className="header-inner">
           <Link className="brand" href={member ? "/dashboard" : "/"}>
-            <span className="brand-symbol" aria-hidden="true">
-              g
-            </span>
-            glubee<span className="preview">Pratinjau</span>
+            <Wordmark />
+            <span className="preview">Pratinjau</span>
           </Link>
           {member ? (
             <>
