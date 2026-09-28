@@ -71,6 +71,20 @@ describe("glucose domain", () => {
     });
   });
 
+  test("normalizes cursor time so it cannot inject PostgREST filter syntax", () => {
+    const id = "00000000-0000-4000-8000-000000000001";
+    // Parser Date menerima komentar dalam kurung, termasuk koma.
+    expect(
+      decodeCursor(encodeCursor("Sep 9 2026 12:00 GMT (x,id.gt.0)", id)),
+    ).toEqual({
+      measuredAt: "2026-09-09T12:00:00.000Z",
+      id,
+    });
+    expect(
+      decodeCursor(encodeCursor("2026-09-09T12:00:00+00:00", id))?.measuredAt,
+    ).toBe("2026-09-09T12:00:00.000Z");
+  });
+
   test("rejects malformed date ranges without throwing", () => {
     expect(
       resolveRange(

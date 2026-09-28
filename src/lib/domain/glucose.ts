@@ -146,12 +146,14 @@ export function decodeCursor(cursor: string | null) {
       value.some((item) => typeof item !== "string")
     )
       return null;
+    const measuredAt = new Date(value[0]);
     if (
-      Number.isNaN(new Date(value[0]).valueOf()) ||
+      Number.isNaN(measuredAt.valueOf()) ||
       !/^[0-9a-f-]{36}$/i.test(value[1])
     )
       return null;
-    return { measuredAt: value[0], id: value[1] };
+    // Dinormalisasi karena nilai ini disisipkan ke filter .or() PostgREST.
+    return { measuredAt: measuredAt.toISOString(), id: value[1] };
   } catch {
     return null;
   }
