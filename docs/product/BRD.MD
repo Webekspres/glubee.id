@@ -88,7 +88,7 @@ Proposal revisi yang menjadi baseline komersial memuat dua modul, nilai proyek R
 | BR-RULE-006 | Notifikasi kontak baru aktif setelah persetujuan eksplisit melalui email. |
 | BR-RULE-007 | Kontak darurat tidak memiliki akun dan hanya menerima informasi yang dijelaskan dalam persetujuan. |
 | BR-RULE-008 | Admin dapat mengubah status akun dengan alasan tercatat, tetapi tidak dapat membaca data kesehatan. |
-| BR-RULE-009 | Permintaan penghapusan memiliki masa jeda tujuh hari dan hanya dapat dibatalkan pengguna. |
+| BR-RULE-009 | Permintaan penghapusan memiliki masa jeda tiga hari (3×24 jam; keputusan 28 September 2026, mengacu UU 27/2022 Pasal 40 dan PP 33/2026) dan hanya dapat dibatalkan pengguna. |
 | BR-RULE-010 | Selama jeda penghapusan, aktivitas dan pengingat berhenti; pengguna hanya dapat mengunduh data, membatalkan permintaan, atau keluar. |
 | BR-RULE-011 | Admin diberi tahu mengenai permintaan penghapusan, tetapi tidak dapat menunda atau membatalkannya. |
 | BR-RULE-012 | Penghapusan data aktif dan kedaluwarsa backup dijelaskan terpisah; tidak menjanjikan seluruh salinan hilang seketika. |
@@ -148,7 +148,7 @@ Catatan khusus: label kondisi pengukuran asli tetap disimpan terpisah. Arahan pe
 | BR-SUCCESS-003 | Catatan salah dan input historis mengikuti aturan `BR-RULE-002` sampai `BR-RULE-004`. |
 | BR-SUCCESS-004 | Grafik dan PDF konsisten terhadap data valid dan zona waktu pengguna. |
 | BR-SUCCESS-005 | Undangan/pencabutan kontak dan kegagalan/duplikasi pengiriman ditangani serta dapat diaudit. |
-| BR-SUCCESS-006 | Penghapusan tujuh hari, pembatalan, penghentian job, eksekusi otomatis, backup expiry, dan tombstone lulus test. |
+| BR-SUCCESS-006 | Penghapusan tiga hari, pembatalan, penghentian job, eksekusi otomatis, backup expiry, dan tombstone lulus test. |
 | BR-SUCCESS-007 | Tidak ada fitur PENDING yang aktif tanpa persetujuan tercatat. |
 | BR-SUCCESS-008 | Minimal satu dari Fasty Nazzala Gisty atau Jesslyn Jevoncia menyetujui hasil UAT fitur yang dirilis secara eksplisit dan terbukti; pihak kedua tetap diupayakan dan dicatat (keputusan PM 9 September 2026). |
 | BR-SUCCESS-009 | Sebelum consent, tidak ada script/storage non-esensial yang berjalan; pilihan tolak, terima, ubah, dan tarik kembali terbukti bekerja. |

@@ -89,7 +89,7 @@ Kami berupaya menjaga layanan aman dan tersedia, tetapi tidak menjamin layanan s
 
 ## 12. Penonaktifan dan penghentian akun
 
-Admin dapat menonaktifkan akun karena keamanan, pelanggaran, atau kewajiban hukum dengan alasan tercatat, tanpa membaca data kesehatan. Pengguna dapat mengajukan penghapusan dengan masa jeda tujuh hari. Selama masa jeda, hanya ekspor, pembatalan, dan logout yang tersedia; hanya pengguna yang dapat membatalkan.
+Admin dapat menonaktifkan akun karena keamanan, pelanggaran, atau kewajiban hukum dengan alasan tercatat, tanpa membaca data kesehatan. Pengguna dapat mengajukan penghapusan dengan masa jeda tiga hari. Selama masa jeda, hanya ekspor, pembatalan, dan logout yang tersedia; hanya pengguna yang dapat membatalkan.
 
 Penghapusan data aktif dan kedaluwarsa backup mengikuti proses berbeda sebagaimana Kebijakan Privasi.
 

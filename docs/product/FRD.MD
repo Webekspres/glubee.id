@@ -204,7 +204,7 @@ Jika dan hanya jika feature gate aktif setelah persetujuan: pengguna mengonfirma
 Status: DISEPAKATI. Tautan: `BR-RULE-009` sampai `BR-RULE-012`.
 
 - Pengguna melakukan re-authentication dan konfirmasi berisiko tinggi sebelum mengajukan.
-- Sistem menetapkan `scheduled_for = requested_at + 7 hari`, menonaktifkan aktivitas/pengingat, membatalkan job belum terkirim, dan memberi tahu admin tanpa hak veto.
+- Sistem menetapkan `scheduled_for = requested_at + 3 hari`, menonaktifkan aktivitas/pengingat, membatalkan job belum terkirim, dan memberi tahu admin tanpa hak veto.
 - Selama grace period, pengguna hanya dapat mengunduh data, membatalkan, atau logout.
 - Pembatalan hanya oleh pengguna setelah re-authentication; layanan kembali aktif tanpa mengirim ulang job lama.
 

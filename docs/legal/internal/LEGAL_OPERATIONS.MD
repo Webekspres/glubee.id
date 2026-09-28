@@ -47,7 +47,7 @@ Alur minimum:
 6. Jawab melalui kanal terverifikasi dan simpan bukti tindakan.
 7. Eskalasi sengketa atau keterlambatan.
 
-SLA hukum final harus diisi dari nasihat hukum yang berlaku; jangan mengarang tenggat. Pengguna tetap dapat memakai penghapusan self-service tujuh hari sesuai FRD.
+SLA hukum final harus diisi dari nasihat hukum yang berlaku; jangan mengarang tenggat. Pengguna tetap dapat memakai penghapusan self-service tiga hari sesuai FRD.
 
 ## 6. Operasi penghapusan
 
@@ -141,7 +141,7 @@ Review hukum wajib memutuskan:
 - kewajiban petugas/pejabat pelindungan data bila berlaku;
 - mekanisme hak subjek, pengaduan, dan notifikasi insiden;
 - implikasi penggunaan istilah/fitur kesehatan dan perlindungan konsumen;
-- validitas masa jeda tujuh hari dan retensi bukti/backup.
+- validitas masa jeda tiga hari (diturunkan dari tujuh hari pada 28 September 2026 agar sejalan dengan tenggat 3×24 jam UU PDP Pasal 40 dan PP 33/2026 yang berlaku 16 Januari 2027) dan retensi bukti/backup.
 
 Sebutan "Pelayanan Kesehatan" dari data registrasi domain bukan bukti izin fasilitas atau kewenangan medis.
 

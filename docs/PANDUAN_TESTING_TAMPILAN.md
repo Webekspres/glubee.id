@@ -160,7 +160,7 @@ Pastikan server lokal sudah berjalan di terminal:
        - Persetujuan Pemrosesan Data Kesehatan Pribadi
      - Setiap item mencantumkan status keputusan `ACCEPT`, versi dokumen aktif, metode pendaftaran, dan tanggal/jam pencatatan di server.
   3. **Pengaturan Cookie**: Terdapat tombol untuk membuka kembali pengaturan cookie kapan saja.
-  4. **Hak Penghapusan Akun**: Informasi mengenai masa jeda perlindungan 7 hari sebelum data dihapus permanen.
+  4. **Hak Penghapusan Akun**: Informasi mengenai masa jeda perlindungan 3 hari sebelum data dihapus permanen.
 
 ---
 

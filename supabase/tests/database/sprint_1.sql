@@ -130,11 +130,11 @@ select throws_ok(
   'third active or pending contact is rejected'
 );
 select lives_ok(
-  $$insert into public.deletion_requests (user_id, scheduled_for) values ('10000000-0000-0000-0000-000000000001', now() + interval '7 days')$$,
+  $$insert into public.deletion_requests (user_id, scheduled_for) values ('10000000-0000-0000-0000-000000000001', now() + interval '3 days')$$,
   'first active deletion request is allowed'
 );
 select throws_ok(
-  $$insert into public.deletion_requests (user_id, scheduled_for) values ('10000000-0000-0000-0000-000000000001', now() + interval '7 days')$$,
+  $$insert into public.deletion_requests (user_id, scheduled_for) values ('10000000-0000-0000-0000-000000000001', now() + interval '3 days')$$,
   '23505',
   'duplicate key value violates unique constraint "deletion_requests_one_active_idx"',
   'second active deletion request is rejected'

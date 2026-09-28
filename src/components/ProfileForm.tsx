@@ -217,7 +217,7 @@ export function ProfileForm({
               Pengaturan Cookie
             </button>
             <p className="small muted">
-              Penghapusan akun memiliki masa jeda 7 hari. Fitur pengajuan dan
+              Penghapusan akun memiliki masa jeda 3 hari. Fitur pengajuan dan
               ekspor akun dijadwalkan pada Sprint 3. Untuk permintaan hak data
               atau penarikan persetujuan, lihat kanal pengelola pada{" "}
               <a href="/privacy">Kebijakan Privasi</a>.

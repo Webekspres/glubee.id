@@ -90,7 +90,7 @@ Admin aplikasi tidak dapat membaca catatan gula darah atau laporan pengguna. Aks
 
 ## 9. Retensi dan penghapusan
 
-Data aktif disimpan selama akun aktif dan diperlukan untuk tujuan yang dijelaskan. Pengguna dapat meminta penghapusan akun dengan masa jeda tujuh hari:
+Data aktif disimpan selama akun aktif dan diperlukan untuk tujuan yang dijelaskan. Pengguna dapat meminta penghapusan akun dengan masa jeda tiga hari:
 
 - selama masa jeda, pencatatan dan pengingat dihentikan;
 - pengguna hanya dapat mengunduh data, membatalkan permintaan, atau keluar;

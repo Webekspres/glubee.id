@@ -107,7 +107,7 @@ Tombol tidak boleh memakai kata "aman". Request memakai idempotency key.
 
 Momen: setelah re-authentication.
 
-> Akun Anda dijadwalkan untuk dihapus tujuh hari setelah permintaan. Selama masa jeda, pencatatan, pengingat, dan notifikasi kontak dihentikan. Anda hanya dapat mengunduh data, membatalkan permintaan, atau keluar. Hanya Anda yang dapat membatalkan. Setelah tenggat, data aktif akan dihapus atau dianonimkan; salinan backup kedaluwarsa sesuai jadwal terpisah dan tidak selalu hilang seketika.
+> Akun Anda dijadwalkan untuk dihapus tiga hari (3×24 jam) setelah permintaan. Selama masa jeda, pencatatan, pengingat, dan notifikasi kontak dihentikan. Anda hanya dapat mengunduh data, membatalkan permintaan, atau keluar. Hanya Anda yang dapat membatalkan. Setelah tenggat, data aktif akan dihapus atau dianonimkan; salinan backup kedaluwarsa sesuai jadwal terpisah dan tidak selalu hilang seketika.
 
 Konfirmasi wajib menampilkan tanggal/jam lokal dan UTC yang tepat.
 
