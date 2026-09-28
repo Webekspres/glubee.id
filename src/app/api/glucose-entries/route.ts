@@ -105,8 +105,25 @@ export async function GET(request: Request) {
   const hasMore = rows.length > limit;
   const page = rows.slice(0, limit);
   const last = page.at(-1);
-  return success(page, 200, {
-    nextCursor:
-      hasMore && last ? encodeCursor(last.measured_at, last.id) : null,
-  });
+  // Pengganti bisa berada di luar halaman/periode yang dimuat, jadi dicek ke DB.
+  const invalidIds = page
+    .filter((e) => e.status === "invalid")
+    .map((e) => e.id);
+  const replaced = new Set<string>();
+  if (invalidIds.length) {
+    const { data: replacements, error: replacementError } = await auth.supabase
+      .from("glucose_entries")
+      .select("replacement_for_id")
+      .in("replacement_for_id", invalidIds);
+    if (replacementError) return safeDatabaseFailure();
+    for (const r of replacements ?? []) replaced.add(r.replacement_for_id);
+  }
+  return success(
+    page.map((e) => ({ ...e, has_replacement: replaced.has(e.id) })),
+    200,
+    {
+      nextCursor:
+        hasMore && last ? encodeCursor(last.measured_at, last.id) : null,
+    },
+  );
 }

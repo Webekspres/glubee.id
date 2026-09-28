@@ -34,6 +34,9 @@ export function EntryTable({
     [error, setError] = useState<unknown>(null),
     [reason, setReason] = useState("");
   const key = useRef("");
+  const replaced = (e: Entry) =>
+    Boolean(e.has_replacement) ||
+    entries.some((other) => other.replacement_for_id === e.id);
 
   function open(e: Entry) {
     key.current = crypto.randomUUID();
@@ -81,9 +84,7 @@ export function EntryTable({
       {/* Mobile-first touch friendly interactive cards */}
       <div className="mobile-entry-cards" role="list">
         {entries.map((e) => {
-          const hasReplacement = entries.some(
-            (other) => other.replacement_for_id === e.id,
-          );
+          const hasReplacement = replaced(e);
           const icon = CONTEXT_ICONS[e.measurement_context] ?? "📝";
           return (
             <div
@@ -223,9 +224,7 @@ export function EntryTable({
                   )}
                 </td>
                 <td>
-                  {!entries.some(
-                    (other) => other.replacement_for_id === e.id,
-                  ) && (
+                  {!replaced(e) && (
                     <button
                       className="text-button small"
                       onClick={() => open(e)}

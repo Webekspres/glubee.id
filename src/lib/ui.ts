@@ -36,6 +36,7 @@ export type Entry = {
   invalidated_at: string | null;
   invalidation_reason: string | null;
   replacement_for_id: string | null;
+  has_replacement?: boolean;
 };
 export type Receipt = {
   id: string;
