@@ -121,7 +121,7 @@ export function Records({
   }).format(new Date());
 
   return (
-    <div className="stack app-dashboard">
+    <div className={"stack app-dashboard" + (history ? " is-history" : "")}>
       {!history && (
         <div className="mobile-app-header">
           <div className="mobile-app-greeting">
@@ -130,9 +130,9 @@ export function Records({
             </div>
             <div className="mobile-user-text">
               <span className="mobile-greeting-sub">{todayFormatted}</span>
-              <h2 className="mobile-greeting-name">
+              <h1 className="mobile-greeting-name">
                 Halo, {profile.name || "Pengguna"}
-              </h2>
+              </h1>
             </div>
           </div>
           <button

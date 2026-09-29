@@ -54,7 +54,7 @@ SLA hukum final harus diisi dari nasihat hukum yang berlaku; jangan mengarang te
 - Monitor request due dan overdue setiap hari.
 - Admin hanya melihat status; tidak memiliki kontrol cancel/defer.
 - Pada request: stop schedule/job baru, suppress queue, revoke active session sesuai desain, dan kirim receipt.
-- Pada hari ketujuh: eksekusi idempotent, hapus/anonymize data aktif, cabut subscription/token, hapus export, dan buat tombstone minimum.
+- Setelah masa jeda tiga hari (3×24 jam) berakhir: eksekusi idempotent, hapus/anonymize data aktif, cabut subscription/token, hapus export, dan buat tombstone minimum.
 - Catat kategori berhasil/gagal tanpa nilai kesehatan.
 - Reconcile tombstone setelah setiap restore.
 - Jadwal backup expiry didokumentasikan; backup tidak dipakai untuk operasi normal setelah deletion.

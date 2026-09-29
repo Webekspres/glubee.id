@@ -41,7 +41,7 @@ export default function Home() {
           />
           <div className="panel stack">
             <div className="section-heading">
-              <h3>Perjalanan pencatatan Anda</h3>
+              <h2 className="hero-card-title">Perjalanan pencatatan Anda</h2>
               <span className="badge">Ilustrasi</span>
             </div>
             <svg

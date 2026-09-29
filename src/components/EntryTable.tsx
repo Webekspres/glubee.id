@@ -87,8 +87,8 @@ export function EntryTable({
           const hasReplacement = replaced(e);
           const icon = CONTEXT_ICONS[e.measurement_context] ?? "📝";
           return (
+            <div key={e.id} role="listitem">
             <div
-              key={e.id}
               className={`mobile-entry-card ${e.status === "invalid" ? "is-invalid" : ""}`}
               onClick={() => {
                 if (!hasReplacement) open(e);
@@ -163,6 +163,7 @@ export function EntryTable({
                   </span>
                 )}
               </div>
+            </div>
             </div>
           );
         })}
