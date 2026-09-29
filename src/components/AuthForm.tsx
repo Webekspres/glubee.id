@@ -309,23 +309,21 @@ export function AuthForm({ mode }: { mode: Mode }) {
               </a>
             </>
           )}
-          <p className="small muted">
+          <div className="small muted auth-links">
             {mode === "login" ? (
               <>
                 <Link href="/register">Belum punya akun? Daftar</Link>
-                <br />
                 <Link href="/auth/verify">Kirim ulang email verifikasi</Link>
               </>
             ) : mode === "resend" ? (
               <>
                 <Link href="/register">Salah memasukkan email? Daftar kembali</Link>
-                <br />
                 <Link href="/login">Sudah verifikasi? Masuk ke akun</Link>
               </>
             ) : (
               <Link href="/login">Kembali ke halaman masuk</Link>
             )}
-          </p>
+          </div>
         </form>
       </section>
     </main>

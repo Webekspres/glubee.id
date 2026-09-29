@@ -33,7 +33,7 @@ export default function Home() {
         <div className="hero-visual" aria-label="Ilustrasi pencatatan">
           <Image
             className="mascot hero-mascot"
-            src="/brand/mascot-hero.png"
+            src="/brand/mascot-hero.webp"
             alt=""
             width={156}
             height={188}

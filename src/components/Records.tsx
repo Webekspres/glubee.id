@@ -159,7 +159,7 @@ export function Records({
           {!history && (
             <Image
               className="mascot"
-              src="/brand/mascot-hero.png"
+              src="/brand/mascot-hero.webp"
               alt=""
               width={156}
               height={188}

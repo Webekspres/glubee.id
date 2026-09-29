@@ -490,6 +490,12 @@ legend {
   border: 1px solid;
   font-size: 14px;
 }
+.auth-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
 .field-error,
 .field .field-error {
   display: block;
