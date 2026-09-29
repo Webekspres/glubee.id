@@ -295,10 +295,13 @@ test("Sprint 2 user journey, isolation, three zones, PDF and privacy", async ({
       () => document.documentElement.scrollWidth <= window.innerWidth,
     ),
   ).toBe(true);
-  await page.getByRole("button", { name: "Buka menu navigasi", exact: true }).click();
+  // Di mobile navigasi hanya lewat tab bar bawah; menu header disembunyikan.
   await expect(
-    page.getByRole("navigation", { name: "Navigasi utama" }),
+    page.getByRole("navigation", { name: "Navigasi Bawah" }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Buka menu navigasi", exact: true }),
+  ).toBeHidden();
   await page.goto("/reports");
   await selectFixtureRange(page);
   const downloadPromise = page.waitForEvent("download");
@@ -327,7 +330,6 @@ test("Sprint 2 user journey, isolation, three zones, PDF and privacy", async ({
   await expect(
     page.getByRole("heading", { name: "Bukti persetujuan", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Buka menu navigasi", exact: true }).click();
   await page.getByRole("button", { name: "Keluar", exact: true }).click();
   await expect(page).toHaveURL(/\/login/);
   await page.getByLabel("Email", { exact: true }).fill(email);

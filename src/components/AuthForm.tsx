@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { APP_CONFIG } from "@/lib/config";
 import { accountDestination, api } from "@/lib/ui";
 import { ConsentFields, consentFields } from "./ConsentFields";
-import { ErrorMessage } from "./Ui";
+import { ErrorMessage, useFieldErrors } from "./Ui";
 
 type Mode =
   | "login"
@@ -50,6 +50,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
     : null;
 
   const fieldId = useId();
+  const v = useFieldErrors();
   const [busy, setBusy] = useState(false),
     [error, setError] = useState<unknown>(null),
     [message, setMessage] = useState(""),
@@ -70,18 +71,23 @@ export function AuthForm({ mode }: { mode: Mode }) {
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy) return;
+    const f = new FormData(e.currentTarget);
+    const mismatch =
+      (mode === "register" || mode === "update-password") &&
+      f.get("password") !== f.get("passwordConfirmation");
+    if (
+      !v.check(
+        e.currentTarget,
+        mismatch ? { passwordConfirmation: "Konfirmasi password tidak sama." } : {},
+      )
+    )
+      return;
     setBusy(true);
     setError(null);
     setMessage("");
-    const f = new FormData(e.currentTarget);
     const body: Record<string, unknown> = Object.fromEntries(f);
     for (const [name] of consentFields) body[name] = f.get(name) === "on";
     try {
-      if (
-        (mode === "register" || mode === "update-password") &&
-        body.password !== body.passwordConfirmation
-      )
-        throw new Error("Konfirmasi password tidak sama.");
       const result = await api<{ accountStatus?: string; message?: string }>(
         "/api/auth/" + mode,
         { method: "POST", body: JSON.stringify(body) },
@@ -132,7 +138,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
                 ? "Konfirmasi email pendaftaran"
                 : "Pemulihan password"}
         </h2>
-        <form className="form" onSubmit={submit}>
+        <form
+          className="form"
+          noValidate
+          onSubmit={submit}
+          onInput={(e) => v.clear(e.target)}
+          onChange={(e) => v.clear(e.target)}
+        >
           <ErrorMessage error={error ?? queryError} />
           {mode === "resend" && queryEmail && (
             <div className="verify-banner">
@@ -162,24 +174,27 @@ export function AuthForm({ mode }: { mode: Mode }) {
             </p>
           )}
           {mode !== "update-password" && (
-            <label className="field">
-              Email
+            <div className="field">
+              <label htmlFor={`${fieldId}-email`}>Email</label>
               <input
+                id={`${fieldId}-email`}
                 name="email"
                 type="email"
                 autoComplete="email"
                 maxLength={254}
                 required
                 defaultValue={mode === "resend" && queryEmail ? queryEmail : ""}
+                {...v.field("email", mode === "resend" ? `${fieldId}-email-hint` : undefined)}
               />
+              {v.error("email")}
               {mode === "resend" && (
-                <small>
+                <small id={`${fieldId}-email-hint`}>
                   {queryEmail
                     ? "Tekan tombol di bawah jika email konfirmasi belum masuk setelah beberapa saat."
                     : "Masukkan email yang Anda gunakan saat mendaftar untuk meminta tautan baru."}
                 </small>
               )}
-            </label>
+            </div>
           )}
           {["login", "register", "update-password"].includes(mode) && (
             <div className="field">
@@ -188,7 +203,6 @@ export function AuthForm({ mode }: { mode: Mode }) {
               <div className="input-group">
                 <input
                   id={`${fieldId}-password`}
-                  aria-describedby={`${fieldId}-password-hint`}
                   name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete={
@@ -196,6 +210,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
                   }
                   minLength={8}
                   required
+                  {...v.field("password", `${fieldId}-password-hint`)}
                 />
                 <button
                   type="button"
@@ -207,6 +222,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
                 </button>
               </div>
               <small id={`${fieldId}-password-hint`}>Minimal 8 karakter.</small>
+              {v.error("password")}
             </div>
           )}
           {["register", "update-password"].includes(mode) && (
@@ -222,6 +238,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
                   autoComplete="new-password"
                   minLength={8}
                   required
+                  {...v.field("passwordConfirmation")}
                 />
                 <button
                   type="button"
@@ -238,21 +255,27 @@ export function AuthForm({ mode }: { mode: Mode }) {
                   {showPasswordConfirmation ? "Sembunyikan" : "Lihat"}
                 </button>
               </div>
+              {v.error("passwordConfirmation")}
             </div>
           )}
           {mode === "register" && (
             <>
-              <label className="field">
-                Tanggal lahir
+              <div className="field">
+                <label htmlFor={`${fieldId}-birth`}>Tanggal lahir</label>
                 <input
+                  id={`${fieldId}-birth`}
                   type="date"
                   name="birthDate"
                   autoComplete="bday"
                   required
+                  {...v.field("birthDate", `${fieldId}-birth-hint`)}
                 />
-                <small>Layanan untuk usia 18 tahun ke atas.</small>
-              </label>
-              <ConsentFields />
+                {v.error("birthDate")}
+                <small id={`${fieldId}-birth-hint`}>
+                  Layanan untuk usia 18 tahun ke atas.
+                </small>
+              </div>
+              <ConsentFields validation={v} />
             </>
           )}
           {mode === "login" && (

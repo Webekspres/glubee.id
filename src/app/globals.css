@@ -465,11 +465,13 @@ td strong {
   gap: 12px;
   align-items: flex-start;
   font-size: 14px;
+  padding: 6px 0;
+  cursor: pointer;
 }
 .check input {
-  width: 20px;
-  height: 20px;
-  margin-top: 3px;
+  width: 24px;
+  height: 24px;
+  margin: 0;
   flex-shrink: 0;
   accent-color: var(--accent);
 }
@@ -487,6 +489,16 @@ legend {
   border-radius: 8px;
   border: 1px solid;
   font-size: 14px;
+}
+.field-error,
+.field .field-error {
+  display: block;
+  color: var(--danger);
+  font-weight: 600;
+}
+[aria-invalid="true"] {
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 0 1px var(--danger);
 }
 .message.error {
   color: #7d2029;
@@ -921,8 +933,19 @@ legend {
 .mobile-bottom-bar {
   display: none;
 }
+.header-logout {
+  display: none !important;
+}
 
 @media (max-width: 768px) {
+  .header-logout {
+    display: inline-flex !important;
+  }
+  .site-header .menu-toggle,
+  .site-header .nav,
+  .nav-backdrop {
+    display: none !important;
+  }
   body {
     padding-bottom: env(safe-area-inset-bottom, 0);
   }
@@ -1058,17 +1081,11 @@ legend {
 
 /* Range Filter Mobile Segmented Pills */
 @media (max-width: 768px) {
+  /* Wrap ke baris kedua: scroll horizontal tanpa scrollbar menyembunyikan "Rentang tanggal". */
   .mobile-filter-wrapper .filters {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    flex-wrap: wrap;
     gap: 6px;
-    padding-bottom: 4px;
-    scrollbar-width: none;
-  }
-  .mobile-filter-wrapper .filters::-webkit-scrollbar {
-    display: none;
   }
   .mobile-filter-wrapper .filters .button {
     flex-shrink: 0;

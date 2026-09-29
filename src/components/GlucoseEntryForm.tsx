@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
 import {
   CONTEXT_LABELS,
   api,
@@ -8,7 +8,7 @@ import {
   type Entry,
   type Timezone,
 } from "@/lib/ui";
-import { ErrorMessage } from "./Ui";
+import { ErrorMessage, useFieldErrors } from "./Ui";
 
 export function GlucoseEntryForm({
   zone,
@@ -32,6 +32,8 @@ export function GlucoseEntryForm({
       : maxTime,
   );
 
+  const v = useFieldErrors();
+  const id = useId();
   const attempt = useRef<{ body: string; key: string } | null>(null);
 
   const refreshMax = () => {
@@ -40,7 +42,7 @@ export function GlucoseEntryForm({
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (busy) return;
+    if (busy || !v.check(e.currentTarget)) return;
     setBusy(true);
     onBusy?.(true);
     setError(null);
@@ -84,7 +86,13 @@ export function GlucoseEntryForm({
   }
 
   return (
-    <form className="form" onSubmit={submit}>
+    <form
+      className="form"
+      noValidate
+      onSubmit={submit}
+      onInput={(e) => v.clear(e.target)}
+      onChange={(e) => v.clear(e.target)}
+    >
       <ErrorMessage error={error} />
       {replacement && (
         <p className="notice">
@@ -93,9 +101,10 @@ export function GlucoseEntryForm({
         </p>
       )}
       <div className="form-row">
-        <label className="field">
-          Hasil pengukuran
+        <div className="field">
+          <label htmlFor={`${id}-value`}>Hasil pengukuran</label>
           <input
+            id={`${id}-value`}
             name="originalValue"
             type="number"
             inputMode="decimal"
@@ -103,8 +112,10 @@ export function GlucoseEntryForm({
             step="0.001"
             required
             defaultValue={replacement?.original_value}
+            {...v.field("originalValue")}
           />
-        </label>
+          {v.error("originalValue")}
+        </div>
         <label className="field">
           Satuan
           <select
@@ -116,12 +127,14 @@ export function GlucoseEntryForm({
           </select>
         </label>
       </div>
-      <label className="field">
-        Kondisi pengukuran
+      <div className="field">
+        <label htmlFor={`${id}-context`}>Kondisi pengukuran</label>
         <select
+          id={`${id}-context`}
           name="measurementContext"
           defaultValue={replacement?.measurement_context ?? ""}
           required
+          {...v.field("measurementContext", `${id}-context-hint`)}
         >
           <option value="" disabled>
             Pilih kondisi saat mengukur
@@ -132,14 +145,16 @@ export function GlucoseEntryForm({
             </option>
           ))}
         </select>
-        <small>
+        {v.error("measurementContext")}
+        <small id={`${id}-context-hint`}>
           Puasa: tanpa asupan kalori minimal 8 jam. Setelah makan: 2 jam setelah
           makan.
         </small>
-      </label>
-      <label className="field">
-        Waktu pengukuran ({zone})
+      </div>
+      <div className="field">
+        <label htmlFor={`${id}-time`}>Waktu pengukuran ({zone})</label>
         <input
+          id={`${id}-time`}
           name="measuredAt"
           type="datetime-local"
           defaultValue={time}
@@ -147,12 +162,14 @@ export function GlucoseEntryForm({
           onFocus={refreshMax}
           onClick={refreshMax}
           required
+          {...v.field("measuredAt", `${id}-time-hint`)}
         />
-        <small>
+        {v.error("measuredAt")}
+        <small id={`${id}-time-hint`}>
           Gunakan waktu pengukuran sebenarnya (maksimal waktu saat ini),
           termasuk untuk catatan sebelumnya.
         </small>
-      </label>
+      </div>
       <label className="field">
         Catatan tambahan <span className="muted small">Opsional</span>
         <textarea

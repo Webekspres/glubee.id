@@ -81,6 +81,11 @@ export function EntryTable({
 
   return (
     <>
+      {/* Satu keterangan untuk semua baris (FRD: "Status belum dievaluasi"), bukan diulang per catatan. */}
+      <p className="small muted">
+        Status belum dievaluasi. Glubee hanya menyimpan catatan, tidak menilai
+        apakah hasil termasuk normal.
+      </p>
       {/* Mobile-first touch friendly interactive cards */}
       <div className="mobile-entry-cards" role="list">
         {entries.map((e) => {
@@ -220,9 +225,6 @@ export function EntryTable({
                   >
                     {e.status === "invalid" ? "Ditandai salah" : "Aktif"}
                   </span>
-                  {e.status === "valid" && (
-                    <p className="small muted">Status belum dievaluasi</p>
-                  )}
                 </td>
                 <td>
                   {!replaced(e) && (

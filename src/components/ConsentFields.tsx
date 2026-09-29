@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { APP_CONFIG } from "@/lib/config";
+import type { useFieldErrors } from "./Ui";
 export const consentFields = [
   [
     "ageAndRegionAccepted",
@@ -17,7 +18,13 @@ export const consentFields = [
     "Saya memberikan persetujuan eksplisit kepada pengelola Glubee untuk memproses data gula darah, kondisi dan waktu pengukuran, catatan, jadwal, grafik, serta laporan saya guna menjalankan fitur pencatatan, pemantauan, pengingat, keamanan, dan dukungan layanan sebagaimana dijelaskan dalam Kebijakan Privasi. Saya memahami Glubee bukan alat diagnosis atau pengganti tenaga medis.",
   ],
 ] as const;
-export function ConsentFields({ needed }: { needed?: string[] }) {
+export function ConsentFields({
+  needed,
+  validation,
+}: {
+  needed?: string[];
+  validation?: ReturnType<typeof useFieldErrors>;
+}) {
   return (
     <fieldset className="form">
       <legend>Persetujuan layanan</legend>
@@ -41,10 +48,18 @@ export function ConsentFields({ needed }: { needed?: string[] }) {
       {consentFields
         .filter(([, type]) => !needed || needed.includes(type))
         .map(([name, , text]) => (
-          <label className="check" key={name}>
-            <input name={name} type="checkbox" required />
-            <span>{text}</span>
-          </label>
+          <div key={name}>
+            <label className="check">
+              <input
+                name={name}
+                type="checkbox"
+                required
+                {...validation?.field(name)}
+              />
+              <span>{text}</span>
+            </label>
+            {validation?.error(name)}
+          </div>
         ))}
     </fieldset>
   );

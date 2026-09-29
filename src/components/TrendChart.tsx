@@ -6,7 +6,9 @@ import {
   numberText,
   type Point,
   type Timezone,
+  ZONES,
 } from "@/lib/ui";
+import { timeTicks, valueAxis } from "@/lib/chart";
 export function TrendChart({
   points,
   zone,
@@ -26,14 +28,21 @@ export function TrendChart({
     );
   const minTime = new Date(points[0].measuredAt).valueOf(),
     maxTime = new Date(points.at(-1)!.measuredAt).valueOf();
-  const max = Math.max(...points.map((p) => p.valueMgDl)) * 1.15 || 1;
-  const x = (p: Point) =>
+  const axis = valueAxis(points.map((p) => p.valueMgDl));
+  const xAt = (time: number) =>
     maxTime === minTime
       ? 420
-      : 55 +
-        ((new Date(p.measuredAt).valueOf() - minTime) / (maxTime - minTime)) *
-          730;
-  const y = (p: Point) => 250 - (p.valueMgDl / max) * 210;
+      : 55 + ((time - minTime) / (maxTime - minTime)) * 730;
+  const x = (p: Point) => xAt(new Date(p.measuredAt).valueOf());
+  const yAt = (v: number) =>
+    250 - ((v - axis.min) / (axis.max - axis.min)) * 210;
+  const y = (p: Point) => yAt(p.valueMgDl);
+  const tickLabel = new Intl.DateTimeFormat(
+    "id-ID",
+    maxTime - minTime < 2 * 864e5
+      ? { hour: "2-digit", minute: "2-digit", timeZone: ZONES[zone] }
+      : { day: "numeric", month: "short", timeZone: ZONES[zone] },
+  );
   const describe = (p: Point) =>
     numberText(p.originalValue) +
     " " +
@@ -59,24 +68,24 @@ export function TrendChart({
           <text x="5" y="17" fill="#53686c" fontSize="11">
             mg/dL
           </text>
-          {[0, 0.25, 0.5, 0.75, 1].map((r) => (
-            <g key={r}>
+          {axis.ticks.map((v) => (
+            <g key={v}>
               <line
                 x1="55"
                 x2="800"
-                y1={250 - r * 210}
-                y2={250 - r * 210}
+                y1={yAt(v)}
+                y2={yAt(v)}
                 stroke="#d3e2dd"
                 strokeDasharray="4 4"
               />
               <text
                 x="44"
-                y={254 - r * 210}
+                y={yAt(v) + 4}
                 textAnchor="end"
                 fontSize="11"
                 fill="#53686c"
               >
-                {Math.round(max * r)}
+                {v}
               </text>
             </g>
           ))}
@@ -111,11 +120,28 @@ export function TrendChart({
               <title>{describe(p)}</title>
             </circle>
           ))}
-          <text x="55" y="281" fontSize="11" fill="#53686c">
-            {dateTime(points[0].measuredAt, zone)}
-          </text>
-          <text x="800" y="281" textAnchor="end" fontSize="11" fill="#53686c">
-            {dateTime(points.at(-1)!.measuredAt, zone)}
+          {timeTicks(minTime, maxTime, 5).map((t, i, all) => (
+            <text
+              key={t}
+              x={xAt(t)}
+              y="281"
+              textAnchor={
+                all.length === 1
+                  ? "middle"
+                  : i === 0
+                    ? "start"
+                    : i === all.length - 1
+                      ? "end"
+                      : "middle"
+              }
+              fontSize="11"
+              fill="#53686c"
+            >
+              {tickLabel.format(t)}
+            </text>
+          ))}
+          <text x="800" y="17" textAnchor="end" fontSize="11" fill="#53686c">
+            {zone}
           </text>
         </svg>
       </div>

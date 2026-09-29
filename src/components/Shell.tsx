@@ -139,6 +139,14 @@ export default function Shell({ children }: { children: ReactNode }) {
           </Link>
           {member ? (
             <>
+              {/* Di mobile navigasi ada di tab bar bawah; header cukup tombol Keluar. */}
+              <button
+                className="button quiet header-logout"
+                onClick={logout}
+                disabled={busy}
+              >
+                {busy ? "Keluar…" : "Keluar"}
+              </button>
               <button
                 className="button menu-toggle"
                 aria-expanded={menu}
