@@ -74,7 +74,7 @@ export function getSmtpConfig(): SmtpConfig {
 
   const fromName = process.env.SMTP_FROM_NAME || APP_CONFIG.name;
   const fromEmail = process.env.SMTP_FROM_EMAIL || "no-reply@glubee.id";
-  const replyTo = process.env.SMTP_REPLY_TO || "support@glubee.id";
+  const replyTo = process.env.SMTP_REPLY_TO || "glubeebuddy@gmail.com";
 
   return {
     host,

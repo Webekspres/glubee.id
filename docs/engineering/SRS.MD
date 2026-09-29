@@ -2,6 +2,7 @@
 
 Versi: 0.1-draft
 Status arsitektur: USULAN TEKNIS untuk review sebelum implementasi.
+Pembaruan terakhir: 29 September 2026 (sinkron dengan state production, GLB-045).
 
 ## 1. Sasaran teknis
 
@@ -69,9 +70,13 @@ Konfigurasi terpusat minimum:
 | Google dan Google Cloud Platform | `mk.webekspres@gmail.com` | Milik Webekspres; masih free tier. Dipakai untuk project GCP dan konfigurasi Google OAuth yang disetujui. |
 | GitHub user | `sultanwebekspres` | Milik Webekspres. |
 | GitHub organization | `webekspres` | Belum Enterprise; repository project sudah dibuat dan siap digunakan di organisasi ini. |
-| Vercel, Supabase, Brevo | Akun operasional Webekspres menggunakan `mk.webekspres@gmail.com`, kecuali diputuskan lain | Paket produksi dan biaya masih menunggu persetujuan. Vercel dan Supabase Cloud tidak dipakai untuk deployment per ADR-0001. |
+| Vercel, Supabase Cloud | Akun operasional Webekspres menggunakan `mk.webekspres@gmail.com` | Tidak dipakai untuk deployment per ADR-0001; tetap jalur keluar. |
+| Brevo (SMTP transaksional) | `glubeebuddy@gmail.com` | Aktif sejak 29 September 2026, paket Free (300 email/hari). Domain glubee.id terverifikasi. Paket produksi dan biaya masih menunggu persetujuan. |
+| Google OAuth (login) | Project GCP Webekspres | Aktif sejak 29 September 2026. Redirect URI `https://api.glubee.id/auth/v1/callback`. Consent screen wajib "In production" sebelum UAT. |
+| GCP untuk backup (rclone Drive API) | `developer@webekspres.co.id` | Diputuskan 24 September 2026, satu project untuk semua backup Webekspres. OAuth client belum dibuat (GLB-037). |
+| Cloudflare (DNS zona glubee.id) | Pemilik zona glubee.id | Token API hanya berizin DNS zona glubee.id, kedaluwarsa 1 Oktober 2026 dan tidak dapat memperbarui dirinya sendiri. TLS memakai Let's Encrypt webroot, tidak bergantung pada token. |
 | VPS Webekspres | Webekspres | Menjalankan Next.js + Supabase self-hosted Glubee bersama app production lain (ADR-0001). |
-| Google Drive (backup) | `mk.webekspres@gmail.com` | Menyimpan backup terenkripsi `backup website/glubee.id/`. |
+| Google Drive (backup) | Akun tujuan masih dikonfirmasi (sebelumnya `mk.webekspres@gmail.com`) | Direncanakan menyimpan backup terenkripsi `backup website/glubee.id/`; belum aktif (GLB-037). |
 | GHCR | Organisasi GitHub `webekspres` | Registry image aplikasi. |
 
 Password, recovery code, MFA secret, API key, service account key, dan token tidak boleh ditulis di repository atau dokumentasi. Akun vendor wajib mengaktifkan MFA dan memiliki recovery/ownership procedure. Free tier GCP maupun vendor lain hanya untuk development/evaluasi sampai kuota, syarat komersial, billing alert, DPA, lokasi data, backup, dan kesiapan produksi disetujui.
@@ -96,6 +101,12 @@ Status: USULAN TEKNIS.
 - Email autentikasi, undangan, pengingat, dan alert memakai subdomain/domain yang telah diverifikasi pada Brevo.
 - SPF dan DKIM wajib dikonfigurasi sesuai record Brevo; DMARC dimulai dengan kebijakan monitoring, ditinjau hasilnya, lalu diperketat setelah seluruh sender sah teridentifikasi.
 - Alamat tersebut belum dianggap aktif sebelum mailbox/forwarder, ownership, DNS, dan deliverability test selesai.
+
+Status 29 September 2026:
+
+- `no-reply@glubee.id` aktif melalui SMTP Brevo (GoTrue dan aplikasi). DNS: TXT `brevo-code`, DKIM `brevo1`/`brevo2._domainkey` (CNAME ke Brevo), DMARC `p=none; rua=mailto:rua@dmarc.brevo.com`. Tidak ada SPF apex; tidak wajib untuk Brevo karena envelope sender milik Brevo. Tambahkan SPF bila ada layanan lain yang mengirim atas nama glubee.id. Tes reset password live berhasil.
+- glubee.id belum memiliki MX, sehingga `support@glubee.id` dan `privacy@glubee.id` belum aktif. `Reply-To` dan kontak di template email memakai `glubeebuddy@gmail.com` (`SMTP_REPLY_TO`) sampai forwarder domain tersedia.
+- DMARC dinaikkan ke `quarantine` setelah laporan agregat bersih beberapa minggu.
 
 ## 4. Model data
 
@@ -265,6 +276,7 @@ Status: PENDING, default-off.
 - Security headers, CSP, validation upload/object, dependency scanning, secret scanning, dan audit log.
 - Re-authentication untuk deletion, export, serta perubahan keamanan akun.
 - Tidak ada PHI pada analytics pihak ketiga; analytics non-esensial perlu review dan consent terpisah.
+- Implementasi 29 September 2026: semua halaman mengirim `X-Frame-Options: DENY`, `Content-Security-Policy: frame-ancestors 'none'`, `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, dan `Permissions-Policy` (`next.config.ts`). nginx membatasi rate `/api/auth/` dan `POST /api/consents/cookie` per IP, serta memakai `proxy_buffer_size 16k` agar header cookie sesi OAuth tidak memicu 502. File nginx tidak ikut workflow Deploy; salin dan pasang manual (`deploy/README.md`). Meta `robots: noindex` aktif selama pratinjau dan dicabut saat go-live.
 - Threat model minimum: IDOR, RLS bypass, service-role leak, token replay, enumeration, CSRF, XSS pada note/nama, SSRF/provider webhook, job replay, backup leak, dan admin overreach.
 
 ### 11.1 Implementasi cookie consent
@@ -286,7 +298,7 @@ Metric minimum:
 - deletion due/failed/overdue;
 - backup age dan restore-drill age.
 
-Implementasi awal (ADR-0001, aktif sejak development): Healthchecks.io free memantau job backup (gagal atau tidak jalan), UptimeRobot free memantau `glubee.id`, `api.glubee.id/auth/v1/health`, masa berlaku SSL, dan domain. Alert email ke `mk.webekspres@gmail.com`. Kedua layanan tidak menerima data pengguna. Ketentuan penggunaan komersial paket free wajib diverifikasi sebelum go-live.
+Implementasi awal (ADR-0001; per 29 September 2026 belum aktif, GLB-037): Healthchecks.io free memantau job backup (gagal atau tidak jalan), UptimeRobot free memantau `glubee.id`, `api.glubee.id/auth/v1/health`, masa berlaku SSL, dan domain. Alert email ke `mk.webekspres@gmail.com`. Kedua layanan tidak menerima data pengguna. Ketentuan penggunaan komersial paket free wajib diverifikasi sebelum go-live.
 
 Log terstruktur memakai correlation ID, actor class, event type, object ID pseudonymous, dan outcome. Alert operasional tidak membawa nilai gula darah atau isi pesan. Akses log dibatasi dan memiliki retensi.
 
@@ -297,6 +309,7 @@ Log terstruktur memakai correlation ID, actor class, event type, object ID pseud
 - Pagination wajib untuk riwayat/audit; report besar tidak menahan request tanpa batas.
 - UI memenuhi WCAG 2.2 AA sebagai target: keyboard, focus, label, contrast, error association, reduced motion, dan grafik memiliki alternatif tabel.
 - Browser support final mengikuti analytics target; push bersifat enhancement, bukan satu-satunya pengingat.
+- Pengukuran 29 September 2026 (GLB-046): axe WCAG 2.1 AA pada 16 halaman di 1440 px dan 390 px tanpa pelanggaran. Lighthouse production halaman publik: performa mobile 85–90, desktop 100, aksesibilitas dan best practices 100, CLS 0. SEO 60–63 karena `noindex`.
 
 ## 14. Pengujian
 

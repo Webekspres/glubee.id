@@ -101,7 +101,7 @@ Semua task awal adalah Backlog atau Blocked. Dependency internal menjadi syarat 
 | GLB-021 | Implementasikan undangan dan persetujuan kontak darurat | 2026-10-13 | GLB-020 |
 | GLB-022 | Implementasikan pencabutan kontak dan suppression job | 2026-10-14 | GLB-021 |
 | GLB-023 | Implementasikan ekspor data portabel | 2026-10-15 | GLB-022, GLB-014 |
-| GLB-024 | Implementasikan penghapusan akun tujuh hari | 2026-10-16 | GLB-023 |
+| GLB-024 | Implementasikan penghapusan akun tiga hari | 2026-10-16 | GLB-023 |
 | GLB-025 | Implementasikan administrasi status akun | 2026-10-19 | GLB-024 |
 | GLB-026 | Review Sprint 3 dan QA notifikasi serta siklus akun | 2026-10-21 | GLB-025 |
 

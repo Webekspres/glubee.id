@@ -95,17 +95,20 @@ Account owner operasional yang disepakati adalah Webekspres: Google/GCP serta ak
 
 Per 9 September 2026: Vercel Hobby tidak sesuai untuk penggunaan komersial; Supabase Free dapat dijeda dan tidak menyediakan backup otomatis; Brevo Free dibatasi 300 email/hari. Batas harus diverifikasi ulang sebelum produksi.
 
-### 8.1 Register vendor per 24 September 2026 (ADR-0001)
+### 8.1 Register vendor per 29 September 2026 (ADR-0001)
 
 Keputusan teknis: [ADR-0001](../../engineering/adr/0001-self-host-supabase-on-vps.md). Vercel dan Supabase Cloud tidak dipakai untuk deployment.
 
 | Pemroses | Data | Lokasi/transfer | Status due diligence |
 |---|---|---|---|
 | VPS Webekspres (penyedia: Arvacloud, perlu dikonfirmasi) | Seluruh data akun dan kesehatan (DB, Auth), log aplikasi | Indonesia, Jakarta, tanpa transfer lintas negara untuk data utama | Belum: kontrak/ketentuan Arvacloud, enkripsi disk, dan daftar akses admin perlu dicatat. VPS dipakai bersama app production lain. |
-| Google Drive (`mk.webekspres@gmail.com`) | Backup DB terenkripsi `age`; Google tidak memegang kunci | Global (Google) | Belum: kebijakan akses akun, MFA, dan penyimpanan private key perlu dicatat. |
+| Google Drive (tujuan backup) | Backup DB terenkripsi `age`; Google tidak memegang kunci | Global (Google) | Belum aktif (GLB-037). Keputusan 24 September 2026: rclone memakai OAuth client project GCP akun `developer@webekspres.co.id`; akun Drive tujuan (sebelumnya `mk.webekspres@gmail.com`) masih dikonfirmasi. Kebijakan akses akun, MFA, dan penyimpanan private key perlu dicatat. |
 | GitHub / GHCR (`webekspres`) | Source code dan image aplikasi; tanpa data pengguna | Global (GitHub) | Tidak memproses data pribadi pengguna. |
-| Brevo | Alamat email dan isi email transaksional | [verifikasi] | Tetap seperti di atas. |
-| Healthchecks.io, UptimeRobot | Tidak ada data pengguna: hanya status job backup, URL publik, dan status HTTP | Global | Ketentuan komersial paket free wajib diverifikasi sebelum go-live. |
+| Brevo (akun `glubeebuddy@gmail.com`) | Alamat email dan isi email transaksional (verifikasi, reset password; nanti undangan/pengingat) | Brevo SAS, Prancis/Uni Eropa — lokasi pemrosesan dan subprocessor wajib diverifikasi | Aktif untuk SMTP production sejak 29 September 2026; domain glubee.id terverifikasi (DKIM, DMARC `p=none`). Paket Free 300 email/hari. Belum: DPA, MFA akun, dan kepemilikan akun (akun Glubee/klien) dicatat resmi. |
+| Google Identity (OAuth login) | Nama, email, dan ID akun Google saat pengguna memilih "Lanjutkan dengan Google" | Global (Google) | Aktif sejak 29 September 2026. OAuth client di project GCP Webekspres; consent screen perlu status "In production" sebelum UAT. |
+| Healthchecks.io, UptimeRobot | Tidak ada data pengguna: hanya status job backup, URL publik, dan status HTTP | Global | Belum aktif (GLB-037). Ketentuan komersial paket free wajib diverifikasi sebelum go-live. |
+
+Kontak pengguna sementara: email transaksional memakai `Reply-To: glubeebuddy@gmail.com` karena glubee.id belum memiliki MX; `support@glubee.id` dan `privacy@glubee.id` belum aktif.
 
 **TODO (legal review):** [PRIVACY_POLICY.MD](../public/PRIVACY_POLICY.MD) §7 masih menyebut Vercel dan Supabase sebagai penyedia. Teks publik belum diubah dan wajib diperbarui melalui review legal sebelum go-live.
 

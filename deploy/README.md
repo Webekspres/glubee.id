@@ -8,7 +8,7 @@ Keputusan arsitektur: [ADR-0001](../docs/engineering/adr/0001-self-host-supabase
 |---|---|
 | `docker-compose.yml` | `db` (Postgres 17), `auth` (GoTrue), `rest` (PostgREST), `app` (Next.js). Tanpa gateway, Studio, atau meta. |
 | `db/roles.sql`, `db/jwt.sql` | Init DB dari upstream Supabase; hanya jalan saat volume `db-data` masih kosong. |
-| `nginx/glubee.id.conf` | Proxy ke app + `limit_req` untuk `/api/auth/`. |
+| `nginx/glubee.id.conf` | Proxy ke app, `limit_req` untuk `/api/auth/` dan `POST /api/consents/cookie`, buffer header 16k untuk cookie sesi OAuth. |
 | `nginx/api.glubee.id.conf` | Pengganti gateway: path publik terbatas, path lain hanya dari subnet container. |
 | `.env.example` | Template `/opt/glubee/.env`. |
 | `generate-keys.sh` | Membuat password DB, `JWT_SECRET`, `ANON_KEY`, `SERVICE_ROLE_KEY`, `CRON_SECRET`. |
@@ -65,9 +65,20 @@ Dari internet hanya ini yang terbuka: `/auth/v1/health`, `/auth/v1/verify`, `/au
 
 Fitur baru yang memanggil Supabase langsung dari browser (realtime, OAuth provider lain, magic link) wajib menambah path-nya di `nginx/api.glubee.id.conf`.
 
+## Memperbarui konfigurasi nginx
+
+Workflow **Deploy** hanya mengganti image app; file nginx tidak ikut. Setelah `deploy/nginx/*.conf` berubah dan sudah di-push, jalankan di VPS (di luar jam puncak):
+
+```bash
+sudo curl -fsSL https://raw.githubusercontent.com/Webekspres/glubee.id/dev/deploy/nginx/glubee.id.conf -o /opt/glubee/nginx/glubee.id.conf
+sudo bash /opt/glubee/nginx/install.sh
+```
+
+Ganti `dev` dengan `main` setelah production dirilis dari `main`. Callback OAuth yang 502 biasanya berarti buffer header terlalu kecil (`upstream sent too big header` di `/var/log/nginx/error.log`).
+
 ## Rate limit
 
-- nginx: `glubee.id/api/auth/` 10 request/menit per IP (burst 5); path publik `api.glubee.id` 30/menit per IP (burst 10).
+- nginx: `glubee.id/api/auth/` 10 request/menit per IP (burst 5); `POST /api/consents/cookie` 10/menit per IP (burst 5); path publik `api.glubee.id` 30/menit per IP (burst 10).
 - GoTrue melihat semua panggilan server sebagai satu IP (container app), jadi limit per-IP-nya dilonggarkan. Limit email tetap 100/jam global untuk menjaga kuota Brevo.
 
 ## Backup

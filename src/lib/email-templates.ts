@@ -402,7 +402,7 @@ export function createContactInviteEmail(params: {
     importantNotice:
       `Sesuai UU Perlindungan Data Pribadi (UU PDP), Glubee tidak akan membagikan data riwayat kesehatan ${params.inviterName} kepada Anda sebelum Anda memberikan persetujuan eksplisit melalui tombol di atas.`,
     legalDisclaimer:
-      `Dikirim oleh Glubee.id atas inisiatif ${params.inviterName}. Hubungi support@glubee.id untuk bantuan dan informasi privasi.`,
+      `Dikirim oleh Glubee.id atas inisiatif ${params.inviterName}. Hubungi glubeebuddy@gmail.com untuk bantuan dan informasi privasi.`,
   };
 
   return { subject, html: renderEmailLayout(data) };
@@ -491,7 +491,7 @@ export function createPasswordResetEmail(params: {
     importantNotice:
       "Jika Anda TIDAK meminta perubahan kata sandi ini, segera abaikan email ini. Kata sandi lama Anda tetap aman dan tidak akan berubah tanpa persetujuan Anda.",
     legalDisclaimer:
-      "Notifikasi keamanan resmi dari Glubee.id (PT. Webekspres Teknologi Indonesia). Hubungi support@glubee.id jika Anda mencurigai aktivitas mencurigakan pada akun Anda.",
+      "Notifikasi keamanan resmi dari Glubee.id (PT. Webekspres Teknologi Indonesia). Hubungi glubeebuddy@gmail.com jika Anda mencurigai aktivitas mencurigakan pada akun Anda.",
   };
 
   return { subject, html: renderEmailLayout(data) };

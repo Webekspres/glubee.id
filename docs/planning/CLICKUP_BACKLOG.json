@@ -907,7 +907,7 @@
     },
     {
       "external_id": "GLB-024",
-      "name": "[GLB-024] Implementasikan penghapusan akun tujuh hari",
+      "name": "[GLB-024] Implementasikan penghapusan akun tiga hari",
       "list": "Sprint 3",
       "sprint": "S3",
       "type": "feature",
@@ -930,7 +930,7 @@
         "FR-DELETE-001",
         "FR-DELETE-002"
       ],
-      "description": "Implementasikan penghapusan akun tujuh hari. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
+      "description": "Implementasikan penghapusan akun tiga hari. Lingkup dan hasil penerimaan di bawah merupakan minimum; ikuti sumber kebutuhan dan keputusan PM terbaru.",
       "acceptance_criteria": [
         "Pengajuan menghentikan aktivitas/job; mode terbatas hanya ekspor, batal dan logout; admin diberi tahu tanpa hak veto.",
         "Pembatalan milik pengguna tidak mengirim ulang job lama; eksekusi setelah tenggat idempotent, membersihkan data sesuai retensi dan membuat tombstone; kegagalan terpantau."
