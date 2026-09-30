@@ -657,6 +657,117 @@ legend {
 .hero-visual .panel {
   box-shadow: 0 16px 40px #18342b0a;
 }
+.hero-preview {
+  display: grid;
+  gap: 14px;
+}
+.hero-preview p {
+  margin: 0;
+}
+.hero-preview-head {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  padding-right: 112px;
+}
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.hero-metric {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--tile);
+}
+.hero-metric.is-average {
+  background: var(--mustard);
+}
+.hero-metric span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.hero-metric.is-average span {
+  color: var(--abyss);
+}
+.hero-metric strong,
+.hero-entry-value {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.1;
+  color: var(--oxford);
+}
+.hero-metric small,
+.hero-entry-value small {
+  font-family: var(--text);
+  font-size: 11px;
+  font-weight: 700;
+}
+.hero-chart {
+  width: 100%;
+  height: auto;
+}
+.hero-chart .axis {
+  font-size: 11px;
+  fill: #53686c;
+}
+.hero-chart .axis.is-today {
+  font-weight: 700;
+  fill: var(--oxford);
+}
+.hero-chart .tip {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--mustard);
+}
+.hero-entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.hero-entries li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid var(--border);
+}
+.hero-entry-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--tile);
+  font-size: 15px;
+}
+.hero-entry-text {
+  display: grid;
+  flex: 1;
+  font-size: 13px;
+}
+.hero-entry-text small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.hero-entry-value {
+  font-size: 18px;
+}
+.hero-report {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--tile);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--oxford);
+}
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1364,6 +1475,9 @@ legend {
   }
   .hero-visual {
     margin-top: 28px;
+  }
+  .hero-preview-head {
+    padding-right: 72px;
   }
   .hero-visual .section-heading {
     padding-right: 64px;

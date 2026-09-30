@@ -1,3 +1,4 @@
+import { HeroPreview } from "@/components/HeroPreview";
 import { Mascot } from "@/components/Mascot";
 import Link from "next/link";
 import { APP_CONFIG } from "@/lib/config";
@@ -30,55 +31,9 @@ export default function Home() {
             Untuk usia 18+ · Data pribadi · WIB, WITA, WIT
           </p>
         </div>
-        <div className="hero-visual" aria-label="Ilustrasi pencatatan">
+        <div className="hero-visual">
           <Mascot width={150} className="hero-mascot" priority />
-          <div className="panel stack">
-            <div className="section-heading">
-              <h2 className="hero-card-title">Perjalanan pencatatan Anda</h2>
-              <span className="badge">Ilustrasi</span>
-            </div>
-            <svg
-              viewBox="0 0 400 170"
-              role="img"
-              aria-label="Ilustrasi grafik, bukan data pengguna"
-            >
-              <path
-                d="M10 40H390 M10 85H390 M10 130H390"
-                stroke="#d3e2dd"
-                strokeDasharray="4 5"
-              />
-              <path
-                d="M10 110L70 85L130 95L190 55L250 72L310 45L390 62"
-                fill="none"
-                stroke="#4d612d"
-                strokeWidth="3"
-              />
-              {[
-                [10, 110],
-                [70, 85],
-                [130, 95],
-                [190, 55],
-                [250, 72],
-                [310, 45],
-                [390, 62],
-              ].map(([x, y]) => (
-                <circle
-                  key={x}
-                  cx={x}
-                  cy={y}
-                  r="5"
-                  fill="#4d612d"
-                  stroke="white"
-                  strokeWidth="2"
-                />
-              ))}
-            </svg>
-            <div className="notice">
-              <strong>Catat. Tinjau. Bawa saat konsultasi.</strong>
-              <br />
-              Semua hasil pengukuran tersusun dalam satu tempat.
-            </div>
-          </div>
+          <HeroPreview />
         </div>
       </section>
       <p className="notice">{APP_CONFIG.disclaimer}</p>
