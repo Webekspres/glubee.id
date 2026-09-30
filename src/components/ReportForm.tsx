@@ -56,7 +56,6 @@ export function ReportForm({ profile }: { profile: Profile }) {
   return (
     <div className="narrow stack">
       <PageHeading
-        eyebrow="Siap dibawa saat konsultasi"
         title="Laporan pemantauan"
         description="Unduh ringkasan, grafik, dan catatan valid dalam satu PDF."
       />

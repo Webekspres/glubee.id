@@ -166,7 +166,12 @@ export function ProfileForm({
             <p className="small muted">
               Riwayat keputusan dan versi dokumen yang Anda setujui.
             </p>
-            <div className="table-scroll">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Tabel bukti persetujuan"
+            >
               <table>
                 <thead>
                   <tr>

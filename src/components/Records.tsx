@@ -1,5 +1,6 @@
 "use client";
 import { Mascot } from "./Mascot";
+import { Icon } from "./Icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -135,17 +136,10 @@ export function Records({
               </h1>
             </div>
           </div>
-          <button
-            className="button primary mobile-quick-add"
-            onClick={() => setModal(true)}
-          >
-            + Catat
-          </button>
         </div>
       )}
 
       <PageHeading
-        eyebrow={history ? "Riwayat pribadi" : "Catatan Anda, lebih terarah"}
         title={history ? "Riwayat pengukuran" : "Ringkasan Anda"}
         description={
           history
@@ -166,9 +160,7 @@ export function Records({
       </PageHeading>
 
       <div className="notice mobile-disclaimer-card" role="note">
-        <span className="disclaimer-icon" aria-hidden="true">
-          ℹ️
-        </span>
+        <Icon name="info" className="disclaimer-icon" />
         <p>{APP_CONFIG.disclaimer}</p>
       </div>
 
@@ -203,7 +195,7 @@ export function Records({
               {/* Responsive Hero Metrics Card */}
               <div className="hero-metric-card">
                 <div className="hero-metric-top">
-                  <span className="hero-metric-tag">Rata-rata Periode</span>
+                  <span className="hero-metric-tag">Rata-rata periode</span>
                   <span className="hero-metric-zone">
                     {profile.timezone_code}
                   </span>
@@ -228,7 +220,7 @@ export function Records({
                     </strong>
                   </div>
                   <div className="hero-subitem">
-                    <span className="hero-sub-label">Total Pengukuran</span>
+                    <span className="hero-sub-label">Total pengukuran</span>
                     <strong className="hero-sub-val">
                       {result.summary.count} catatan
                     </strong>
@@ -284,7 +276,7 @@ export function Records({
               </h2>
               {!history && (
                 <Link href="/history" className="small">
-                  Lihat riwayat →
+                  Lihat semua riwayat
                 </Link>
               )}
             </div>

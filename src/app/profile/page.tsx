@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <main id="main" className="container page">
       <div className="narrow">
-        <PageHeading eyebrow="Akun Anda" title="Profil & privasi" />
+        <PageHeading title="Profil & privasi" />
         <SessionGate onboarding={false}>
           {(profile) => <ProfileForm profile={profile} onboarding={false} />}
         </SessionGate>

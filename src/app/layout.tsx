@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Fraunces, Titan_One } from "next/font/google";
+import { Atkinson_Hyperlegible_Next, Fraunces, Titan_One } from "next/font/google";
 import "./globals.css";
 import Shell from "@/components/Shell";
 
@@ -15,6 +15,12 @@ const text = Fraunces({
   axes: ["SOFT", "opsz"],
   variable: "--font-text",
 });
+// Teks isi, label, dan angka kecil: Atkinson Hyperlegible dirancang untuk pembaca
+// dengan penglihatan menurun (umum pada diabetes). Fraunces tetap untuk judul bagian.
+const ui = Atkinson_Hyperlegible_Next({
+  subsets: ["latin"],
+  variable: "--font-ui",
+});
 
 export const metadata: Metadata = {
   title: "Glubee",
@@ -24,7 +30,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="id" className={display.variable + " " + text.variable}>
+    <html lang="id" className={[display.variable, text.variable, ui.variable].join(" ")}>
       <body>
         <Shell>{children}</Shell>
       </body>

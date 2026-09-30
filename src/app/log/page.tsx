@@ -10,7 +10,6 @@ export default function Page() {
     <main id="main" className="container page">
       <div className="narrow">
         <PageHeading
-          eyebrow="Pengukuran baru"
           title="Catat gula darah"
           description="Masukkan hasil yang tertera pada alat ukur Anda."
         />

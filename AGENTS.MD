@@ -97,3 +97,17 @@ Perubahan dianggap selesai jika:
 ## 8. Release gate
 
 Rilis publik terbatas hanya boleh dilakukan untuk fitur DISEPAKATI yang lulus QA dan UAT. Backend saja bukan produk publik siap digunakan. UAT berbeda dari QA teknis dan memerlukan minimal satu persetujuan eksplisit dari anggota tim penerima yang ditunjuk (Fasty Nazzala Gisty atau Jesslyn Jevoncia); pihak kedua tetap diupayakan dan dicatat (keputusan PM 9 September 2026). Sebelum go-live, selesaikan checklist `docs/legal/internal/LEGAL_OPERATIONS.MD`, kapasitas vendor, backup/restore drill, dan rollback drill.
+
+<!-- antislop:start -->
+## antislop
+For UI, copy, people, or mobile layout work, load the `antislop` skill (core) and then the skill for the task. Skills are installed globally in `~/.claude/skills/`:
+- UI / visual: `antislop-ui`
+- Copy & text: `antislop-copywriting`
+- People: `antislop-human`
+- Mobile / responsive: `antislop-layoutmobile`
+Design direction for Glubee: `docs/design/README.md` (client brief variant B); target users are people living with diabetes.
+Before starting, follow the core's "Two Usage Modes" section in strict order: explicit session instruction first, then global preference, then ask. A session instruction always wins. For a resolved mode, say `antislop active: <mode> (session override).` or `antislop active: <mode> (global preference).` once before presenting findings or making edits, using the actual mode and source. Acknowledging the user's request without naming the source does not replace this notice.
+Only an explicit choice of antislop during or after selects a session mode. A request to review, audit, or avoid file edits does not select a mode; read the global preference in that case. Another skill's mode does not select antislop's mode.
+If the mode is unresolved, ask during/after and end the response; wait for the answer before any UI review, planning, or concept. For read-only tasks, put the active-mode notice only at the start of the final answer, never in progress messages. For editing tasks, announce before the first edit and omit it from the final answer.
+To update antislop later: run `npx antislop-ai --update`.
+<!-- antislop:end -->

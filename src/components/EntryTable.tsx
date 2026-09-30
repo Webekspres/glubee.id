@@ -10,14 +10,16 @@ import {
 } from "@/lib/ui";
 import { Modal, ErrorMessage } from "./Ui";
 import { GlucoseEntryForm } from "./GlucoseEntryForm";
+import { HexIcon } from "./Icons";
 
-const CONTEXT_ICONS: Record<string, string> = {
-  fasting: "☀️",
-  before_meal: "🥗",
-  after_meal: "🍽️",
-  random: "⚡",
-  other: "📝",
-};
+
+// Badge hanya untuk status yang berbeda dari biasa; catatan aktif tidak perlu penanda.
+function StatusBadge({ entry }: { entry: Entry }) {
+  if (entry.status === "invalid")
+    return <span className="badge invalid">Ditandai salah</span>;
+  if (entry.replacement_for_id) return <span className="badge">Pengganti</span>;
+  return null;
+}
 
 export function EntryTable({
   entries,
@@ -90,7 +92,6 @@ export function EntryTable({
       <div className="mobile-entry-cards" role="list">
         {entries.map((e) => {
           const hasReplacement = replaced(e);
-          const icon = CONTEXT_ICONS[e.measurement_context] ?? "📝";
           return (
             <div key={e.id} role="listitem">
             <div
@@ -110,9 +111,7 @@ export function EntryTable({
             >
               <div className="mobile-card-top">
                 <div className="mobile-card-identity">
-                  <span className="mobile-card-icon" aria-hidden="true">
-                    {icon}
-                  </span>
+                  <HexIcon name={e.measurement_context} />
                   <div>
                     <h3 className="mobile-card-title">
                       {CONTEXT_LABELS[e.measurement_context]}
@@ -154,17 +153,11 @@ export function EntryTable({
               )}
 
               <div className="mobile-card-footer">
-                <span
-                  className={
-                    "badge" + (e.status === "invalid" ? " invalid" : "")
-                  }
-                >
-                  {e.status === "invalid" ? "Ditandai salah" : "Aktif"}
-                </span>
+                <StatusBadge entry={e} />
 
                 {!hasReplacement && (
                   <span className="mobile-card-action">
-                    {e.status === "valid" ? "Koreksi catatan →" : "Buat pengganti →"}
+                    {e.status === "valid" ? "Koreksi catatan" : "Buat pengganti"}
                   </span>
                 )}
               </div>
@@ -182,7 +175,6 @@ export function EntryTable({
               <th>Waktu pengukuran</th>
               <th>Hasil</th>
               <th>Kondisi / catatan</th>
-              <th>Status catatan</th>
               <th>Aksi</th>
             </tr>
           </thead>
@@ -204,7 +196,8 @@ export function EntryTable({
                   )}
                 </td>
                 <td>
-                  {CONTEXT_LABELS[e.measurement_context]}
+                  {CONTEXT_LABELS[e.measurement_context]}{" "}
+                  <StatusBadge entry={e} />
                   {e.note && <p className="entry-note small muted">{e.note}</p>}
                   {e.invalidation_reason && (
                     <p className="entry-note small">
@@ -216,15 +209,6 @@ export function EntryTable({
                       Pengganti catatan {e.replacement_for_id.slice(0, 8)}
                     </p>
                   )}
-                </td>
-                <td>
-                  <span
-                    className={
-                      "badge" + (e.status === "invalid" ? " invalid" : "")
-                    }
-                  >
-                    {e.status === "invalid" ? "Ditandai salah" : "Aktif"}
-                  </span>
                 </td>
                 <td>
                   {!replaced(e) && (

@@ -15,9 +15,15 @@
   --page: var(--prussian);
   --surface: #f7fbf9;
   --tile: #dcece6;
-  --radius: 18px;
+  /* Skala radius: kartu 16, kontrol 12, kecil 6; pil hanya untuk chip filter dan FAB. */
+  --radius: 16px;
+  --radius-control: 12px;
+  --radius-small: 6px;
   --display: var(--font-display), system-ui, sans-serif;
   --text: var(--font-text), Georgia, serif;
+  --ui: var(--font-ui), system-ui, sans-serif;
+  /* Motif sel madu dari tubuh maskot, dipakai untuk ikon kondisi dan penanda. */
+  --hex: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%);
 
   /* Token konteks: nilai di atas halaman navy. */
   --ink: #eaf3f1;
@@ -56,9 +62,9 @@ body {
   margin: 0;
   background: var(--page);
   color: var(--ink);
-  font-family: var(--text);
+  font-family: var(--ui);
   line-height: 1.6;
-  font-size: 16px;
+  font-size: 17px;
 }
 a {
   color: var(--accent);
@@ -96,6 +102,11 @@ h1 {
   font-size: clamp(1.85rem, 4vw, 2.6rem);
   line-height: 1.12;
   font-weight: 400;
+}
+h2,
+h3,
+.hero-card-title {
+  font-family: var(--text);
 }
 h2 {
   font-size: 1.35rem;
@@ -152,14 +163,12 @@ h3,
   margin: 0 -0.02em -0.06em;
 }
 .preview {
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  font-weight: 600;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 700;
   background: rgba(255, 255, 255, 0.1);
   color: var(--muted);
-  padding: 3px 7px;
-  border-radius: 5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-small);
 }
 .nav,
 .public-nav {
@@ -175,17 +184,19 @@ h3,
   color: #dbe6ea;
   font-size: 14px;
   text-decoration: none;
-  padding: 8px 14px;
-  border-radius: 999px;
+  padding: 10px 12px;
+  border-radius: var(--radius-small);
 }
 .nav a:hover {
   background: rgba(255, 255, 255, 0.08);
   text-decoration: none;
 }
+/* Halaman aktif: garis bawah kuning, bukan blok kuning, agar kuning tetap milik aksi utama. */
 .nav a[aria-current] {
-  background: var(--selective);
-  color: var(--oxford);
+  color: #fff;
   font-weight: 700;
+  box-shadow: inset 0 -3px 0 var(--selective);
+  border-radius: 0;
 }
 .menu-toggle {
   display: none !important;
@@ -196,7 +207,7 @@ h3,
   justify-content: center;
   gap: 8px;
   border: 1.5px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius-control);
   min-height: 44px;
   padding: 10px 20px;
   background: transparent;
@@ -214,7 +225,12 @@ h3,
   background: var(--selective);
   border-color: var(--selective);
   color: var(--oxford);
+  /* "Ledge" 3 px: tombol utama terasa bisa ditekan, satu-satunya bayangan tombol. */
   box-shadow: 0 3px 0 #c98d00;
+}
+.button.primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #c98d00;
 }
 .button.primary:hover {
   background: var(--mustard);
@@ -239,7 +255,7 @@ h3,
   background: var(--oxford);
   padding: 28px 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
 }
 .site-footer p + p {
   margin-top: 10px;
@@ -251,6 +267,11 @@ h3,
   align-items: center;
   gap: 24px;
   margin-top: 18px;
+}
+.footer-bottom nav a,
+.footer-bottom nav .text-button {
+  color: #dbe6ea;
+  text-decoration: underline;
 }
 .footer-bottom nav {
   display: flex;
@@ -281,7 +302,7 @@ h3,
   color: var(--muted);
 }
 .small {
-  font-size: 13px;
+  font-size: 15px;
 }
 .panel {
   min-width: 0;
@@ -322,7 +343,7 @@ h3,
   background: var(--mustard);
 }
 .metric dt {
-  font-size: 13px;
+  font-size: 14px;
 }
 .metric dt {
   font-weight: 700;
@@ -335,7 +356,7 @@ h3,
 }
 .metric dd span {
   font-family: var(--text);
-  font-size: 13px;
+  font-size: 14px;
   margin-left: 6px;
   font-weight: 700;
   letter-spacing: 0;
@@ -345,6 +366,10 @@ h3,
   gap: 8px;
   flex-wrap: wrap;
   align-items: end;
+}
+/* Chip filter tetap berbentuk pil: kelompok toggle, beda dari tombol aksi. */
+.filters .button {
+  border-radius: 999px;
 }
 .filters .button[aria-pressed="true"] {
   background: var(--mint);
@@ -378,7 +403,7 @@ table {
 }
 th {
   font-weight: 500;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   background: #f6f8f8;
   white-space: nowrap;
@@ -398,9 +423,9 @@ td strong {
 }
 .badge {
   display: inline-block;
-  border-radius: 999px;
-  padding: 3px 8px;
-  font-size: 11px;
+  border-radius: var(--radius-small);
+  padding: 2px 8px;
+  font-size: 14px;
   font-weight: 600;
   background: #d9eed2;
   color: #2f4a17;
@@ -452,6 +477,7 @@ td strong {
   min-height: 100px;
 }
 .field small {
+  font-size: 15px;
   font-weight: 400;
   color: var(--muted);
 }
@@ -550,7 +576,7 @@ legend {
   align-items: center;
   gap: 12px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
 }
 .divider:before,
 .divider:after {
@@ -598,7 +624,7 @@ legend {
   align-items: center;
 }
 .cookie-banner p {
-  font-size: 13px;
+  font-size: 14px;
   margin-top: 6px;
   max-width: 550px;
 }
@@ -606,21 +632,24 @@ legend {
   flex-shrink: 0;
   max-width: 370px;
 }
-.chart-scroll {
-  overflow-x: auto;
+.chart-box {
+  width: 100%;
 }
 .chart {
   width: 100%;
-  min-width: 840px;
   height: auto;
   display: block;
+}
+.chart-axis {
+  font-size: 13px;
+  fill: #53686c;
 }
 .chart circle {
   cursor: pointer;
 }
 .chart-detail {
   min-height: 40px;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
   margin-top: 12px;
 }
@@ -686,7 +715,7 @@ legend {
   background: var(--mustard);
 }
 .hero-metric span {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .hero-metric.is-average span {
@@ -703,7 +732,7 @@ legend {
 .hero-metric small,
 .hero-entry-value small {
   font-family: var(--text);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
 }
 .hero-chart {
@@ -711,7 +740,7 @@ legend {
   height: auto;
 }
 .hero-chart .axis {
-  font-size: 11px;
+  font-size: 14px;
   fill: #53686c;
 }
 .hero-chart .axis.is-today {
@@ -719,7 +748,7 @@ legend {
   fill: var(--oxford);
 }
 .hero-chart .tip {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   fill: var(--mustard);
 }
@@ -736,23 +765,14 @@ legend {
   padding: 9px 0;
   border-top: 1px solid var(--border);
 }
-.hero-entry-icon {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  background: var(--tile);
-  font-size: 15px;
-}
 .hero-entry-text {
   display: grid;
   flex: 1;
-  font-size: 13px;
+  font-size: 14px;
 }
 .hero-entry-text small {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
 }
 .hero-entry-value {
   font-size: 18px;
@@ -764,9 +784,229 @@ legend {
   padding: 10px 12px;
   border-radius: 12px;
   background: var(--tile);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--oxford);
+}
+.hero-lead {
+  margin-top: 20px;
+  font-size: 19px;
+  color: var(--muted);
+  max-width: 34em;
+}
+/* Bagian landing: tiap bagian punya komposisi sendiri. */
+.story {
+  padding: 72px 0;
+}
+.story-units {
+  background: var(--oxford);
+}
+.story-grid,
+.story-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+.story-split {
+  padding: 88px 0 40px;
+}
+.story-split.is-report {
+  grid-template-columns: 1.2fr 0.8fr;
+  padding: 72px 0 88px;
+}
+.story-copy h2 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  line-height: 1.2;
+  color: #fff;
+  margin-bottom: 14px;
+}
+.story-copy p {
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 32em;
+}
+.unit-demo {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+}
+.unit-value {
+  display: grid;
+  justify-items: center;
+  padding: 22px 12px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+}
+.unit-value strong {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(3rem, 7vw, 4.5rem);
+  line-height: 1;
+  color: #fff;
+}
+.unit-value span {
+  margin-top: 6px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.unit-value.is-result {
+  background: var(--mustard);
+  border-color: var(--mustard);
+}
+.unit-value.is-result strong,
+.unit-value.is-result span {
+  color: var(--oxford);
+}
+/* Tanda "sama dengan" berbentuk sel madu. */
+.unit-equals {
+  width: 34px;
+  height: 30px;
+  clip-path: var(--hex);
+  background: var(--mint);
+}
+.unit-demo figcaption {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 15px;
+}
+.fix-demo {
+  display: grid;
+  gap: 12px;
+}
+.fix-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--abyss);
+}
+.fix-row span {
+  display: grid;
+}
+.fix-row strong {
+  font-size: 20px;
+}
+.fix-row small {
+  font-size: 15px;
+  color: #53686c;
+}
+.fix-row.is-wrong {
+  background: transparent;
+  border: 2px dashed var(--border);
+  color: var(--muted);
+}
+.fix-row.is-wrong strong {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+.fix-row.is-wrong small {
+  color: var(--muted);
+}
+.fix-row.is-wrong .hex-icon {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--muted);
+}
+.zone-strip {
+  padding: 48px 0;
+  border-block: 1px solid var(--border);
+}
+.zone-strip h2 {
+  color: #fff;
+  font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+  margin-bottom: 20px;
+}
+.zone-strip ul {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.zone-strip li {
+  color: var(--muted);
+}
+.zone-strip li strong {
+  display: block;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 2rem;
+  color: var(--mustard);
+}
+.report-shot {
+  margin: 0;
+  justify-self: center;
+}
+.report-shot img {
+  width: min(100%, 360px);
+  height: auto;
+  border-radius: var(--radius-control);
+  transform: rotate(-2deg);
+  /* Satu-satunya bayangan besar di landing: kertas laporan terangkat dari latar. */
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+.report-shot figcaption {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 15px;
+  text-align: center;
+}
+.closing {
+  background: var(--tile);
+  color: var(--abyss);
+}
+.closing-inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 32px;
+  padding: 40px 0;
+}
+.closing h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--oxford);
+  margin-bottom: 6px;
+}
+.closing p {
+  color: #3d5256;
+}
+.closing .mascot {
+  filter: none;
+}
+@media (max-width: 760px) {
+  .story {
+    padding: 48px 0;
+  }
+  .story-grid,
+  .story-split,
+  .story-split.is-report {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 48px 0 16px;
+  }
+  .story-split.is-report {
+    padding-bottom: 48px;
+  }
+  .fix-demo {
+    order: 2;
+  }
+  .zone-strip ul {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .closing-inner {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 16px;
+  }
+  .closing .mascot {
+    width: 88px;
+  }
 }
 .feature-grid {
   display: grid;
@@ -837,7 +1077,7 @@ legend {
     gap: 12px;
   }
   .nav a {
-    font-size: 12px;
+    font-size: 14px;
   }
   .preview {
     display: none;
@@ -965,7 +1205,7 @@ legend {
   }
   .cookie-banner .button {
     padding: 9px 12px;
-    font-size: 12px;
+    font-size: 14px;
   }
   .section-heading {
     align-items: start;
@@ -1007,7 +1247,7 @@ legend {
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 5px 10px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--muted);
   cursor: pointer;
@@ -1030,8 +1270,9 @@ legend {
   margin-bottom: 8px;
 }
 .verify-icon {
-  font-size: 24px;
-  line-height: 1.2;
+  width: 28px;
+  height: 28px;
+  color: var(--teal);
   flex-shrink: 0;
 }
 .verify-banner strong {
@@ -1091,7 +1332,7 @@ legend {
     gap: 3px;
     color: var(--muted);
     text-decoration: none;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 600;
     width: 60px;
     transition: color 0.15s ease;
@@ -1151,7 +1392,7 @@ legend {
   }
   .mobile-greeting-sub {
     display: block;
-    font-size: 11px;
+    font-size: 14px;
     color: var(--muted);
     font-weight: 500;
   }
@@ -1162,13 +1403,6 @@ legend {
     line-height: 1.2;
     color: var(--mustard);
     margin: 0;
-  }
-  .mobile-quick-add {
-    flex-shrink: 0;
-    white-space: nowrap;
-    border-radius: 9999px;
-    padding: 8px 16px;
-    font-size: 13px;
   }
   /* On mobile, simplify the desktop page-heading so greeting takes priority */
   .app-dashboard:not(.is-history) .page-heading {
@@ -1184,13 +1418,38 @@ legend {
   padding: 12px 16px;
   border-radius: 12px;
   background: var(--tile);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.45;
 }
 .disclaimer-icon {
-  font-size: 16px;
+  width: 20px;
+  height: 20px;
+  color: var(--teal);
   flex-shrink: 0;
-  margin-top: 1px;
+  margin-top: 2px;
+}
+.icon {
+  width: 1.25em;
+  height: 1.25em;
+  flex-shrink: 0;
+}
+/* Sel madu: bentuk tubuh maskot, penanda kondisi pengukuran. */
+.hex-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 38px;
+  clip-path: var(--hex);
+  background: var(--tile);
+  color: var(--moss);
+  flex-shrink: 0;
+}
+.hex-icon .icon {
+  width: 20px;
+  height: 20px;
+}
+.mobile-card-action {
+  margin-left: auto;
 }
 .mobile-disclaimer-card p {
   margin: 0;
@@ -1208,7 +1467,7 @@ legend {
     flex-shrink: 0;
     border-radius: 9999px;
     padding: 8px 14px;
-    font-size: 13px;
+    font-size: 14px;
   }
 }
 
@@ -1219,23 +1478,7 @@ legend {
   padding: 22px 24px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   margin-bottom: 8px;
-}
-.hero-metric-card::after {
-  content: "";
-  position: absolute;
-  right: -30px;
-  bottom: -30px;
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0) 70%
-  );
-  border-radius: 50%;
-  pointer-events: none;
 }
 .hero-metric-top {
   display: flex;
@@ -1246,14 +1489,13 @@ legend {
 .hero-metric-tag {
   background: var(--oxford);
   color: var(--mustard);
-  padding: 4px 10px;
-  border-radius: 9999px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  padding: 3px 10px;
+  border-radius: var(--radius-small);
+  font-size: 14px;
+  font-weight: 700;
 }
 .hero-metric-zone {
-  font-size: 12px;
+  font-size: 14px;
   opacity: 0.85;
 }
 .hero-metric-focal {
@@ -1284,10 +1526,7 @@ legend {
   flex-direction: column;
 }
 .hero-sub-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  opacity: 0.75;
+  font-size: 14px;
   margin-bottom: 3px;
 }
 .hero-sub-val {
@@ -1361,7 +1600,7 @@ legend {
   color: var(--ink);
 }
 .mobile-card-time {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   margin: 2px 0 0 0;
 }
@@ -1375,14 +1614,14 @@ legend {
   line-height: 1.1;
 }
 .mobile-card-unit {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--muted);
   margin-left: 3px;
 }
 .mobile-card-equiv {
   display: block;
-  font-size: 10px;
+  font-size: 14px;
   color: var(--muted);
 }
 .mobile-card-details {
@@ -1395,12 +1634,12 @@ legend {
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .mobile-card-action {
   color: var(--accent);
   font-weight: 600;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 @media (max-width: 768px) {

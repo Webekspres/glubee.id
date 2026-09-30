@@ -30,3 +30,15 @@ Token warna ada di `:root` pada `src/app/globals.css`. Permukaan terang (`.panel
 - **Jadwal perawatan dan pengingat** di dashboard mockup. Fiturnya masuk scope (BRD Modul 2, FRD §6), dijadwalkan Sprint 3.
 - **Ekspresi status** sudah tersedia (`mascot-safe`, `mascot-high`, `mascot-low`, `mascot-danger` .webp) tetapi belum ditampilkan sampai evaluasi nilai (GLB-P01) disetujui.
 - **Aset final lain.** Setelah diterima: ganti file font lewat `next/font/local` di `src/app/layout.tsx` dan logo di komponen `Wordmark`.
+
+## Perbaikan antislop (30 September 2026)
+
+Detail dan alasan: [`anti-slop/audit-001-2026-09-30.md`](../../anti-slop/audit-001-2026-09-30.md).
+
+- **Font teks:** Atkinson Hyperlegible Next untuk isi, label, dan angka kecil (dirancang untuk penglihatan menurun). Titan One untuk judul besar dan angka utama, Fraunces untuk judul bagian.
+- **Ukuran:** isi 17 px, petunjuk form 15 px, minimum 14 px; label tanpa huruf kapital semua.
+- **Radius:** kartu 16 px, tombol/input 12 px, badge 6 px; pil hanya chip filter dan FAB.
+- **Motif:** sel madu heksagonal dari tubuh maskot (`--hex`) untuk ikon kondisi pengukuran (`src/components/Icons.tsx`).
+- **Aksen kuning:** aksi utama dan angka utama; nav aktif memakai garis bawah.
+- **Dial:** ENERGY 2 / RHYTHM 2 (landing), RHYTHM 1 (aplikasi), MOTION 1.
+

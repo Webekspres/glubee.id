@@ -13,6 +13,7 @@ import { accountDestination, api } from "@/lib/ui";
 import { ConsentFields, consentFields } from "./ConsentFields";
 import { ErrorMessage, useFieldErrors } from "./Ui";
 import { Mascot } from "./Mascot";
+import { Icon } from "./Icons";
 
 type Mode =
   | "login"
@@ -120,7 +121,6 @@ export function AuthForm({ mode }: { mode: Mode }) {
   return (
     <main id="main" className="auth-layout">
       <section className="auth-intro">
-        <p className="eyebrow">Ruang pribadi untuk catatan Anda</p>
         <h1>{titles[mode]}</h1>
         <p className="muted">
           {mode === "resend"
@@ -150,9 +150,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
           <ErrorMessage error={error ?? queryError} />
           {mode === "resend" && queryEmail && (
             <div className="verify-banner">
-              <div className="verify-icon" aria-hidden="true">
-                ✉️
-              </div>
+              <Icon name="mail" className="verify-icon" />
               <div>
                 <p className="small">Tautan konfirmasi telah dikirim ke:</p>
                 <strong>{queryEmail}</strong>

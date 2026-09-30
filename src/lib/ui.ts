@@ -55,7 +55,7 @@ export type Point = {
 };
 export function numberText(value: number | null) {
   return value === null
-    ? "—"
+    ? "–"
     : new Intl.NumberFormat("id-ID", { maximumFractionDigits: 3 }).format(
         value,
       );

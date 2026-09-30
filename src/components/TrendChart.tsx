@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CONTEXT_LABELS,
   dateTime,
@@ -18,26 +18,47 @@ export function TrendChart({
   zone: Timezone;
 }) {
   const [selected, setSelected] = useState<number | null>(null);
+  // Grafik digambar selebar wadahnya (bukan 840 px tetap) agar catatan terbaru
+  // selalu terlihat di layar ponsel tanpa digeser.
+  const [width, setWidth] = useState(840);
+  const box = useRef<HTMLDivElement>(null);
+  const empty = points.length === 0;
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) =>
+      setWidth(Math.max(300, Math.round(entry.contentRect.width))),
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [empty]);
   if (!points.length)
     return (
       <div className="empty">
         <Mascot width={88} />
         <h3>Belum ada catatan pada periode ini</h3>
         <p className="muted">
-          Catatan yang Anda simpan akan membentuk grafik perjalanan Anda.
+          Simpan hasil pengukuran berikutnya, atau pilih periode yang lebih
+          panjang, untuk melihat grafiknya di sini.
         </p>
       </div>
     );
+  const W = width,
+    H = W < 520 ? 240 : 290,
+    LEFT = 44,
+    RIGHT = W - 18,
+    TOP = 38,
+    BOTTOM = H - 42;
   const minTime = new Date(points[0].measuredAt).valueOf(),
     maxTime = new Date(points.at(-1)!.measuredAt).valueOf();
   const axis = valueAxis(points.map((p) => p.valueMgDl));
   const xAt = (time: number) =>
     maxTime === minTime
-      ? 420
-      : 55 + ((time - minTime) / (maxTime - minTime)) * 730;
+      ? (LEFT + RIGHT) / 2
+      : LEFT + ((time - minTime) / (maxTime - minTime)) * (RIGHT - LEFT);
   const x = (p: Point) => xAt(new Date(p.measuredAt).valueOf());
   const yAt = (v: number) =>
-    250 - ((v - axis.min) / (axis.max - axis.min)) * 210;
+    BOTTOM - ((v - axis.min) / (axis.max - axis.min)) * (BOTTOM - TOP);
   const y = (p: Point) => yAt(p.valueMgDl);
   const tickLabel = new Intl.DateTimeFormat(
     "id-ID",
@@ -45,6 +66,7 @@ export function TrendChart({
       ? { hour: "2-digit", minute: "2-digit", timeZone: ZONES[zone] }
       : { day: "numeric", month: "short", timeZone: ZONES[zone] },
   );
+  const last = points.length - 1;
   const describe = (p: Point) =>
     numberText(p.originalValue) +
     " " +
@@ -56,36 +78,36 @@ export function TrendChart({
       p.measurementContext);
   return (
     <>
-      <div
-        className="chart-scroll"
-        tabIndex={0}
-        aria-label="Area grafik yang dapat digeser"
-      >
+      <div className="chart-box" ref={box}>
         <svg
           className="chart"
-          viewBox="0 0 840 295"
+          viewBox={`0 0 ${W} ${H}`}
+          width={W}
+          height={H}
           role="group"
           aria-label="Grafik tren gula darah dalam mg/dL"
         >
-          <text x="5" y="17" fill="#53686c" fontSize="11">
+          <text x="4" y="16" className="chart-axis">
             mg/dL
+          </text>
+          <text x={RIGHT} y="16" textAnchor="end" className="chart-axis">
+            {zone}
           </text>
           {axis.ticks.map((v) => (
             <g key={v}>
               <line
-                x1="55"
-                x2="800"
+                x1={LEFT}
+                x2={RIGHT}
                 y1={yAt(v)}
                 y2={yAt(v)}
                 stroke="#d3e2dd"
                 strokeDasharray="4 4"
               />
               <text
-                x="44"
+                x={LEFT - 8}
                 y={yAt(v) + 4}
                 textAnchor="end"
-                fontSize="11"
-                fill="#53686c"
+                className="chart-axis"
               >
                 {v}
               </text>
@@ -95,15 +117,17 @@ export function TrendChart({
             points={points.map((p) => x(p) + "," + y(p)).join(" ")}
             fill="none"
             stroke="#4d612d"
-            strokeWidth="2.5"
+            strokeWidth="3"
+            strokeLinejoin="round"
+            strokeLinecap="round"
           />
           {points.map((p, i) => (
             <circle
               key={i}
               cx={x(p)}
               cy={y(p)}
-              r="5"
-              fill="#4d612d"
+              r={i === last ? 7 : 5}
+              fill={i === last ? "#ffb915" : "#4d612d"}
               stroke="white"
               strokeWidth="2"
               tabIndex={0}
@@ -122,11 +146,11 @@ export function TrendChart({
               <title>{describe(p)}</title>
             </circle>
           ))}
-          {timeTicks(minTime, maxTime, 5).map((t, i, all) => (
+          {timeTicks(minTime, maxTime, W < 520 ? 3 : 5).map((t, i, all) => (
             <text
               key={t}
               x={xAt(t)}
-              y="281"
+              y={H - 14}
               textAnchor={
                 all.length === 1
                   ? "middle"
@@ -136,29 +160,26 @@ export function TrendChart({
                       ? "end"
                       : "middle"
               }
-              fontSize="11"
-              fill="#53686c"
+              className="chart-axis"
             >
               {tickLabel.format(t)}
             </text>
           ))}
-          <text x="800" y="17" textAnchor="end" fontSize="11" fill="#53686c">
-            {zone}
-          </text>
         </svg>
       </div>
-      <p className="muted small">
-        Geser grafik jika tidak terlihat seluruhnya, atau buka tabel data di
-        bawah.
-      </p>
       <p className="chart-detail" aria-live="polite">
         {selected !== null && points[selected]
           ? describe(points[selected])
-          : "Sentuh atau fokuskan titik untuk melihat detail pengukuran."}
+          : "Titik kuning adalah catatan terbaru: " + describe(points[last])}
       </p>
       <details className="chart-table">
         <summary>Lihat data grafik dalam tabel</summary>
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label="Tabel data grafik"
+        >
           <table>
             <thead>
               <tr>

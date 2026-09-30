@@ -1,3 +1,5 @@
+import { HexIcon, Icon } from "./Icons";
+
 // Pratinjau dashboard di landing page. Semua angka adalah data contoh; tidak ada
 // pita "normal/target" karena evaluasi nilai belum disetujui (GLB-P01).
 const DAYS = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
@@ -87,9 +89,9 @@ export function HeroPreview() {
             strokeWidth="2"
           />
         ))}
-        <g transform={`translate(${x(last) - 128}, ${y(VALUES[last]) - 46})`}>
-          <rect width="136" height="30" rx="8" fill="#011b2f" />
-          <text x="68" y="19.5" textAnchor="middle" className="tip">
+        <g transform={`translate(${x(last) - 166}, ${y(VALUES[last]) - 48})`}>
+          <rect width="174" height="32" rx="8" fill="#011b2f" />
+          <text x="87" y="21" textAnchor="middle" className="tip">
             Hari ini · {VALUES[last]} mg/dL
           </text>
         </g>
@@ -108,11 +110,11 @@ export function HeroPreview() {
 
       <ul className="hero-entries" aria-hidden="true">
         {[
-          ["☀️", "Puasa", "Hari ini, 06.45", 98],
-          ["🍽️", "2 jam setelah makan", "Kemarin, 13.10", 142],
+          ["fasting", "Puasa", "Hari ini, 06.45", 98],
+          ["after_meal", "2 jam setelah makan", "Kemarin, 13.10", 142],
         ].map(([icon, context, time, value]) => (
           <li key={context}>
-            <span className="hero-entry-icon">{icon}</span>
+            <HexIcon name={String(icon)} />
             <span className="hero-entry-text">
               <strong>{context}</strong>
               <small>{time}</small>
@@ -126,7 +128,7 @@ export function HeroPreview() {
       </ul>
 
       <p className="hero-report" aria-hidden="true">
-        <span>📄</span> Laporan PDF siap dibawa saat konsultasi
+        <Icon name="report" /> Laporan PDF siap dibawa saat konsultasi
       </p>
     </div>
   );
