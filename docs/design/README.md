@@ -20,7 +20,7 @@ Folder ini disiapkan untuk `DESIGN.MD` dan aset referensi desain yang telah dise
 | Font judul | Titan One | **Pengganti** Ellak (berbayar, belum ada file) |
 | Font teks | Fraunces | **Pengganti** Morally Serif (berbayar, belum ada file) |
 | Logo | Wordmark "glubee", huruf b digambar sebagai lebah menghadap kanan | **Placeholder** SVG di `src/components/Shell.tsx` |
-| Maskot | `public/brand/mascot-*.png` | Potongan dari PDF, resolusi rendah |
+| Maskot | `public/brand/mascot.webp` (netral) | **Final** dari klien 30 Sep 2026 (PNG 9000 px transparan, di-trim dan diperkecil ke 420 px WebP). Dipakai di beranda, dashboard, halaman masuk/daftar, empty state grafik, dan 404 lewat komponen `Mascot`. |
 
 Token warna ada di `:root` pada `src/app/globals.css`. Permukaan terang (`.panel`, `.dialog`, `.notice`, dan lainnya) mendefinisikan ulang token teks, sehingga komponen tidak perlu tahu sedang berada di atas latar gelap atau terang.
 
@@ -28,4 +28,5 @@ Token warna ada di `:root` pada `src/app/globals.css`. Permukaan terang (`.panel
 
 - **Ekspresi maskot per status** (aman, krisis tinggi, krisis rendah, bahaya) dan kartu "Status hari ini". Evaluasi tinggi/normal/rendah masih nonaktif sampai `BR-PEND-002` selesai.
 - **Jadwal perawatan dan pengingat** di dashboard mockup. Fiturnya masuk scope (BRD Modul 2, FRD §6), dijadwalkan Sprint 3.
-- **Aset final.** Setelah diterima: ganti file font lewat `next/font/local` di `src/app/layout.tsx`, logo di komponen `Wordmark`, dan PNG maskot transparan di `public/brand/`.
+- **Ekspresi status** sudah tersedia (`mascot-safe`, `mascot-high`, `mascot-low`, `mascot-danger` .webp) tetapi belum ditampilkan sampai evaluasi nilai (GLB-P01) disetujui.
+- **Aset final lain.** Setelah diterima: ganti file font lewat `next/font/local` di `src/app/layout.tsx` dan logo di komponen `Wordmark`.

@@ -12,6 +12,7 @@ import { APP_CONFIG } from "@/lib/config";
 import { accountDestination, api } from "@/lib/ui";
 import { ConsentFields, consentFields } from "./ConsentFields";
 import { ErrorMessage, useFieldErrors } from "./Ui";
+import { Mascot } from "./Mascot";
 
 type Mode =
   | "login"
@@ -127,6 +128,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
             : "Simpan hasil pengukuran, pahami perjalanan pencatatan Anda, dan siapkan laporan untuk konsultasi."}
         </p>
         <p className="notice">{APP_CONFIG.disclaimer}</p>
+        <Mascot width={140} className="auth-mascot" />
       </section>
       <section className="panel auth-card">
         <h2>

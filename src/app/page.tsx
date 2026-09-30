@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Mascot } from "@/components/Mascot";
 import Link from "next/link";
 import { APP_CONFIG } from "@/lib/config";
 export default function Home() {
@@ -31,14 +31,7 @@ export default function Home() {
           </p>
         </div>
         <div className="hero-visual" aria-label="Ilustrasi pencatatan">
-          <Image
-            className="mascot hero-mascot"
-            src="/brand/mascot-hero.webp"
-            alt=""
-            width={156}
-            height={188}
-            priority
-          />
+          <Mascot width={150} className="hero-mascot" priority />
           <div className="panel stack">
             <div className="section-heading">
               <h2 className="hero-card-title">Perjalanan pencatatan Anda</h2>

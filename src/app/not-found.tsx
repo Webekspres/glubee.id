@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { Mascot } from "@/components/Mascot";
 
 export default function NotFound() {
   return (
     <main id="main" className="container page">
-      <div className="panel stack">
+      <div className="panel stack not-found">
+        <Mascot width={110} />
         <p className="eyebrow">Galat 404</p>
         <h1>Halaman tidak ditemukan</h1>
         <p>Alamat yang Anda buka tidak tersedia atau sudah dipindahkan.</p>

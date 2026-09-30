@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+import { Mascot } from "./Mascot";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -157,14 +157,7 @@ export function Records({
       >
         <div className="page-heading-aside">
           {!history && (
-            <Image
-              className="mascot"
-              src="/brand/mascot-hero.webp"
-              alt=""
-              width={156}
-              height={188}
-              priority
-            />
+            <Mascot width={120} priority />
           )}
           <button className="button primary" onClick={() => setModal(true)}>
             + Catat gula darah
