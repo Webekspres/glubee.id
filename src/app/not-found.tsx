@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { TransitionLink as Link } from "@/components/TransitionLink";
 import { Mascot } from "@/components/Mascot";
 
 export default function NotFound() {

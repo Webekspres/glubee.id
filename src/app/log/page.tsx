@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
+import { TransitionLink as Link } from "@/components/TransitionLink";
 import { SessionGate } from "@/components/SessionGate";
 import { GlucoseEntryForm } from "@/components/GlucoseEntryForm";
 import { PageHeading } from "@/components/Ui";

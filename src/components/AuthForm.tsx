@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import { leavePage, TransitionLink as Link } from "./TransitionLink";
 import {
   useEffect,
   useId,
@@ -95,18 +95,22 @@ export function AuthForm({ mode }: { mode: Mode }) {
         { method: "POST", body: JSON.stringify(body) },
       );
       if (mode === "login")
-        router.replace(accountDestination(result.data.accountStatus ?? null));
+        leavePage(() =>
+          router.replace(accountDestination(result.data.accountStatus ?? null)),
+        );
       else if (mode === "register") {
         const registeredEmail =
           typeof body.email === "string" ? body.email.trim() : "";
-        router.replace(
-          registeredEmail
-            ? "/auth/verify?email=" + encodeURIComponent(registeredEmail)
-            : "/auth/verify",
+        leavePage(() =>
+          router.replace(
+            registeredEmail
+              ? "/auth/verify?email=" + encodeURIComponent(registeredEmail)
+              : "/auth/verify",
+          ),
         );
       } else if (mode === "update-password") {
         await api("/api/auth/logout", { method: "POST", body: "{}" });
-        router.replace("/login?updated=1");
+        leavePage(() => router.replace("/login?updated=1"));
       } else {
         setMessage(result.data.message ?? "Permintaan telah diproses.");
         setCooldown(60);

@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import { TransitionLink as Link } from "./TransitionLink";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ApiError } from "@/lib/ui";
 import { fieldMessage } from "@/lib/validation";

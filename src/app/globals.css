@@ -660,6 +660,17 @@ legend {
 main#main {
   animation: page-enter 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
+/* Animasi keluar: durasi sama dengan EXIT_MS di TransitionLink.tsx. */
+@keyframes page-leave {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+main#main.is-leaving {
+  animation: page-leave 170ms ease-in forwards;
+  pointer-events: none;
+}
 .reveal {
   animation: page-enter 380ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }

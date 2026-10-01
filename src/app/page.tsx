@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { TransitionLink as Link } from "@/components/TransitionLink";
 import { HeroPreview } from "@/components/HeroPreview";
 import { HexIcon } from "@/components/Icons";
 import { Mascot } from "@/components/Mascot";

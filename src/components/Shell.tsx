@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import { leavePage, TransitionLink as Link } from "./TransitionLink";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { APP_CONFIG } from "@/lib/config";
@@ -103,9 +103,11 @@ export default function Shell({ children }: { children: ReactNode }) {
     setError(null);
     try {
       await api("/api/auth/logout", { method: "POST", body: "{}" });
-      router.replace("/login");
-      router.refresh();
-      setBusy(false);
+      leavePage(() => {
+        router.replace("/login");
+        router.refresh();
+        setBusy(false);
+      });
     } catch (e) {
       setError(e);
       setBusy(false);

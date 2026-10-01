@@ -1,7 +1,7 @@
 "use client";
 import { Mascot } from "./Mascot";
 import { Icon } from "./Icons";
-import Link from "next/link";
+import { TransitionLink as Link } from "./TransitionLink";
 import { useEffect, useState } from "react";
 import {
   api,

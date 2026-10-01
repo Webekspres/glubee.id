@@ -11,6 +11,7 @@ import {
 import { APP_CONFIG } from "@/lib/config";
 import { ConsentFields, consentFields } from "./ConsentFields";
 import { ErrorMessage } from "./Ui";
+import { leavePage } from "./TransitionLink";
 const versions: Record<string, string> = {
   age_and_region: APP_CONFIG.noticeVersions.ageAndRegion,
   legal_documents: APP_CONFIG.noticeVersions.legalDocuments,
@@ -75,7 +76,8 @@ export function ProfileForm({
         method: "PATCH",
         body: JSON.stringify(Object.fromEntries(f)),
       });
-      if (onboarding) router.replace(accountDestination(r.data.account_status));
+      if (onboarding)
+        leavePage(() => router.replace(accountDestination(r.data.account_status)));
       else {
         setMessage("Profil berhasil diperbarui.");
         const c = await api<Receipt[]>("/api/consents");
