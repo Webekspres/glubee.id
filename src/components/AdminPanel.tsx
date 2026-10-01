@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { api, ApiError } from "@/lib/ui";
 import { ErrorMessage, Loading, Modal, PageHeading, useFieldErrors } from "./Ui";
+import { Icon } from "./Icons";
 
 type Account = {
   user_id: string;
@@ -94,7 +95,8 @@ export function AdminPanel() {
         title="Admin akun"
         description="Cari akun, ubah status dengan alasan, dan buat akun demo. Data gula darah tidak tersedia di halaman ini."
       >
-        <button className="button" onClick={logout}>
+        <button className="button logout" onClick={logout}>
+          <Icon name="logout" />
           Keluar
         </button>
       </PageHeading>

@@ -243,6 +243,20 @@ h3,
   color: var(--danger);
   border-color: currentColor;
 }
+/* Keluar: merah muda bergaris, beda dari aksi utama kuning dan tautan nav. */
+.button.logout {
+  color: #ffa3aa;
+  border-color: #ffa3aa;
+  background: transparent;
+}
+.button.logout:hover {
+  background: rgba(255, 179, 184, 0.14);
+}
+.panel .button.logout,
+.dialog .button.logout {
+  color: #992b32;
+  border-color: #992b32;
+}
 .button.quiet {
   background: transparent;
   border-color: transparent;

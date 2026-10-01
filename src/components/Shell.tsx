@@ -6,6 +6,7 @@ import { APP_CONFIG } from "@/lib/config";
 import { api } from "@/lib/ui";
 import { ErrorMessage } from "./Ui";
 import { CookieConsent } from "./CookieConsent";
+import { Icon } from "./Icons";
 
 // Placeholder logo: huruf "b" sebagai lebah menghadap kanan, sayap panjang jadi batang huruf.
 function Wordmark() {
@@ -143,10 +144,11 @@ export default function Shell({ children }: { children: ReactNode }) {
             <>
               {/* Di mobile navigasi ada di tab bar bawah; header cukup tombol Keluar. */}
               <button
-                className="button quiet header-logout"
+                className="button logout header-logout"
                 onClick={logout}
                 disabled={busy}
               >
+                <Icon name="logout" />
                 {busy ? "Keluar…" : "Keluar"}
               </button>
               <button
@@ -174,11 +176,12 @@ export default function Shell({ children }: { children: ReactNode }) {
                   </Link>
                 ))}
                 <button
-                  className="button quiet"
+                  className="button logout"
                   onClick={logout}
                   disabled={busy}
                 >
-                  {busy ? "Keluar…" : "Keluar"}
+                  <Icon name="logout" />
+                {busy ? "Keluar…" : "Keluar"}
                 </button>
               </nav>
             </>

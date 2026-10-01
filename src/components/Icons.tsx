@@ -47,6 +47,13 @@ const GLYPHS: Record<string, ReactNode> = {
       <path d="m4 7 8 6 8-6" />
     </>
   ),
+  // Keluar: pintu dengan panah ke luar.
+  logout: (
+    <>
+      <path d="M14 4.5H6.5v15H14" />
+      <path d="M11 12h9M17 8.5 20.5 12 17 15.5" />
+    </>
+  ),
   report: (
     <>
       <path d="M6 3.5h8l4 4v13H6Z" />
