@@ -58,7 +58,8 @@ export function AuthForm({ mode }: { mode: Mode }) {
     [message, setMessage] = useState(""),
     [cooldown, setCooldown] = useState(0),
     [showPassword, setShowPassword] = useState(false),
-    [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
+    [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false),
+    [remember, setRemember] = useState(false);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -89,6 +90,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
     setMessage("");
     const body: Record<string, unknown> = Object.fromEntries(f);
     for (const [name] of consentFields) body[name] = f.get(name) === "on";
+    body.remember = f.get("remember") === "on";
     try {
       const result = await api<{ accountStatus?: string; message?: string }>(
         "/api/auth/" + mode,
@@ -283,9 +285,27 @@ export function AuthForm({ mode }: { mode: Mode }) {
             </>
           )}
           {mode === "login" && (
-            <Link href="/reset-password" className="small">
-              Lupa password?
-            </Link>
+            <>
+              <div>
+                <label className="check">
+                  <input
+                    name="remember"
+                    type="checkbox"
+                    checked={remember}
+                    onChange={(e) => setRemember(e.target.checked)}
+                    aria-describedby={`${fieldId}-remember-hint`}
+                  />
+                  <span>Ingat saya di perangkat ini</span>
+                </label>
+                <small id={`${fieldId}-remember-hint`} className="check-hint">
+                  Tetap masuk selama 30 hari. Jangan centang di perangkat yang
+                  dipakai bersama.
+                </small>
+              </div>
+              <Link href="/reset-password" className="small">
+                Lupa password?
+              </Link>
+            </>
           )}
           <button
             className="button primary"
@@ -308,7 +328,10 @@ export function AuthForm({ mode }: { mode: Mode }) {
           {["login", "register"].includes(mode) && (
             <>
               <div className="divider">atau</div>
-              <a className="button" href="/api/auth/google">
+              <a
+                className="button"
+                href={"/api/auth/google" + (remember ? "?remember=1" : "")}
+              >
                 Lanjutkan dengan Google
               </a>
             </>

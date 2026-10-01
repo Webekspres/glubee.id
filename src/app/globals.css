@@ -518,7 +518,7 @@ td strong {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  font-size: 14px;
+  font-size: 15px;
   padding: 6px 0;
   cursor: pointer;
 }
@@ -543,6 +543,12 @@ legend {
   border-radius: 8px;
   border: 1px solid;
   font-size: 14px;
+}
+.check-hint {
+  display: block;
+  margin-left: 36px;
+  font-size: 15px;
+  color: var(--muted);
 }
 .auth-links {
   display: flex;

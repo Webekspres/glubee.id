@@ -285,6 +285,7 @@ Status: PENDING, default-off.
 - Consent manager dimuat sebelum tag non-esensial. Tag analytics/marketing tidak boleh ada pada HTML awal, preload, service worker, atau request server-side sebelum kategori terkait aktif.
 - Preferensi anonim disimpan first-party dengan identifier acak minimum; setelah login dapat ditautkan ke receipt akun tanpa membuat fingerprint lintas situs.
 - Penarikan consent mencegah request berikutnya dan menghapus cookie/local storage non-esensial first-party yang dikenal. Penghapusan identifier third-party mengikuti kemampuan/vendor dan dijelaskan secara jujur.
+- "Ingat saya" (1 Oktober 2026): tanpa centang, cookie sesi Supabase (`sb-*-auth-token`) tidak memiliki masa berlaku sehingga hilang saat browser ditutup; dengan centang, berlaku 30 hari dan diperpanjang saat token disegarkan. Pilihan disimpan di cookie esensial `glubee_remember` (HttpOnly, 30 hari, dihapus saat keluar). Sebelumnya semua sesi memakai bawaan Supabase 400 hari.
 - Daftar cookie/storage harus dihasilkan dari audit nyata dan memuat nama, penyedia, tujuan, kategori, durasi, serta first/third party. Jangan mengarang daftar sebelum implementasi/vendor final.
 
 ## 12. Observabilitas
