@@ -52,7 +52,9 @@ test("admin searches, suspends with reason, creates verified demo account", asyn
 
   await page.getByLabel(/^Email \(minimal 3 karakter\)/).fill(userEmail);
   await page.getByRole("button", { name: "Cari", exact: true }).click();
-  const row = page.getByRole("row", { name: new RegExp(userEmail) });
+  const row = page
+    .getByRole("region", { name: "Hasil pencarian akun" })
+    .getByRole("row", { name: new RegExp(userEmail) });
   await expect(row).toBeVisible();
   const search = await (await page.request.get("/api/admin/accounts?q=" + encodeURIComponent(userEmail))).json();
   expect(Object.keys(search.data[0]).sort()).toEqual(
@@ -62,11 +64,11 @@ test("admin searches, suspends with reason, creates verified demo account", asyn
   await row.getByRole("button", { name: "Nonaktifkan" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog.getByRole("button", { name: "Nonaktifkan akun" })).toBeDisabled();
-  await dialog.getByLabel(/Alasan/).fill("Uji penonaktifan oleh admin");
+  await dialog.getByLabel(/Alasan/).fill(`Uji penonaktifan ${stamp}`);
   await dialog.getByRole("button", { name: "Nonaktifkan akun" }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(row.getByText("Dinonaktifkan")).toBeVisible();
-  await expect(page.getByRole("cell", { name: "Uji penonaktifan oleh admin" })).toBeVisible();
+  await expect(page.getByRole("cell", { name: `Uji penonaktifan ${stamp}` })).toBeVisible();
 
   await page.getByLabel("Email akun demo").fill(demoEmail);
   await page.getByLabel(/^Password \(minimal 12/).fill("pendek");
@@ -74,15 +76,21 @@ test("admin searches, suspends with reason, creates verified demo account", asyn
   await expect(page.getByText("Minimal 12 karakter.")).toBeVisible();
   await page.getByLabel(/^Password \(minimal 12/).fill(password);
   await page.getByRole("button", { name: "Buat akun demo" }).click();
-  await expect(page.getByRole("status")).toContainText(`Akun demo ${demoEmail} siap dipakai`);
-  await expect(page.getByRole("cell", { name: "Buat akun demo" })).toBeVisible();
+  await expect(page.getByRole("status")).toContainText(`Akun demo ${demoEmail} siap dipakai, sudah berisi`);
+  const demoAudit = page
+    .getByRole("region", { name: "Riwayat tindakan admin" })
+    .getByRole("row", { name: new RegExp(demoEmail) });
+  await expect(demoAudit.filter({ hasText: "Buat akun demo" })).toHaveCount(1);
+  await expect(demoAudit.filter({ hasText: "Isi data contoh" })).toHaveCount(1);
 
-  // Akun demo bisa langsung masuk tanpa tautan verifikasi, lalu diarahkan ke onboarding.
+  // Akun demo langsung masuk tanpa tautan verifikasi dan sudah berisi data contoh.
   const demo = await browser.newPage();
   await demo.goto("/login");
   await demo.getByLabel("Email", { exact: true }).fill(demoEmail);
   await demo.getByLabel(/^Password/).fill(password);
   await demo.getByRole("button", { name: "Masuk", exact: true }).click();
-  await expect(demo).toHaveURL(/\/onboarding/);
+  await expect(demo).toHaveURL(/\/dashboard$/);
+  const summary = await (await demo.request.get("/api/glucose-summary?period=14")).json();
+  expect(summary.data.count).toBeGreaterThan(20);
   await demo.close();
 });

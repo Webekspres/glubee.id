@@ -2,6 +2,7 @@ import { adminRequest } from "@/lib/admin";
 import { rateLimited } from "@/lib/auth";
 import { failure, objectValue, readJson, success } from "@/lib/api";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { seedDemoAccount } from "@/lib/demo-seed";
 
 // Akun demo untuk klien: email langsung terverifikasi. Pemilik akun tetap harus
 // menyetujui dokumen layanan saat onboarding pertama. Setiap pembuatan diaudit.
@@ -13,6 +14,7 @@ export async function POST(request: Request) {
   const body = objectValue(await readJson(request));
   const email = typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
   const password = typeof body?.password === "string" ? body.password : "";
+  const withSample = body?.withSample === true;
   const fields: Record<string, string> = {};
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fields.email = "Format email belum benar.";
   if (password.length < 12) fields.password = "Minimal 12 karakter.";
@@ -34,5 +36,24 @@ export async function POST(request: Request) {
     p_reason: "Akun demo klien dibuat admin tanpa email verifikasi",
     p_correlation_id: crypto.randomUUID(),
   });
-  return success({ userId: data.user.id, email }, 201);
+  let sampleEntries = 0;
+  if (withSample) {
+    try {
+      sampleEntries = await seedDemoAccount(email, password);
+    } catch {
+      return failure(
+        "DEMO_SEED_FAILED",
+        "Akun demo dibuat, tetapi data contoh gagal diisi. Masuk dengan akun itu dan lengkapi profil secara manual.",
+        500,
+      );
+    }
+    await admin.rpc("admin_record_event", {
+      p_actor_id: auth.user.id,
+      p_subject_user_id: data.user.id,
+      p_action: "seed_demo_data",
+      p_reason: `Profil, persetujuan, dan ${sampleEntries} catatan sintetis diisi untuk demo`,
+      p_correlation_id: crypto.randomUUID(),
+    });
+  }
+  return success({ userId: data.user.id, email, sampleEntries }, 201);
 }

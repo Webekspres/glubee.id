@@ -31,6 +31,7 @@ const STATUS: Record<string, string> = {
 const ACTIONS: Record<string, string> = {
   set_account_status: "Ubah status",
   create_verified_demo_account: "Buat akun demo",
+  seed_demo_data: "Isi data contoh",
 };
 const when = (v: string) =>
   new Intl.DateTimeFormat("id-ID", {
@@ -336,11 +337,19 @@ function DemoAccountForm({ onCreated }: { onCreated: () => void }) {
     setCreated("");
     const f = new FormData(form);
     try {
-      const r = await api<{ email: string }>("/api/admin/demo-accounts", {
+      const r = await api<{ email: string; sampleEntries: number }>("/api/admin/demo-accounts", {
         method: "POST",
-        body: JSON.stringify({ email: f.get("email"), password: f.get("password") }),
+        body: JSON.stringify({
+          email: f.get("email"),
+          password: f.get("password"),
+          withSample: f.get("withSample") === "on",
+        }),
       });
-      setCreated(r.data.email);
+      setCreated(
+        r.data.sampleEntries
+          ? `Akun demo ${r.data.email} siap dipakai, sudah berisi ${r.data.sampleEntries} catatan contoh.`
+          : `Akun demo ${r.data.email} siap dipakai.`,
+      );
       form.reset();
       onCreated();
     } catch (err) {
@@ -353,14 +362,14 @@ function DemoAccountForm({ onCreated }: { onCreated: () => void }) {
     <section className="panel stack">
       <h2>Buat akun demo klien</h2>
       <p className="muted">
-        Email langsung terverifikasi tanpa tautan konfirmasi. Saat pertama masuk, pemilik akun tetap
-        melengkapi profil dan menyetujui dokumen layanan.
+        Email langsung terverifikasi tanpa tautan konfirmasi. Hanya untuk akun demo milik Webekspres,
+        bukan akun pasien sungguhan.
       </p>
       <form className="form" noValidate onSubmit={submit} onInput={(e) => v.clear(e.target)}>
         <ErrorMessage error={error} />
         {created && (
           <p className="message success" role="status">
-            Akun demo {created} siap dipakai.
+            {created}
           </p>
         )}
         <div className="form-row">
@@ -375,6 +384,13 @@ function DemoAccountForm({ onCreated }: { onCreated: () => void }) {
             {v.error("password")}
           </div>
         </div>
+        <label className="check">
+          <input name="withSample" type="checkbox" defaultChecked />
+          <span>
+            Langsung isi profil Demo Glubee, persetujuan layanan, dan 14 hari catatan contoh
+            (data sintetis) agar klien bisa langsung melihat grafik dan laporan.
+          </span>
+        </label>
         <button className="button primary" disabled={busy}>
           {busy ? "Membuat…" : "Buat akun demo"}
         </button>
