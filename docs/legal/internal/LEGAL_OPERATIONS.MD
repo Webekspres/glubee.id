@@ -120,6 +120,10 @@ Nilai default pada SRS adalah usulan, bukan keputusan hukum. Legal hold harus te
 
 ## 10. Publikasi dan versioning dokumen
 
+### Publikasi versi 0.2 tanpa label draf — 1 Oktober 2026
+
+Pemilik produk memutuskan Kebijakan Privasi dan Syarat & Ketentuan versi `0.2-draft-2026-09-15` dipublikasikan tanpa label "DRAF" dengan tanggal berlaku 1 Oktober 2026. ID versi tidak diubah agar receipt persetujuan yang sudah ada tetap cocok; perubahan isi berikutnya dirilis sebagai versi baru dengan permintaan persetujuan ulang. Review hukum (checklist §12) belum dilakukan dan tetap disarankan. Yang perlu diperbaiki pada versi berikutnya: rujukan path dokumen internal di Kebijakan Privasi (hak pengguna), kalimat "harus disusun penasihat hukum" di S&K bagian batasan tanggung jawab, daftar penyedia yang masih menyebut Vercel/Supabase, dan ID versi tanpa kata "draft".
+
 ### Klarifikasi tanggung jawab pengembang — 15 September 2026
 
 Pengguna meminta penjelasan bahwa PT Webekspres Teknologi Indonesia bukan penentu algoritma medis atau pemberi diagnosis. Draf 0.2 menambahkan pemberitahuan peran tersebut pada website, consent, PDF, S&K, dan Kebijakan Privasi. Tidak ada jaminan bebas tuntutan. Reviewer wajib memeriksa pembagian tanggung jawab teknis/medis dalam perjanjian dengan klien serta batas klausula baku menurut Pasal 18 UU 8/1999 (https://peraturan.go.id/id/uu-no-8-tahun-1999). Kewajiban hukum dan hak pengguna yang tidak dapat dikesampingkan tetap berlaku. Publikasi produksi tetap menunggu review.

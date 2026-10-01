@@ -1,8 +1,7 @@
-# Draf Syarat dan Ketentuan Glubee
+# Syarat dan Ketentuan Glubee
 
-Status: **DRAF UNTUK REVIEW HUKUM - BELUM UNTUK DIPUBLIKASIKAN**
 Versi: 0.2-draft-2026-09-15
-Tanggal berlaku: [diisi saat disetujui]
+Tanggal berlaku: 1 Oktober 2026
 
 ## 1. Tentang layanan
 

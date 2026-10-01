@@ -42,7 +42,7 @@ export function ConsentFields({
         >
           Kebijakan privasi
         </Link>{" "}
-        · Draf {APP_CONFIG.legalVersion}
+        · Versi {APP_CONFIG.legalVersion}
       </p>
       <p className="notice">{APP_CONFIG.developerNotice}</p>
       {consentFields

@@ -41,9 +41,9 @@ export async function LegalDocument({
   return (
     <main id="main" className="container page legal">
       <p className="notice">
-        Dokumen draf untuk pengujian. Fitur pengingat, kontak darurat, dan
-        penghapusan mandiri belum tersedia pada versi Sprint 2. Naskah ini
-        menunggu review hukum sebelum rilis publik.
+        {old
+          ? "Versi lama, disimpan sebagai bukti persetujuan yang pernah diberikan."
+          : "Fitur pengingat, kontak darurat, ekspor data, dan penghapusan akun mandiri yang dijelaskan di sini sedang disiapkan dan belum tersedia."}
       </p>
       {content
         .trim()

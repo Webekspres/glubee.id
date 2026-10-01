@@ -1,10 +1,7 @@
-# Draf Kebijakan Privasi Glubee
+# Kebijakan Privasi Glubee
 
-Status: **DRAF UNTUK REVIEW HUKUM - BELUM UNTUK DIPUBLIKASIKAN**
 Versi: 0.2-draft-2026-09-15
-Tanggal berlaku: [diisi saat disetujui]
-
-Kebijakan ini harus diperiksa penasihat hukum Indonesia dan dicocokkan kembali dengan implementasi, kontrak vendor, lokasi pemrosesan, serta status pendaftaran PSE sebelum dipublikasikan.
+Tanggal berlaku: 1 Oktober 2026
 
 ## 1. Pengelola layanan
 
