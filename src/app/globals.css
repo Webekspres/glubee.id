@@ -367,6 +367,28 @@ h3,
   flex-wrap: wrap;
   align-items: end;
 }
+/* Form rentang tanggal: tombol sejajar dan setinggi input. */
+.range-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+}
+.range-form .field {
+  flex: 1 1 170px;
+  max-width: 240px;
+}
+.range-form .button {
+  min-height: 48px;
+}
+@media (max-width: 760px) {
+  .range-form .field {
+    max-width: none;
+  }
+  .range-form .button {
+    flex: 1 1 100%;
+  }
+}
 /* Chip filter tetap berbentuk pil: kelompok toggle, beda dari tombol aksi. */
 .filters .button {
   border-radius: 999px;
@@ -467,8 +489,10 @@ td strong {
   min-height: 48px;
   border: 1px solid #a4b9b6;
   background: white;
-  color: var(--ink);
-  border-radius: 8px;
+  /* Selalu teks gelap: input putih juga muncul langsung di atas latar navy. */
+  color: var(--abyss);
+  color-scheme: light;
+  border-radius: var(--radius-control);
   padding: 10px 12px;
   font-weight: 400;
 }

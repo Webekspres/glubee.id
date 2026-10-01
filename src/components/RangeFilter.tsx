@@ -49,7 +49,7 @@ export function RangeFilter({
         ))}
       </div>
       {period === "custom" && (
-        <form className="filters" onSubmit={apply}>
+        <form className="range-form" onSubmit={apply}>
           <label className="field">
             Dari tanggal
             <input
