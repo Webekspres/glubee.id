@@ -564,6 +564,13 @@ legend {
   font-size: 15px;
   color: var(--muted);
 }
+.export-data {
+  gap: 12px;
+  justify-items: start;
+}
+.export-data h3 {
+  margin-bottom: 4px;
+}
 .auth-links {
   display: flex;
   flex-direction: column;

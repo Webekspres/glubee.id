@@ -13,7 +13,9 @@ export async function GET(request: Request) {
     requestedNext === "/update-password" ||
     requestedNext === "/?resetPassword=required"
       ? "/update-password"
-      : "/onboarding";
+      : requestedNext === "/profile"
+        ? "/profile" // kembali ke Profil setelah login ulang untuk ekspor data
+        : "/onboarding";
 
   if (!code)
     return NextResponse.redirect(

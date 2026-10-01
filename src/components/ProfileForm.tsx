@@ -12,6 +12,7 @@ import { APP_CONFIG } from "@/lib/config";
 import { ConsentFields, consentFields } from "./ConsentFields";
 import { ErrorMessage } from "./Ui";
 import { leavePage } from "./TransitionLink";
+import { ExportData } from "./ExportData";
 const versions: Record<string, string> = {
   age_and_region: APP_CONFIG.noticeVersions.ageAndRegion,
   legal_documents: APP_CONFIG.noticeVersions.legalDocuments,
@@ -226,11 +227,11 @@ export function ProfileForm({
             >
               Pengaturan Cookie
             </button>
+            <ExportData />
             <p className="small muted">
-              Penghapusan akun memiliki masa jeda 3 hari. Fitur pengajuan dan
-              ekspor akun dijadwalkan pada Sprint 3. Untuk permintaan hak data
-              atau penarikan persetujuan, lihat kanal pengelola pada{" "}
-              <a href="/privacy">Kebijakan Privasi</a>.
+              Penghapusan akun (masa jeda 3 hari) sedang disiapkan. Untuk
+              permintaan hak data lain atau penarikan persetujuan, lihat kanal
+              pengelola pada <a href="/privacy">Kebijakan Privasi</a>.
             </p>
           </section>
         </>
