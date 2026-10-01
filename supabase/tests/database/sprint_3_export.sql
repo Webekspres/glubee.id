@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(12);
+select plan(13);
 
 insert into auth.users(instance_id,id,aud,role,email,email_confirmed_at,raw_app_meta_data,raw_user_meta_data,created_at,updated_at)
 values
@@ -42,12 +42,19 @@ select set_config('request.jwt.claim.sub','a3000000-0000-4000-8000-000000000001'
 select is((select count(*) from public.glucose_entries),0::bigint,'RLS hides health data during grace period');
 select is(jsonb_array_length(public.export_my_data()->'glucoseEntries'),3,'export still works during grace period');
 
--- Dinonaktifkan admin: ditolak (menunggu keputusan legal, lihat checkpoint).
+-- Dinonaktifkan admin: tetap boleh (UU PDP, keputusan 1 Okt 2026).
 reset role;
 update public.profiles set account_status='suspended' where user_id='a3000000-0000-4000-8000-000000000001';
 set local role authenticated;
 select set_config('request.jwt.claim.sub','a3000000-0000-4000-8000-000000000001',true);
-select throws_ok($$select public.export_my_data()$$,'P0001','export_not_allowed','suspended account cannot export');
+select is(jsonb_array_length(public.export_my_data()->'glucoseEntries'),3,'suspended account can still export own data');
+
+-- Sudah dihapus: ditolak.
+reset role;
+update public.profiles set account_status='deleted' where user_id='a3000000-0000-4000-8000-000000000001';
+set local role authenticated;
+select set_config('request.jwt.claim.sub','a3000000-0000-4000-8000-000000000001',true);
+select throws_ok($$select public.export_my_data()$$,'P0001','export_not_allowed','deleted account cannot export');
 
 select * from finish();
 rollback;

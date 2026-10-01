@@ -209,7 +209,7 @@ Format JSON konsisten: sukses `{ data, meta? }`; gagal `{ error: { code, message
 | `GET/PUT /api/privacy/cookie-preferences` | optional user/session | Baca/simpan preferensi dan receipt versioned. | FR-COOKIE-001 |
 | `POST /api/account/deletion` | re-auth user | Ajukan penghapusan. | FR-DELETE-001 |
 | `DELETE /api/account/deletion` | re-auth user | Batalkan penghapusan. | FR-DELETE-001 |
-| `POST /api/account/export` | re-auth user | Buat ekspor. | FR-EXPORT-001 |
+| `GET`/`POST /api/account/export` | re-auth user | `GET` memberi cara verifikasi (password atau login Google ≤10 menit); `POST` mengembalikan JSON langsung sebagai unduhan, tanpa file di server (RPC `export_my_data`, berlaku juga saat `deletion_pending`). | FR-EXPORT-001 |
 | `GET/PATCH /api/admin/accounts/{id}/status` | admin | Status akun dan alasan; tanpa health join. | FR-ADMIN-001 |
 | `POST /api/internal/jobs/dispatch` | signed internal | Claim/proses batch job jatuh tempo. | FR-REMINDER-001 |
 | `POST /api/internal/jobs/delete-accounts` | signed internal | Eksekusi deletion jatuh tempo. | FR-DELETE-002 |
@@ -257,7 +257,7 @@ Status: PENDING, default-off.
 | Audit consent/admin/security | Sesuai kewajiban hukum dan limitation period yang ditetapkan counsel. |
 | Backup off-site | Rotasi terenkripsi dengan periode final yang disetujui sebelum produksi. |
 | Tombstone deletion | Minimum yang diperlukan untuk mencegah restore, tanpa data kesehatan. |
-| Export file | Kedaluwarsa singkat dan dihapus otomatis. |
+| Export file | Tidak disimpan: dibuat saat diminta dan dikirim dalam respons yang sama. Hanya jejak `data_exports` (waktu) yang disimpan. |
 
 ### 10.2 Backup/restore
 

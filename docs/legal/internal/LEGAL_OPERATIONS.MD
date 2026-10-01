@@ -49,6 +49,8 @@ Alur minimum:
 
 SLA hukum final harus diisi dari nasihat hukum yang berlaku; jangan mengarang tenggat. Pengguna tetap dapat memakai penghapusan self-service tiga hari sesuai FRD.
 
+Ekspor mandiri (GLB-023, 1 Oktober 2026): pengguna mengunduh salinan JSON dari Profil, atau dari halaman Status akun bila akun dalam masa jeda penghapusan atau dinonaktifkan admin. Akun yang dinonaktifkan tetap boleh mengekspor sesuai hak akses subjek data UU PDP (keputusan pemilik produk). File tidak disimpan di server; hanya waktu ekspor dicatat di `data_exports`.
+
 ## 6. Operasi penghapusan
 
 - Monitor request due dan overdue setiap hari.
