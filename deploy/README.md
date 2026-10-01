@@ -76,6 +76,24 @@ sudo bash /opt/glubee/nginx/install.sh
 
 Ganti `dev` dengan `main` setelah production dirilis dari `main`. Callback OAuth yang 502 biasanya berarti buffer header terlalu kecil (`upstream sent too big header` di `/var/log/nginx/error.log`).
 
+## Akun admin dan akun demo
+
+Halaman admin ada di `https://glubee.id/admin-xyz` (cari akun, ubah status dengan alasan, buat akun demo terverifikasi). Path ini bukan pengaman; akses dicek dari `app_metadata.app_role = "admin"` di server dan di database, dan setiap tindakan tercatat di `admin_audit_events`.
+
+1. Terapkan migration `20261001000100_admin_account_status.sql` lewat tunnel (langkah 5 di atas: `supabase db push`), lalu deploy app.
+2. Daftarkan email admin lewat `https://glubee.id/register` dan verifikasi, atau buat akun lewat form akun demo di halaman admin yang sudah ada.
+3. Jadikan admin lewat tunnel Postgres (ganti email):
+   ```sql
+   update auth.users
+   set raw_app_meta_data = raw_app_meta_data || '{"app_role":"admin"}'
+   where email = 'admin@glubee.id';
+   ```
+   Admin harus keluar lalu masuk lagi agar token membawa role baru. Gunakan password panjang yang unik; jangan menyimpannya di repo.
+4. Akun demo klien: buat di halaman admin, lalu isi data contoh dari laptop:
+   ```bash
+   GLUBEE_URL=https://glubee.id DEMO_EMAIL=... DEMO_PASSWORD=... bun scripts/demo-data.ts --onboard
+   ```
+
 ## Rate limit
 
 - nginx: `glubee.id/api/auth/` 10 request/menit per IP (burst 5); `POST /api/consents/cookie` 10/menit per IP (burst 5); path publik `api.glubee.id` 30/menit per IP (burst 10).

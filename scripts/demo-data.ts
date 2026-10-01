@@ -2,8 +2,10 @@
 //
 // Lokal (membuat akun demo terverifikasi, kredensial dari .env.local):
 //   bun scripts/demo-data.ts --create-local
-// Production (akun sudah didaftarkan dan onboarding lewat UI oleh pemiliknya):
-//   GLUBEE_URL=https://glubee.id DEMO_EMAIL=... DEMO_PASSWORD=... bun scripts/demo-data.ts
+// Production, akun demo yang dibuat admin di /admin-xyz (belum onboarding):
+//   GLUBEE_URL=https://glubee.id DEMO_EMAIL=... DEMO_PASSWORD=... bun scripts/demo-data.ts --onboard
+//   --onboard mencatat persetujuan dan profil "Demo Glubee" atas nama akun demo milik Webekspres.
+//   Jangan dipakai untuk akun pengguna sungguhan.
 // Jangan menyimpan kredensial production di repository (repo publik).
 import { createClient } from "@supabase/supabase-js";
 
@@ -57,11 +59,10 @@ await call("/api/auth/login", {
   body: JSON.stringify({ email, password }),
 });
 
-// Onboarding hanya untuk akun lokal baru; akun production melewati UI sendiri.
 const profile = await call("/api/profile");
 if (!profile?.name) {
-  if (!isLocal)
-    throw new Error("Selesaikan onboarding akun ini lewat UI dulu, lalu ulangi.");
+  if (!isLocal && !process.argv.includes("--onboard"))
+    throw new Error("Akun belum onboarding. Selesaikan lewat UI, atau tambah --onboard untuk akun demo.");
   const receipts: { consent_type: string }[] = await call("/api/consents");
   for (const type of ["age_and_region", "legal_documents", "health_data"])
     if (!receipts.some((r) => r.consent_type === type))

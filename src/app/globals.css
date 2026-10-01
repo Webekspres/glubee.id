@@ -1008,6 +1008,15 @@ legend {
     width: 88px;
   }
 }
+.admin-search {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.admin-search .field {
+  flex: 1 1 260px;
+}
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

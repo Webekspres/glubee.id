@@ -180,6 +180,8 @@ export default function Shell({ children }: { children: ReactNode }) {
                 </button>
               </nav>
             </>
+          ) : path.startsWith("/admin-xyz") ? (
+            <span className="preview">Admin</span>
           ) : (
             <nav className="public-nav" aria-label="Akun">
               <Link href="/login">Masuk</Link>
