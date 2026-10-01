@@ -1,15 +1,19 @@
-# Build image aplikasi, push ke GHCR, lalu deploy manual ke VPS Webekspres (ADR-0001).
-# Jalankan dari tab Actions -> "Deploy" -> pilih branch -> Run workflow.
+# Build image aplikasi, push ke GHCR, lalu deploy ke VPS Webekspres (ADR-0001).
+# Otomatis: push ke dev (selama GO_LIVE bukan "true") atau push ke main (setelah GO_LIVE = "true").
+# Manual: tab Actions -> "Deploy" -> pilih branch -> Run workflow.
 #
 # Secrets (environment "production", hanya branch dev + main):
 #           VPS_HOST, VPS_PORT, VPS_USER (adminweb), VPS_SSH_KEY (key khusus Actions), VPS_KNOWN_HOSTS,
 #           NEXT_PUBLIC_APP_URL, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 # Repo publik: log Actions bisa dilihat siapa pun, jadi output langkah SSH dibuat minimal.
 # Variable: GO_LIVE = "true" setelah ada pengguna aktif -> deploy hanya boleh dari main.
+# Push di jam puncak tidak gagal: job menunggu sampai jam puncak selesai. Run manual tetap ditolak.
 
 name: Deploy
 
 on:
+  push:
+    branches: [dev, main]
   workflow_dispatch:
 
 concurrency:
@@ -22,22 +26,44 @@ env:
 jobs:
   guard:
     runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.branch.outputs.run }}
     steps:
-      - name: Tolak branch selain main setelah go-live
-        if: vars.GO_LIVE == 'true' && github.ref_name != 'main'
+      - name: Cek branch terhadap GO_LIVE
+        id: branch
         run: |
-          echo "::error::Setelah go-live, deploy hanya dari main (sekarang: ${{ github.ref_name }})."
-          exit 1
+          if [ "${{ vars.GO_LIVE }}" = true ] && [ "${{ github.ref_name }}" != main ]; then
+            if [ "${{ github.event_name }}" = push ]; then
+              echo "Sudah go-live, push ke ${{ github.ref_name }} tidak di-deploy."
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "::error::Setelah go-live, deploy hanya dari main (sekarang: ${{ github.ref_name }})."
+            exit 1
+          fi
+          if [ "${{ vars.GO_LIVE }}" != true ] && [ "${{ github.event_name }}" = push ] && [ "${{ github.ref_name }}" != dev ]; then
+            echo "Belum go-live, push ke ${{ github.ref_name }} tidak di-deploy otomatis (hanya dev)."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "run=true" >> "$GITHUB_OUTPUT"
       - name: Tolak jam puncak app lain di VPS (WIB)
+        if: steps.branch.outputs.run == 'true'
         run: |
-          now=$(TZ=Asia/Jakarta date +%H%M)
-          if { [ "$now" -ge 0600 ] && [ "$now" -lt 0730 ]; } || { [ "$now" -ge 1245 ] && [ "$now" -lt 1445 ]; }; then
+          peak() {
+            now=$(TZ=Asia/Jakarta date +%H%M)
+            { [ "$now" -ge 0600 ] && [ "$now" -lt 0730 ]; } || { [ "$now" -ge 1245 ] && [ "$now" -lt 1445 ]; }
+          }
+          if [ "${{ github.event_name }}" = push ]; then
+            while peak; do echo "Jam puncak (WIB), menunggu..."; sleep 60; done
+          elif peak; then
             echo "::error::Sekarang $now WIB, di dalam jam puncak (06:00-07:30, 12:45-14:45). Deploy dibatalkan."
             exit 1
           fi
 
   build:
     needs: guard
+    if: needs.guard.outputs.run == 'true'
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -76,8 +102,13 @@ jobs:
       # Dicek ulang karena build bisa berjalan beberapa menit setelah job guard.
       - name: Tolak jam puncak app lain di VPS (WIB)
         run: |
-          now=$(TZ=Asia/Jakarta date +%H%M)
-          if { [ "$now" -ge 0600 ] && [ "$now" -lt 0730 ]; } || { [ "$now" -ge 1245 ] && [ "$now" -lt 1445 ]; }; then
+          peak() {
+            now=$(TZ=Asia/Jakarta date +%H%M)
+            { [ "$now" -ge 0600 ] && [ "$now" -lt 0730 ]; } || { [ "$now" -ge 1245 ] && [ "$now" -lt 1445 ]; }
+          }
+          if [ "${{ github.event_name }}" = push ]; then
+            while peak; do echo "Jam puncak (WIB), menunggu..."; sleep 60; done
+          elif peak; then
             echo "::error::Sekarang $now WIB, di dalam jam puncak (06:00-07:30, 12:45-14:45). Image sudah di GHCR; jalankan ulang setelah jam puncak."
             exit 1
           fi
