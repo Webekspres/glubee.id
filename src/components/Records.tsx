@@ -13,7 +13,7 @@ import {
 import { RangeFilter } from "./RangeFilter";
 import { EntryTable } from "./EntryTable";
 import { TrendChart } from "./TrendChart";
-import { PageHeading, ErrorMessage, Modal } from "./Ui";
+import { PageHeading, ErrorMessage, Loading, Modal } from "./Ui";
 import { GlucoseEntryForm } from "./GlucoseEntryForm";
 import { APP_CONFIG } from "@/lib/config";
 
@@ -182,14 +182,15 @@ export function Records({
           Coba lagi
         </button>
       )}
-      {!result && !error && (
-        <p role="status" className="loading">
-          {query ? "Memuat catatan…" : "Pilih tanggal dan tekan Terapkan."}
-        </p>
-      )}
+      {!result && !error &&
+        (query ? (
+          <Loading label="Memuat catatan…" />
+        ) : (
+          <p className="muted">Pilih tanggal dan tekan Terapkan.</p>
+        ))}
 
       {result && (
-        <>
+        <div className="stack reveal">
           {result.summary && (
             <>
               {/* Responsive Hero Metrics Card */}
@@ -296,7 +297,7 @@ export function Records({
               </button>
             )}
           </section>
-        </>
+        </div>
       )}
 
       {modal && (

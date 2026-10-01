@@ -216,6 +216,10 @@ h3,
   font-weight: 700;
   text-decoration: none;
   white-space: normal;
+  transition:
+    background-color 150ms ease,
+    transform 100ms ease,
+    box-shadow 100ms ease;
 }
 .button:hover {
   background: var(--soft);
@@ -613,9 +617,90 @@ legend {
   max-width: 720px;
   margin: auto;
 }
-.loading {
-  padding: 60px 0;
+/* Gerak (MOTION 2, diminta pengguna 1 Okt 2026). Tujuan: halaman tidak "melompat"
+   saat berganti, konten yang baru dimuat tampil berurutan, dan waktu tunggu terasa
+   hidup. Semuanya dimatikan oleh prefers-reduced-motion di bawah. */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes cell-glow {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.82);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes mascot-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+main#main {
+  animation: page-enter 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.reveal {
+  animation: page-enter 380ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.dialog[open] {
+  animation: dialog-in 220ms ease-out both;
+}
+/* Muncul setelah 0,18 detik agar muatan cepat tidak berkedip. */
+.loader {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 56px 0;
+  text-align: center;
   color: var(--muted);
+  animation: fade-in 200ms ease-out 180ms both;
+}
+.loader.is-page {
+  padding: 72px 0;
+}
+.loader p {
+  font-size: 17px;
+}
+.loader-mascot {
+  animation: mascot-bob 1.6s ease-in-out infinite;
+}
+.loader-cells {
+  display: flex;
+  gap: 6px;
+}
+.loader-cells i {
+  width: 18px;
+  height: 16px;
+  clip-path: var(--hex);
+  background: var(--mustard);
+  animation: cell-glow 1.2s ease-in-out infinite;
+}
+.loader-cells i:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.loader-cells i:nth-child(3) {
+  animation-delay: 0.4s;
 }
 .dialog {
   margin: auto;

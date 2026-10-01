@@ -2,7 +2,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { accountDestination, api, ApiError, type Profile } from "@/lib/ui";
-import { ErrorMessage } from "./Ui";
+import { ErrorMessage, Loading } from "./Ui";
 export function SessionGate({
   children,
   onboarding = false,
@@ -56,10 +56,8 @@ export function SessionGate({
       </div>
     );
   return profile ? (
-    children(profile)
+    <div className="reveal">{children(profile)}</div>
   ) : (
-    <p className="loading" role="status">
-      Memuat akun Anda…
-    </p>
+    <Loading label="Memuat akun Anda…" mascot />
   );
 }

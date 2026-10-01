@@ -40,5 +40,5 @@ Detail dan alasan: [`anti-slop/audit-001-2026-09-30.md`](../../anti-slop/audit-0
 - **Radius:** kartu 16 px, tombol/input 12 px, badge 6 px; pil hanya chip filter dan FAB.
 - **Motif:** sel madu heksagonal dari tubuh maskot (`--hex`) untuk ikon kondisi pengukuran (`src/components/Icons.tsx`).
 - **Aksen kuning:** aksi utama dan angka utama; nav aktif memakai garis bawah.
-- **Dial:** ENERGY 2 / RHYTHM 2 (landing), RHYTHM 1 (aplikasi), MOTION 1.
+- **Dial:** ENERGY 2 / RHYTHM 2 (landing), RHYTHM 1 (aplikasi), MOTION 2 sejak 1 Okt 2026 atas permintaan pengguna: halaman masuk dengan fade-up, konten tampil setelah dimuat, loader sel madu + maskot, dialog muncul halus. Semua mati bila "kurangi gerakan" aktif.
 

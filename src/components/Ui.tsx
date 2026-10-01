@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { ApiError } from "@/lib/ui";
 import { fieldMessage } from "@/lib/validation";
+import { Mascot } from "./Mascot";
 
 type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
@@ -136,6 +137,23 @@ export function PageHeading({
         {description && <p className="muted">{description}</p>}
       </div>
       {children}
+    </div>
+  );
+}
+
+// Indikator memuat: tiga sel madu menyala bergantian (motif maskot). Baru tampil
+// setelah ~0,2 detik agar muatan cepat tidak berkedip; diam bila pengguna
+// memilih kurangi gerakan.
+export function Loading({ label, mascot = false }: { label: string; mascot?: boolean }) {
+  return (
+    <div className={"loader" + (mascot ? " is-page" : "")} role="status">
+      {mascot && <Mascot width={96} className="loader-mascot" />}
+      <span className="loader-cells" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </span>
+      <p>{label}</p>
     </div>
   );
 }

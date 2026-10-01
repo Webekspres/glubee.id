@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { api, ApiError } from "@/lib/ui";
-import { ErrorMessage, Modal, PageHeading, useFieldErrors } from "./Ui";
+import { ErrorMessage, Loading, Modal, PageHeading, useFieldErrors } from "./Ui";
 
 type Account = {
   user_id: string;
@@ -73,11 +73,7 @@ export function AdminPanel() {
   }
 
   if (state === "loading")
-    return (
-      <p className="loading" role="status">
-        Memeriksa sesi admin…
-      </p>
-    );
+    return <Loading label="Memeriksa sesi admin…" />;
   if (state === "login") return <AdminLogin error={error} onDone={loadAudit} />;
   if (state === "denied")
     return (
