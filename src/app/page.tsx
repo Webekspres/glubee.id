@@ -3,6 +3,7 @@ import { TransitionLink as Link } from "@/components/TransitionLink";
 import { HeroPreview } from "@/components/HeroPreview";
 import { HexIcon } from "@/components/Icons";
 import { Mascot } from "@/components/Mascot";
+import { SignedInRedirect } from "@/components/SignedInRedirect";
 import { APP_CONFIG } from "@/lib/config";
 
 // Setiap bagian menjawab satu keraguan nyata calon pengguna dan memakai komposisi
@@ -10,6 +11,7 @@ import { APP_CONFIG } from "@/lib/config";
 export default function Home() {
   return (
     <main id="main">
+      <SignedInRedirect />
       <div className="container">
         <section className="hero">
           <div>

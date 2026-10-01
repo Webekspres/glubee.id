@@ -13,6 +13,7 @@ import { accountDestination, api } from "@/lib/ui";
 import { ConsentFields, consentFields } from "./ConsentFields";
 import { ErrorMessage, useFieldErrors } from "./Ui";
 import { Mascot } from "./Mascot";
+import { SignedInRedirect } from "./SignedInRedirect";
 import { Icon } from "./Icons";
 
 type Mode =
@@ -126,6 +127,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
 
   return (
     <main id="main" className="auth-layout">
+      {(mode === "login" || mode === "register") && <SignedInRedirect />}
       <section className="auth-intro">
         <h1>{titles[mode]}</h1>
         <p className="muted">

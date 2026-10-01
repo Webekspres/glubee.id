@@ -33,6 +33,24 @@ test("remember-me decides whether the session survives closing the browser", asy
   const persistent = await login(remembered, email, password, true);
   const thirtyDays = Date.now() / 1000 + 30 * 86400;
   for (const c of persistent) expect(Math.abs(c.expires - thirtyDays)).toBeLessThan(120);
+  // "Tutup browser": hanya cookie bertanggal yang bertahan, lalu buka beranda lagi.
+  const kept = (await remembered.context().cookies()).filter((c) => c.expires !== -1);
+  const reopened = await browser.newContext();
+  await reopened.addCookies(kept);
+  const home = await reopened.newPage();
+  await home.goto("/");
+  await expect(home).toHaveURL(/\/(dashboard|onboarding|account-status)$/);
+  await home.goto("/login");
+  await expect(home).toHaveURL(/\/(dashboard|onboarding|account-status)$/);
+  await reopened.close();
+  // Tanpa "Ingat saya", beranda tetap beranda setelah browser ditutup.
+  const fresh = await browser.newContext();
+  await fresh.addCookies(sessionCookies.filter((c) => c.expires !== -1));
+  const anon = await fresh.newPage();
+  await anon.goto("/");
+  await anon.waitForTimeout(1000);
+  await expect(anon).toHaveURL(/\/$/);
+  await fresh.close();
   // Google login membawa pilihan yang sama.
   await remembered.goto("/login");
   await remembered.getByLabel("Ingat saya di perangkat ini").check();
