@@ -12,6 +12,20 @@ type Account = {
   is_admin: boolean;
   created_at: string;
 };
+type DeletionRow = {
+  email: string | null;
+  requested_at: string;
+  scheduled_for: string;
+  state: string;
+  failure_code: string | null;
+};
+const DELETION_STATE: Record<string, string> = {
+  pending: "Menunggu masa jeda",
+  executing: "Sedang dihapus",
+  failed: "Gagal, dicoba ulang otomatis",
+  completed: "Selesai dihapus",
+  cancelled: "Dibatalkan pengguna",
+};
 type AuditEvent = {
   occurred_at: string;
   action: string;
@@ -46,11 +60,13 @@ const when = (v: string) =>
 export function AdminPanel() {
   const [state, setState] = useState<"loading" | "login" | "denied" | "admin">("loading");
   const [audit, setAudit] = useState<AuditEvent[]>([]);
+  const [deletions, setDeletions] = useState<DeletionRow[]>([]);
   const [error, setError] = useState<unknown>(null);
 
   const loadAudit = useCallback(async () => {
     try {
       setAudit((await api<AuditEvent[]>("/api/admin/audit")).data);
+      setDeletions((await api<DeletionRow[]>("/api/admin/deletions")).data);
       setState("admin");
     } catch (e) {
       if (e instanceof ApiError && e.status === 401) setState("login");
@@ -102,6 +118,47 @@ export function AdminPanel() {
       </PageHeading>
       <AccountSearch onChanged={loadAudit} />
       <DemoAccountForm onCreated={loadAudit} />
+      <section className="panel stack">
+        <h2>Permintaan penghapusan akun</h2>
+        <p className="small muted">
+          Pemberitahuan saja: admin tidak dapat menunda atau membatalkan. Akun dihapus otomatis
+          setelah masa jeda 3 hari (dicek setiap 15 menit).
+        </p>
+        {deletions.length === 0 ? (
+          <p className="muted">Tidak ada permintaan dalam 30 hari terakhir.</p>
+        ) : (
+          <div className="table-scroll" tabIndex={0} role="region" aria-label="Permintaan penghapusan akun">
+            <table>
+              <thead>
+                <tr>
+                  <th>Akun</th>
+                  <th>Diajukan</th>
+                  <th>Jadwal hapus</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {deletions.map((d, i) => (
+                  <tr key={i}>
+                    <td>{d.email ?? "Akun sudah dihapus"}</td>
+                    <td>{when(d.requested_at)}</td>
+                    <td>{when(d.scheduled_for)}</td>
+                    <td>
+                      {d.state === "failed" ? (
+                        <span className="badge invalid">
+                          {DELETION_STATE.failed} ({d.failure_code})
+                        </span>
+                      ) : (
+                        DELETION_STATE[d.state] ?? d.state
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
       <section className="panel stack">
         <h2>Riwayat tindakan admin</h2>
         {audit.length === 0 ? (

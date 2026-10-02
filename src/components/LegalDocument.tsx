@@ -43,7 +43,7 @@ export async function LegalDocument({
       <p className="notice">
         {old
           ? "Versi lama, disimpan sebagai bukti persetujuan yang pernah diberikan."
-          : "Fitur pengingat, kontak darurat, dan penghapusan akun mandiri yang dijelaskan di sini sedang disiapkan dan belum tersedia."}
+          : "Fitur pengingat dan kontak darurat yang dijelaskan di sini sedang disiapkan dan belum tersedia."}
       </p>
       {content
         .trim()

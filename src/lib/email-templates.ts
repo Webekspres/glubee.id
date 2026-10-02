@@ -497,6 +497,66 @@ export function createPasswordResetEmail(params: {
   return { subject, html: renderEmailLayout(data) };
 }
 
+// GLB-024: konfirmasi pengajuan penghapusan akun, dengan jadwal lokal dan UTC.
+export function createDeletionRequestedEmail(params: {
+  recipientName: string;
+  scheduleLocal: string;
+  scheduleUtc: string;
+  statusUrl: string;
+}): { subject: string; html: string } {
+  const subject = "Permintaan penghapusan akun Glubee.id diterima";
+  const data: EmailTemplateData = {
+    subject,
+    badgeLabel: "PENGHAPUSAN AKUN",
+    urgencyLevel: "security",
+    recipientName: params.recipientName,
+    headline: "Akun Anda dijadwalkan untuk dihapus",
+    bodyParagraphs: [
+      "Kami menerima permintaan Anda untuk menghapus akun Glubee.id beserta seluruh catatan gula darah, profil, dan bukti persetujuan.",
+      "Selama masa jeda, pencatatan dan pengingat dihentikan. Anda masih dapat mengunduh salinan data atau membatalkan permintaan ini sebelum jadwal di bawah.",
+    ],
+    focalMetric: {
+      value: params.scheduleLocal,
+      unit: "Jadwal penghapusan",
+      statusLabel: "Masa jeda 3 hari",
+      timestamp: params.scheduleUtc,
+    },
+    actionButton: {
+      label: "Lihat status atau batalkan",
+      url: params.statusUrl,
+      subtext: "Masuk ke akun Anda untuk membatalkan",
+    },
+    importantNotice:
+      "Jika Anda tidak mengajukan penghapusan ini, segera masuk, batalkan permintaan, dan ganti password Anda. Salinan cadangan sistem kedaluwarsa paling lambat 8 hari setelah penghapusan.",
+    legalDisclaimer:
+      "Notifikasi resmi dari Glubee.id (PT. Webekspres Teknologi Indonesia). Hubungi glubeebuddy@gmail.com bila memerlukan bantuan.",
+  };
+  return { subject, html: renderEmailLayout(data) };
+}
+
+export function createDeletionCancelledEmail(params: {
+  recipientName: string;
+  dashboardUrl: string;
+}): { subject: string; html: string } {
+  const subject = "Penghapusan akun Glubee.id dibatalkan";
+  const data: EmailTemplateData = {
+    subject,
+    badgeLabel: "PENGHAPUSAN AKUN",
+    urgencyLevel: "info",
+    recipientName: params.recipientName,
+    headline: "Penghapusan akun dibatalkan",
+    bodyParagraphs: [
+      "Permintaan penghapusan akun Anda telah dibatalkan. Data Anda tetap tersimpan dan akun dapat digunakan kembali.",
+      "Pengingat yang dibatalkan saat pengajuan tidak dikirim ulang.",
+    ],
+    actionButton: { label: "Buka Glubee", url: params.dashboardUrl },
+    importantNotice: "Jika Anda tidak membatalkan permintaan ini, segera ganti password Anda.",
+    legalDisclaimer:
+      "Notifikasi resmi dari Glubee.id (PT. Webekspres Teknologi Indonesia). Hubungi glubeebuddy@gmail.com bila memerlukan bantuan.",
+  };
+  return { subject, html: renderEmailLayout(data) };
+}
+
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, "&amp;")

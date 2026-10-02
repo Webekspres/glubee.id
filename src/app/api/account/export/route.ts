@@ -1,13 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
 import { authenticatedRequest, rateLimited } from "@/lib/auth";
 import { failure, objectValue, readJson, success } from "@/lib/api";
-import { exportFileName, reauthMethod } from "@/lib/domain/export";
+import { exportFileName } from "@/lib/domain/export";
+import { authMethod, requireReauth } from "@/lib/reauth";
 import type { Timezone } from "@/lib/ui";
-
-function authMethod(user: { app_metadata?: { providers?: string[]; provider?: string }; last_sign_in_at?: string | null }) {
-  const providers = user.app_metadata?.providers ?? [user.app_metadata?.provider ?? "email"];
-  return reauthMethod({ providers, lastSignInAt: user.last_sign_in_at ?? null });
-}
 
 // Cara verifikasi yang berlaku untuk akun ini, agar UI tahu perlu password atau tidak.
 export async function GET() {
@@ -24,26 +19,8 @@ export async function POST(request: Request) {
   if (await rateLimited(auth.supabase, "account.export", 5))
     return failure("RATE_LIMITED", "Terlalu banyak permintaan. Coba lagi dalam satu menit.", 429);
 
-  const body = objectValue(await readJson(request));
-  const method = authMethod(auth.user);
-
-  if (method === "relogin_required")
-    return failure("REAUTH_REQUIRED", "Demi keamanan, masuk ulang dengan Google lalu unduh lagi.", 401);
-  if (method === "password") {
-    const password = typeof body?.password === "string" ? body.password : "";
-    if (!password)
-      return failure("VALIDATION_ERROR", "Masukkan password untuk melanjutkan.", 422, { password: "Wajib diisi." });
-    // Verifikasi lewat sesi terpisah yang langsung dicabut; sesi pengguna tidak berubah.
-    const check = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-      { auth: { persistSession: false, autoRefreshToken: false } },
-    );
-    const { error } = await check.auth.signInWithPassword({ email: auth.user.email!, password });
-    if (error)
-      return failure("INVALID_CREDENTIALS", "Password tidak sesuai.", 401, { password: "Password tidak sesuai." });
-    await check.auth.signOut({ scope: "local" });
-  }
+  const denied = await requireReauth(auth.user, objectValue(await readJson(request)));
+  if (denied) return denied;
 
   const { data, error } = await auth.supabase.rpc("export_my_data");
   if (error)
