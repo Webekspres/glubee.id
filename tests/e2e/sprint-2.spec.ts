@@ -56,7 +56,7 @@ test("Sprint 2 user journey, isolation, three zones, PDF and privacy", async ({
   await page.getByLabel("Email", { exact: true }).fill(email);
   await page.getByLabel(/^Password/).fill(password);
   await page.getByLabel("Konfirmasi password", { exact: true }).fill(password);
-  await page.getByLabel(/^Tanggal lahir/).fill("1990-01-01");
+  await page.getByLabel(/^Tanggal lahir/).fill("01/01/1990");
   for (const c of await page.locator('input[type="checkbox"]').all())
     await c.check();
   await page.getByRole("button", { name: "Daftar akun", exact: true }).click();
@@ -98,10 +98,8 @@ test("Sprint 2 user journey, isolation, three zones, PDF and privacy", async ({
   ).toBeVisible();
   await page.goto("/log");
   await page.getByLabel("Hasil pengukuran", { exact: true }).fill("5.5");
-  await page.getByRole("combobox", { name: "Satuan" }).selectOption("mmol/L");
-  await page
-    .getByRole("combobox", { name: /Kondisi pengukuran/ })
-    .selectOption("random");
+  await page.getByRole("radio", { name: "mmol/L" }).check();
+  await page.getByRole("radio", { name: "Sewaktu" }).check();
   await page
     .getByLabel("Waktu pengukuran", { exact: false })
     .fill(month + "-10T08:30");
@@ -330,7 +328,7 @@ test("Sprint 2 user journey, isolation, three zones, PDF and privacy", async ({
   await expect(
     page.getByRole("heading", { name: "Bukti persetujuan", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Keluar", exact: true }).click();
+  await page.getByRole("button", { name: "Keluar dari akun", exact: true }).click();
   await expect(page).toHaveURL(/\/login/);
   await page.getByLabel("Email", { exact: true }).fill(email);
   await page.getByLabel(/^Password/).fill(password);
@@ -380,9 +378,7 @@ test("Sprint 2 user journey, isolation, three zones, PDF and privacy", async ({
   await expect(page).toHaveURL(/\/dashboard$/);
   await page.goto("/log");
   await page.getByLabel("Hasil pengukuran", { exact: true }).fill("95");
-  await page
-    .getByRole("combobox", { name: /Kondisi pengukuran/ })
-    .selectOption("random");
+  await page.getByRole("radio", { name: "Sewaktu" }).check();
   await page
     .locator('textarea[name="note"]')
     .fill("Input tetap ada saat jaringan gagal.");

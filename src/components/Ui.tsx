@@ -157,3 +157,62 @@ export function Loading({ label, mascot = false }: { label: string; mascot?: boo
     </div>
   );
 }
+
+// Tanggal lahir diketik sebagai hh/bb/tttt dengan papan angka. Date picker bawaan Android
+// dibuka di bulan ini, sehingga pengguna lahir 1960 harus mundur puluhan tahun.
+// Nilai ISO dikirim lewat input tersembunyi "birthDate".
+function isoFromText(text: string) {
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(text);
+  if (!m) return "";
+  const iso = `${m[3]}-${m[2]}-${m[1]}`;
+  const date = new Date(iso + "T00:00:00.000Z");
+  return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === iso
+    ? iso
+    : "";
+}
+function formatDigits(raw: string) {
+  const d = raw.replace(/\D/g, "").slice(0, 8);
+  return [d.slice(0, 2), d.slice(2, 4), d.slice(4)].filter(Boolean).join("/");
+}
+export function BirthDateInput({
+  id,
+  defaultValue = "",
+  describedBy,
+}: {
+  id: string;
+  defaultValue?: string;
+  describedBy?: Record<string, unknown>;
+}) {
+  const [text, setText] = useState(() =>
+    defaultValue ? defaultValue.split("-").reverse().join("/") : "",
+  );
+  const iso = isoFromText(text);
+  return (
+    <>
+      <input
+        id={id}
+        name="birthDateText"
+        type="text"
+        inputMode="numeric"
+        autoComplete="bday"
+        placeholder="hh/bb/tttt"
+        pattern="\d{2}/\d{2}/\d{4}"
+        title="Format hh/bb/tttt, contoh 17/08/1960"
+        maxLength={10}
+        required
+        value={text}
+        onChange={(e) => {
+          const next = formatDigits(e.target.value);
+          setText(next);
+          e.target.setCustomValidity(
+            next.length === 10 && !isoFromText(next)
+              ? "Tanggal ini tidak ada di kalender. Periksa tanggal dan bulan."
+              : "",
+          );
+        }}
+        {...describedBy}
+      />
+      <input type="hidden" name="birthDate" value={iso || text} />
+    </>
+  );
+}

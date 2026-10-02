@@ -3,6 +3,7 @@ export type FieldLike = {
   validity: ValidityState;
   minLength?: number;
   min?: string;
+  validationMessage?: string;
 };
 
 // Pesan validasi berbahasa Indonesia; tooltip bawaan browser mengikuti bahasa perangkat.
@@ -12,11 +13,13 @@ export function fieldMessage(el: FieldLike): string {
   if (v.valueMissing)
     return el.type === "checkbox"
       ? "Centang untuk melanjutkan."
-      : el.type.startsWith("select")
+      : el.type.startsWith("select") || el.type === "radio"
         ? "Pilih salah satu."
         : "Wajib diisi.";
   if (v.typeMismatch && el.type === "email")
     return "Format email belum benar, contoh: nama@email.com.";
+  if (v.customError && el.validationMessage) return el.validationMessage;
+  if (v.patternMismatch) return "Tulis dengan format hh/bb/tttt, contoh 17/08/1960.";
   if (v.tooShort) return `Minimal ${el.minLength} karakter.`;
   if (v.rangeOverflow)
     return el.type.includes("date")

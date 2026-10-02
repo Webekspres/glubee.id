@@ -4,6 +4,7 @@ import {
   api,
   CONTEXT_LABELS,
   dateTime,
+  mgDlText,
   numberText,
   type Entry,
   type Timezone,
@@ -130,7 +131,7 @@ export function EntryTable({
                   <span className="mobile-card-unit">{e.original_unit}</span>
                   {e.original_unit === "mmol/L" && (
                     <span className="mobile-card-equiv">
-                      ≈ {numberText(Number(e.normalized_mg_dl))} mg/dL
+                      ≈ {mgDlText(Number(e.normalized_mg_dl))} mg/dL
                     </span>
                   )}
                 </div>
@@ -191,13 +192,16 @@ export function EntryTable({
                   <span className="small">{e.original_unit}</span>
                   {e.original_unit === "mmol/L" && (
                     <p className="small muted">
-                      ≈ {numberText(Number(e.normalized_mg_dl))} mg/dL
+                      ≈ {mgDlText(Number(e.normalized_mg_dl))} mg/dL
                     </p>
                   )}
                 </td>
                 <td>
-                  {CONTEXT_LABELS[e.measurement_context]}{" "}
-                  <StatusBadge entry={e} />
+                  <span className="context-cell">
+                    <HexIcon name={e.measurement_context} />
+                    {CONTEXT_LABELS[e.measurement_context]}{" "}
+                    <StatusBadge entry={e} />
+                  </span>
                   {e.note && <p className="entry-note small muted">{e.note}</p>}
                   {e.invalidation_reason && (
                     <p className="entry-note small">

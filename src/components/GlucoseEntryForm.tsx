@@ -9,6 +9,7 @@ import {
   type Timezone,
 } from "@/lib/ui";
 import { ErrorMessage, useFieldErrors } from "./Ui";
+import { HexIcon } from "./Icons";
 
 export function GlucoseEntryForm({
   zone,
@@ -116,41 +117,55 @@ export function GlucoseEntryForm({
           />
           {v.error("originalValue")}
         </div>
-        <label className="field">
-          Satuan
-          <select
-            name="originalUnit"
-            defaultValue={replacement?.original_unit ?? "mg/dL"}
-          >
-            <option>mg/dL</option>
-            <option>mmol/L</option>
-          </select>
-        </label>
+        {/* Dua tombol bersebelahan: satu ketukan, tanpa daftar dropdown sistem. */}
+        <fieldset className="field choice-group">
+          <legend>Satuan</legend>
+          <div className="choice-row">
+            {["mg/dL", "mmol/L"].map((unit) => (
+              <label className="choice" key={unit}>
+                <input
+                  type="radio"
+                  name="originalUnit"
+                  value={unit}
+                  defaultChecked={
+                    (replacement?.original_unit ?? "mg/dL") === unit
+                  }
+                />
+                <span>{unit}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
       </div>
-      <div className="field">
-        <label htmlFor={`${id}-context`}>Kondisi pengukuran</label>
-        <select
-          id={`${id}-context`}
-          name="measurementContext"
-          defaultValue={replacement?.measurement_context ?? ""}
-          required
-          {...v.field("measurementContext", `${id}-context-hint`)}
-        >
-          <option value="" disabled>
-            Pilih kondisi saat mengukur
-          </option>
+      {/* Kondisi sebagai tombol besar dengan ikon sel madu yang sama seperti di riwayat,
+          supaya pengguna lansia tidak perlu membuka dan menggulir dropdown. */}
+      <fieldset
+        className="field choice-group"
+        aria-describedby={`${id}-context-hint`}
+      >
+        <legend>Kondisi pengukuran</legend>
+        <div className="choice-grid">
           {Object.entries(CONTEXT_LABELS).map(([key, label]) => (
-            <option value={key} key={key}>
-              {label}
-            </option>
+            <label className="choice has-icon" key={key}>
+              <input
+                type="radio"
+                name="measurementContext"
+                value={key}
+                required
+                defaultChecked={replacement?.measurement_context === key}
+                {...v.field("measurementContext", `${id}-context-hint`)}
+              />
+              <HexIcon name={key} />
+              <span>{label}</span>
+            </label>
           ))}
-        </select>
+        </div>
         {v.error("measurementContext")}
         <small id={`${id}-context-hint`}>
           Puasa: tanpa asupan kalori minimal 8 jam. Setelah makan: 2 jam setelah
           makan.
         </small>
-      </div>
+      </fieldset>
       <div className="field">
         <label htmlFor={`${id}-time`}>Waktu pengukuran ({zone})</label>
         <input

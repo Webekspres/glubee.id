@@ -6,6 +6,7 @@ import { APP_CONFIG } from "./config";
 import {
   CONTEXT_LABELS,
   dateTime,
+  mgDlText,
   numberText,
   type Profile,
   type Entry,
@@ -127,11 +128,11 @@ export async function createReport(
     "Catatan valid: " +
       summary.count +
       "  |  Rata-rata: " +
-      numberText(summary.averageMgDl) +
+      mgDlText(summary.averageMgDl) +
       " mg/dL  |  Min: " +
-      numberText(summary.minimumMgDl) +
+      mgDlText(summary.minimumMgDl) +
       "  |  Maks: " +
-      numberText(summary.maximumMgDl),
+      mgDlText(summary.maximumMgDl),
     10,
   );
   paragraph(

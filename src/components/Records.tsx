@@ -1,11 +1,10 @@
 "use client";
-import { Mascot } from "./Mascot";
 import { Icon } from "./Icons";
 import { TransitionLink as Link } from "./TransitionLink";
 import { useEffect, useState } from "react";
 import {
   api,
-  numberText,
+  mgDlText,
   type Profile,
   type Entry,
   type Point,
@@ -150,9 +149,7 @@ export function Records({
         }
       >
         <div className="page-heading-aside">
-          {!history && (
-            <Mascot width={120} priority />
-          )}
+          {/* Tanpa maskot: data adalah fokus di sini. Maskot muncul di empty state grafik. */}
           <button className="button primary" onClick={() => setModal(true)}>
             + Catat gula darah
           </button>
@@ -203,7 +200,7 @@ export function Records({
                 </div>
                 <div className="hero-metric-focal">
                   <span className="hero-metric-num">
-                    {numberText(result.summary.averageMgDl)}
+                    {mgDlText(result.summary.averageMgDl)}
                   </span>
                   <span className="hero-metric-unit">mg/dL</span>
                 </div>
@@ -211,13 +208,13 @@ export function Records({
                   <div className="hero-subitem">
                     <span className="hero-sub-label">Terendah</span>
                     <strong className="hero-sub-val">
-                      {numberText(result.summary.minimumMgDl)} mg/dL
+                      {mgDlText(result.summary.minimumMgDl)} mg/dL
                     </strong>
                   </div>
                   <div className="hero-subitem">
                     <span className="hero-sub-label">Tertinggi</span>
                     <strong className="hero-sub-val">
-                      {numberText(result.summary.maximumMgDl)} mg/dL
+                      {mgDlText(result.summary.maximumMgDl)} mg/dL
                     </strong>
                   </div>
                   <div className="hero-subitem">
@@ -240,7 +237,7 @@ export function Records({
                   <div className="panel metric" key={String(label)}>
                     <dt>{label}</dt>
                     <dd>
-                      {numberText(value as number | null)}
+                      {label === "Total pengukuran" ? String(value) : mgDlText(value as number | null)}
                       <span>{unit}</span>
                     </dd>
                   </div>

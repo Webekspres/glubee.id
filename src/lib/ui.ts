@@ -60,6 +60,13 @@ export function numberText(value: number | null) {
         value,
       );
 }
+// Ringkasan dan nilai hasil konversi: alat ukur menampilkan mg/dL sebagai bilangan bulat,
+// jadi desimal di sini hanya presisi palsu (dan "141,273" mudah terbaca seratus ribuan).
+export function mgDlText(value: number | null) {
+  return value === null
+    ? "–"
+    : new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(value);
+}
 export function dateTime(value: string, zone: Timezone) {
   return (
     new Intl.DateTimeFormat("id-ID", {

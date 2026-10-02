@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { APP_CONFIG } from "@/lib/config";
 import { accountDestination, api } from "@/lib/ui";
 import { ConsentFields, consentFields } from "./ConsentFields";
-import { ErrorMessage, useFieldErrors } from "./Ui";
+import { BirthDateInput, ErrorMessage, useFieldErrors } from "./Ui";
 import { Mascot } from "./Mascot";
 import { SignedInRedirect } from "./SignedInRedirect";
 import { Icon } from "./Icons";
@@ -90,6 +90,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
     setError(null);
     setMessage("");
     const body: Record<string, unknown> = Object.fromEntries(f);
+    delete body.birthDateText;
     for (const [name] of consentFields) body[name] = f.get(name) === "on";
     body.remember = f.get("remember") === "on";
     try {
@@ -270,17 +271,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
             <>
               <div className="field">
                 <label htmlFor={`${fieldId}-birth`}>Tanggal lahir</label>
-                <input
+                <BirthDateInput
                   id={`${fieldId}-birth`}
-                  type="date"
-                  name="birthDate"
-                  autoComplete="bday"
-                  required
-                  {...v.field("birthDate", `${fieldId}-birth-hint`)}
+                  describedBy={v.field("birthDateText", `${fieldId}-birth-hint`)}
                 />
-                {v.error("birthDate")}
+                {v.error("birthDateText")}
                 <small id={`${fieldId}-birth-hint`}>
-                  Layanan untuk usia 18 tahun ke atas.
+                  Contoh: 17/08/1960. Layanan untuk usia 18 tahun ke atas.
                 </small>
               </div>
               <ConsentFields validation={v} />

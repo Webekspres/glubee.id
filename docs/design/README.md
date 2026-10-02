@@ -42,3 +42,14 @@ Detail dan alasan: [`anti-slop/audit-001-2026-09-30.md`](../../anti-slop/audit-0
 - **Aksen kuning:** aksi utama dan angka utama; nav aktif memakai garis bawah.
 - **Dial:** ENERGY 2 / RHYTHM 2 (landing), RHYTHM 1 (aplikasi), MOTION 2 sejak 1 Okt 2026 atas permintaan pengguna: halaman masuk dengan fade-up, konten tampil setelah dimuat, loader sel madu + maskot, dialog muncul halus. Semua mati bila "kurangi gerakan" aktif.
 
+
+## Perbaikan antislop 002 (2 Oktober 2026)
+
+Detail: [`anti-slop/audit-002-2026-10-02.md`](../../anti-slop/audit-002-2026-10-02.md).
+
+- **Angka mg/dL** di ringkasan, hasil konversi, dan PDF dibulatkan (`mgDlText`).
+- **Form Catat:** satuan dan kondisi berupa tombol pilihan besar; kondisi memakai ikon sel madu.
+- **Keluar** di mobile pindah ke akhir halaman Profil; onboarding dan status akun tidak menampilkan navigasi aplikasi.
+- **Tanggal lahir** diketik hh/bb/tttt (`BirthDateInput`), bukan date picker.
+- **Laporan** menampilkan jumlah catatan dan rentang tanggal sebelum unduh.
+- **Maskot** tidak lagi di judul dashboard. Pose per konteks (melambai, memegang laporan, mencari, dll.) menunggu aset.

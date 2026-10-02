@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   CONTEXT_LABELS,
   dateTime,
+  mgDlText,
   numberText,
   type Point,
   type Timezone,
@@ -196,7 +197,7 @@ export function TrendChart({
                   <td>
                     {numberText(p.originalValue)} {p.originalUnit}
                   </td>
-                  <td>{numberText(p.valueMgDl)}</td>
+                  <td>{mgDlText(p.valueMgDl)}</td>
                   <td>
                     {
                       CONTEXT_LABELS[

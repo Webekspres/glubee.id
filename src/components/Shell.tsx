@@ -87,9 +87,10 @@ export default function Shell({ children }: { children: ReactNode }) {
     setMenu(false);
   }
 
-  const member =
-    links.some(([href]) => path === href) ||
-    ["/onboarding", "/account-status"].includes(path);
+  // Onboarding dan status akun: sesi ada, tetapi fitur aplikasi belum (atau tidak lagi) bisa
+  // dipakai, jadi header hanya berisi tombol Keluar.
+  const limited = ["/onboarding", "/account-status"].includes(path);
+  const member = links.some(([href]) => path === href);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -98,6 +99,13 @@ export default function Shell({ children }: { children: ReactNode }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // Di mobile tombol Keluar ada di halaman Profil (ProfileForm), bukan di header.
+  useEffect(() => {
+    const onLogout = () => void logout();
+    window.addEventListener("glubee-logout", onLogout);
+    return () => window.removeEventListener("glubee-logout", onLogout);
+  });
 
   async function logout() {
     setBusy(true);
@@ -136,21 +144,22 @@ export default function Shell({ children }: { children: ReactNode }) {
       )}
       <header className="site-header">
         <div className="header-inner">
-          <Link className="brand" href={member ? "/dashboard" : "/"}>
+          <Link className="brand" href={member || limited ? "/dashboard" : "/"}>
             <Wordmark />
             <span className="preview">Pratinjau</span>
           </Link>
-          {member ? (
+          {limited ? (
+            <button
+              className="button logout header-logout-limited"
+              onClick={logout}
+              disabled={busy}
+            >
+              <Icon name="logout" />
+              {busy ? "Keluar…" : "Keluar"}
+            </button>
+          ) : member ? (
             <>
-              {/* Di mobile navigasi ada di tab bar bawah; header cukup tombol Keluar. */}
-              <button
-                className="button logout header-logout"
-                onClick={logout}
-                disabled={busy}
-              >
-                <Icon name="logout" />
-                {busy ? "Keluar…" : "Keluar"}
-              </button>
+              {/* Di mobile navigasi ada di tab bar bawah; Keluar ada di halaman Profil. */}
               <button
                 className="button menu-toggle"
                 aria-expanded={menu}

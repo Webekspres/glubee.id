@@ -1,15 +1,57 @@
 "use client";
-import { useState } from "react";
-import { ApiError, type Profile } from "@/lib/ui";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { ApiError, api, ZONES, type Profile, type Timezone } from "@/lib/ui";
 import { PageHeading, ErrorMessage } from "./Ui";
+import { TransitionLink as Link } from "./TransitionLink";
 import { RangeFilter } from "./RangeFilter";
 import { APP_CONFIG } from "@/lib/config";
 
+type Preview =
+  | { state: "loading" }
+  | { state: "error" }
+  | { state: "ready"; count: number; from: string; toExclusive: string };
+
+function rangeText(from: string, toExclusive: string, zone: Timezone) {
+  const f = new Intl.DateTimeFormat("id-ID", {
+    dateStyle: "long",
+    timeZone: ZONES[zone],
+  });
+  return f.formatRange(new Date(from), new Date(Date.parse(toExclusive) - 1));
+}
+
 export function ReportForm({ profile }: { profile: Profile }) {
+  const zone = profile.timezone_code ?? "WIB";
   const [query, setQuery] = useState("period=current_month"),
     [busy, setBusy] = useState(false),
     [error, setError] = useState<unknown>(null),
-    [done, setDone] = useState(false);
+    [done, setDone] = useState(false),
+    [loaded, setLoaded] = useState<{ query: string; preview: Preview }>();
+
+  // Sebelum mengunduh, tunjukkan berapa catatan valid yang akan masuk ke PDF,
+  // supaya periode kosong tidak baru ketahuan setelah PDF dibuka.
+  useEffect(() => {
+    if (!query) return;
+    let live = true;
+    const set = (preview: Preview) => live && setLoaded({ query, preview });
+    api<{ count: number }>("/api/glucose-summary?" + query)
+      .then((r) => {
+        const range = (r.meta as { range?: { from: string; toExclusive: string } })
+          ?.range;
+        set(
+          range
+            ? { state: "ready", count: r.data.count, ...range }
+            : { state: "error" },
+        );
+      })
+      .catch(() => set({ state: "error" }));
+    return () => {
+      live = false;
+    };
+  }, [query]);
+  const preview: Preview =
+    loaded?.query === query ? loaded.preview : { state: "loading" };
+  const empty = preview.state === "ready" && preview.count === 0;
 
   async function download() {
     if (busy || !query) return;
@@ -63,7 +105,7 @@ export function ReportForm({ profile }: { profile: Profile }) {
         <h2>Pilih periode laporan</h2>
         <RangeFilter
           initial="current_month"
-          zone={profile.timezone_code ?? "WIB"}
+          zone={zone}
           onChange={(q) => {
             setQuery(q);
             setDone(false);
@@ -73,6 +115,32 @@ export function ReportForm({ profile }: { profile: Profile }) {
           Bulan ini mengikuti tanggal 1 hingga akhir bulan kalender. Semua
           tanggal menggunakan zona {profile.timezone_code}.
         </p>
+        {query && (
+          <div className="report-preview" aria-live="polite">
+            {preview.state === "loading" && (
+              <p className="small muted">Menghitung catatan pada periode ini…</p>
+            )}
+            {preview.state === "error" && (
+              <p className="small muted">
+                Jumlah catatan belum dapat dihitung. Laporan tetap bisa diunduh.
+              </p>
+            )}
+            {preview.state === "ready" && !empty && (
+              <p>
+                <strong>{preview.count} catatan valid</strong> akan masuk ke
+                laporan, {rangeText(preview.from, preview.toExclusive, zone)}.
+              </p>
+            )}
+            {empty && (
+              <p>
+                <strong>Belum ada catatan valid</strong> pada{" "}
+                {rangeText(preview.from, preview.toExclusive, zone)}. Pilih
+                periode lain, atau <Link href="/log">catat hasil pengukuran</Link>{" "}
+                dulu.
+              </p>
+            )}
+          </div>
+        )}
         <p className="notice">{APP_CONFIG.disclaimer}</p>
         <ErrorMessage error={error} />
         {done && (
@@ -82,12 +150,25 @@ export function ReportForm({ profile }: { profile: Profile }) {
         )}
         <button
           className="button primary"
-          disabled={busy || !query}
+          disabled={busy || !query || empty}
           onClick={download}
         >
           {busy ? "Menyiapkan PDF…" : "Unduh laporan PDF"}
         </button>
       </section>
+      <figure className="report-thumb">
+        <Image
+          src="/brand/report-sample.webp"
+          alt="Contoh halaman pertama laporan PDF: identitas, ringkasan, grafik, dan daftar catatan"
+          width={180}
+          height={254}
+        />
+        <figcaption>
+          Isi laporan: identitas dan periode, ringkasan rata-rata, terendah dan
+          tertinggi, grafik tren, lalu daftar semua catatan valid. Contoh di
+          samping dibuat dari data uji.
+        </figcaption>
+      </figure>
     </div>
   );
 }
