@@ -2,7 +2,7 @@ import Image from "next/image";
 import { TransitionLink as Link } from "@/components/TransitionLink";
 import { HeroPreview } from "@/components/HeroPreview";
 import { HexIcon } from "@/components/Icons";
-import { Mascot } from "@/components/Mascot";
+import { Mascot, MascotDisplay } from "@/components/Mascot";
 import { SignedInRedirect } from "@/components/SignedInRedirect";
 import { APP_CONFIG } from "@/lib/config";
 
@@ -39,7 +39,7 @@ export default function Home() {
             </p>
           </div>
           <div className="hero-visual">
-            <Mascot width={150} className="hero-mascot" priority />
+            <Mascot width={150} pose="wave" className="hero-mascot" priority />
             <HeroPreview />
           </div>
         </section>
@@ -56,10 +56,11 @@ export default function Home() {
             </p>
           </div>
           <figure className="unit-demo">
-            <div className="unit-value">
+            {/* Maskot glukometer memegang layar: angka ditulis kode, bukan bagian gambar. */}
+            <MascotDisplay width={220}>
               <strong>5,5</strong>
               <span>mmol/L</span>
-            </div>
+            </MascotDisplay>
             <span className="unit-equals" aria-hidden="true" />
             <div className="unit-value is-result">
               <strong>99</strong>
@@ -139,7 +140,7 @@ export default function Home() {
 
       <section className="closing" aria-labelledby="closing-title">
         <div className="container closing-inner">
-          <Mascot width={120} />
+          <Mascot width={130} pose="point" />
           <div>
             <h2 id="closing-title">Mulai dari catatan hari ini</h2>
             <p>{APP_CONFIG.disclaimer}</p>

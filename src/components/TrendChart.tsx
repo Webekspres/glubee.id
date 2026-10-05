@@ -36,7 +36,7 @@ export function TrendChart({
   if (!points.length)
     return (
       <div className="empty">
-        <Mascot width={88} />
+        <Mascot width={110} pose="rest" />
         <h3>Belum ada catatan pada periode ini</h3>
         <p className="muted">
           Simpan hasil pengukuran berikutnya, atau pilih periode yang lebih

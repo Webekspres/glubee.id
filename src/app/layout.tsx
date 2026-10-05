@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Atkinson_Hyperlegible_Next, Fraunces, Titan_One } from "next/font/google";
 import "./globals.css";
 import Shell from "@/components/Shell";
+import { appUrl } from "@/lib/config";
 
 // Pengganti sementara font brand (Ellak, Morally Serif) sampai file berlisensi diterima.
 const display = Titan_One({
@@ -23,10 +24,21 @@ const ui = Atkinson_Hyperlegible_Next({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(appUrl()),
   title: "Glubee",
   description: "Pencatatan dan pemantauan gula darah.",
   robots: { index: false, follow: false },
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    siteName: "Glubee",
+    title: "Glubee",
+    description:
+      "Catat gula darah, lihat perjalanannya, dan siapkan laporan untuk konsultasi.",
+  },
 };
+
+export const viewport: Viewport = { themeColor: "#011B2F" };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

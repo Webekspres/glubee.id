@@ -282,6 +282,7 @@ export function Records({
               entries={result.entries}
               zone={profile.timezone_code!}
               onChanged={refresh}
+              emptyMascot={history}
             />
             {history && result.cursor && (
               <button

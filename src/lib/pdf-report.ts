@@ -99,6 +99,16 @@ export async function createReport(
   pdf.setTitle("Laporan Pemantauan Gula Darah");
   pdf.setAuthor("Glubee");
   pdf.setCreationDate(now);
+  // Maskot garis satu warna (M5): tetap jelas saat laporan dicetak hitam putih.
+  const mascot = await pdf.embedPng(
+    await readFile(join(process.cwd(), "assets/brand/mascot-line.png")),
+  );
+  const mascotSize = mascot.scaleToFit(64, 74);
+  page.drawImage(mascot, {
+    x: 551 - mascotSize.width,
+    y: 806 - mascotSize.height,
+    ...mascotSize,
+  });
   text("GLUBEE", 44, 12, green);
   y -= 35;
   text("Laporan Pemantauan Gula Darah", 44, 21);

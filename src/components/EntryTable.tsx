@@ -12,6 +12,7 @@ import {
 import { Modal, ErrorMessage } from "./Ui";
 import { GlucoseEntryForm } from "./GlucoseEntryForm";
 import { HexIcon } from "./Icons";
+import { Mascot } from "./Mascot";
 
 
 // Badge hanya untuk status yang berbeda dari biasa; catatan aktif tidak perlu penanda.
@@ -26,10 +27,13 @@ export function EntryTable({
   entries,
   zone,
   onChanged,
+  emptyMascot = false,
 }: {
   entries: Entry[];
   zone: Timezone;
   onChanged: () => void;
+  // Hanya di Riwayat; di dashboard grafik kosong sudah menampilkan maskot.
+  emptyMascot?: boolean;
 }) {
   const [target, setTarget] = useState<Entry | null>(null),
     [replace, setReplace] = useState(false),
@@ -72,6 +76,7 @@ export function EntryTable({
   if (!entries.length)
     return (
       <div className="empty">
+        {emptyMascot && <Mascot width={110} pose="search" />}
         <h3>Belum ada catatan</h3>
         <p className="muted">
           Coba periode lain atau tambahkan pengukuran pertama Anda.

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ApiError, api, ZONES, type Profile, type Timezone } from "@/lib/ui";
 import { PageHeading, ErrorMessage } from "./Ui";
 import { TransitionLink as Link } from "./TransitionLink";
+import { Mascot } from "./Mascot";
 import { RangeFilter } from "./RangeFilter";
 import { APP_CONFIG } from "@/lib/config";
 
@@ -100,7 +101,11 @@ export function ReportForm({ profile }: { profile: Profile }) {
       <PageHeading
         title="Laporan pemantauan"
         description="Unduh ringkasan, grafik, dan catatan valid dalam satu PDF."
-      />
+      >
+        <div className="page-heading-aside">
+          <Mascot width={120} pose="report" />
+        </div>
+      </PageHeading>
       <section className="panel stack">
         <h2>Pilih periode laporan</h2>
         <RangeFilter

@@ -53,3 +53,22 @@ Detail: [`anti-slop/audit-002-2026-10-02.md`](../../anti-slop/audit-002-2026-10-
 - **Tanggal lahir** diketik hh/bb/tttt (`BirthDateInput`), bukan date picker.
 - **Laporan** menampilkan jumlah catatan dan rentang tanggal sebelum unduh.
 - **Maskot** tidak lagi di judul dashboard. Pose per konteks (melambai, memegang laporan, mencari, dll.) menunggu aset.
+
+## Aset maskot dan ikon (5 Oktober 2026)
+
+Dibuat dengan ChatGPT dari maskot klien memakai [`ASSET_PROMPTS.md`](ASSET_PROMPTS.md). Sumber PNG ada di luar repo (`~/Downloads/asset-glubee/Mascot`); yang masuk repo sudah di-trim dan dikonversi.
+
+| Aset | File | Dipakai di |
+| --- | --- | --- |
+| Melambai | `public/brand/mascot-wave.webp` | Hero landing, halaman masuk |
+| Menunjuk | `public/brand/mascot-point.webp` | Halaman daftar akun, penutup landing (menunjuk ke CTA) |
+| Mencari | `public/brand/mascot-search.webp` | 404, riwayat kosong |
+| Istirahat | `public/brand/mascot-rest.webp` | Grafik kosong |
+| Memegang laporan | `public/brand/mascot-report.webp` | Judul halaman Laporan (desktop) |
+| Bersorak | `public/brand/mascot-cheer.webp` | Hanya setelah catatan pertama, bukan reaksi terhadap nilai |
+| Memegang layar | `public/brand/mascot-display.webp` | Demo satuan di landing; angka ditulis kode (`MascotDisplay`) |
+| Kepala | `src/app/icon.png`, `apple-icon.png`, `public/icons/*` | Favicon, ikon iOS, manifest PWA |
+| Garis satu warna | `assets/brand/mascot-line.png` | Header halaman pertama PDF laporan |
+| Ilustrasi OG | `assets/brand/og-base.jpg` | `src/app/opengraph-image.tsx` (teks ditulis kode) |
+
+Netral (`mascot.webp`) tetap dipakai di loader. Ekspresi status belum dipakai (GLB-P01). Belum dibuat: bingkai animasi (M4), simbol logo (B1), revisi ekspresi status (M6).

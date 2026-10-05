@@ -1141,6 +1141,41 @@ main#main.is-leaving {
   clip-path: var(--hex);
   background: var(--mint);
 }
+/* Maskot memegang layar: angka ditaruh di atas panel kosong pada gambar.
+   Ukuran teks mengikuti lebar maskot (cqw) agar tetap di dalam panel. */
+.mascot-display {
+  position: relative;
+  width: 100%;
+  justify-self: center;
+  container-type: inline-size;
+}
+.mascot-display .mascot {
+  display: block;
+  width: 100%;
+}
+.mascot-display-screen {
+  position: absolute;
+  left: 18.9%;
+  top: 53.8%;
+  width: 62.1%;
+  height: 21.2%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  color: var(--oxford);
+  line-height: 1;
+}
+.mascot-display-screen strong {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: max(22px, 17cqw);
+}
+.mascot-display-screen span {
+  margin-top: 2cqw;
+  font-weight: 700;
+  /* Minimal 13 px (batas label di audit 001), meski maskot mengecil di ponsel. */
+  font-size: max(13px, 6.5cqw);
+}
 .unit-demo figcaption {
   grid-column: 1 / -1;
   color: var(--muted);
@@ -1957,7 +1992,7 @@ main#main.is-leaving {
   white-space: nowrap;
 }
 
-/* Maskot (placeholder dari brief klien, resolusi rendah). Latar terang menutup sisa tepi potongan. */
+/* Maskot: pose dipilih per keadaan layar (lihat Mascot.tsx), bukan per nilai gula darah. */
 .mascot {
   height: auto;
   filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.2));
@@ -1974,6 +2009,9 @@ main#main.is-leaving {
 .not-found .mascot {
   display: block;
   margin: 0 auto 12px;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.12));
+}
+.saved-state .mascot {
   filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.12));
 }
 .not-found {
