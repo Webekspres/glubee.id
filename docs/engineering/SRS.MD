@@ -246,6 +246,8 @@ Status: PENDING, default-off.
 - Alert kontak memeriksa ulang consent, status akun, invalidation catatan, dan grace-period tepat sebelum send.
 - Tidak ada fallback WhatsApp. Browser push yang tidak diizinkan memakai email bila alamat terverifikasi.
 
+Implementasi (GLB-019, 6 Oktober 2026): producer `pg_cron` tiap menit (`private.enqueue_due_reminders`, `dedupe_key = reminder:<kanal>:<occurrence_id>`, jendela 2 jam); worker `POST /api/internal/jobs/dispatch` dipanggil cron VPS lewat 127.0.0.1 dengan `CRON_SECRET`, klaim `for update skip locked` + lease 5 menit, cek ulang akun/jadwal/kuota/keterlambatan tepat sebelum kirim, retry SMTP 4xx/jaringan dengan jeda 1-2-4 menit maksimal 3 percobaan, SMTP 5xx langsung `failed`. Kuota email pengingat `REMINDER_EMAIL_DAILY_CAP` (default 150/hari WIB). Pengiriman nonaktif (`REMINDER_EMAIL_ENABLED=false`) sampai uji kolektif. Email hanya berisi nama kegiatan dan waktu. Runbook: `deploy/README.md`.
+
 ## 10. Penghapusan, retensi, dan backup
 
 ### 10.1 Retensi usulan untuk review hukum
