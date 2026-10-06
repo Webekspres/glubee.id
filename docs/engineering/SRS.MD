@@ -73,10 +73,10 @@ Konfigurasi terpusat minimum:
 | Vercel, Supabase Cloud | Akun operasional Webekspres menggunakan `mk.webekspres@gmail.com` | Tidak dipakai untuk deployment per ADR-0001; tetap jalur keluar. |
 | Brevo (SMTP transaksional) | `glubeebuddy@gmail.com` | Aktif sejak 29 September 2026, paket Free (300 email/hari). Domain glubee.id terverifikasi. Paket produksi dan biaya masih menunggu persetujuan. |
 | Google OAuth (login) | Project GCP Webekspres | Aktif sejak 29 September 2026. Redirect URI `https://api.glubee.id/auth/v1/callback`. Consent screen wajib "In production" sebelum UAT. |
-| GCP untuk backup (rclone Drive API) | `developer@webekspres.co.id` | Diputuskan 24 September 2026, satu project untuk semua backup Webekspres. OAuth client belum dibuat (GLB-037). |
+| GCP untuk backup (rclone Drive API) | `developer@webekspres.co.id` | Satu project untuk semua backup Webekspres. OAuth client Desktop, consent screen audience Internal (tanpa verifikasi, token tidak kedaluwarsa); aktif sejak 6 Oktober 2026. |
 | Cloudflare (DNS zona glubee.id) | Pemilik zona glubee.id | Token API hanya berizin DNS zona glubee.id, kedaluwarsa 1 Oktober 2026 dan tidak dapat memperbarui dirinya sendiri. TLS memakai Let's Encrypt webroot, tidak bergantung pada token. |
 | VPS Webekspres | Webekspres | Menjalankan Next.js + Supabase self-hosted Glubee bersama app production lain (ADR-0001). |
-| Google Drive (backup) | Akun tujuan masih dikonfirmasi (sebelumnya `mk.webekspres@gmail.com`) | Direncanakan menyimpan backup terenkripsi `backup website/glubee.id/`; belum aktif (GLB-037). |
+| Google Drive (backup) | `developer@webekspres.co.id` (My Drive) | Backup terenkripsi `backup website/glubee.id/` sejak 6 Oktober 2026. Backup lama (24 Sep–6 Okt) tersisa di Drive `mk.webekspres@gmail.com`. |
 | GHCR | Organisasi GitHub `webekspres` | Registry image aplikasi. |
 
 Password, recovery code, MFA secret, API key, service account key, dan token tidak boleh ditulis di repository atau dokumentasi. Akun vendor wajib mengaktifkan MFA dan memiliki recovery/ownership procedure. Free tier GCP maupun vendor lain hanya untuk development/evaluasi sampai kuota, syarat komersial, billing alert, DPA, lokasi data, backup, dan kesiapan produksi disetujui.
@@ -261,7 +261,7 @@ Status: PENDING, default-off.
 
 ### 10.2 Backup/restore
 
-- Supabase self-hosted (ADR-0001) tidak memiliki backup otomatis. Backup harian 02:00 WIB: `pg_dump` (schema `auth` + `public`) dienkripsi dengan `age` (private key disimpan di luar VPS), diunggah ke Google Drive `mk.webekspres@gmail.com` pada `backup website/glubee.id/dd-mm-yyyy-HHmm`, dan hanya 7 versi harian terakhir yang disimpan.
+- Supabase self-hosted (ADR-0001) tidak memiliki backup otomatis. Backup harian 02:37 WIB: `pg_dump` (schema `auth` + `public`) dienkripsi dengan `age` (private key disimpan di luar VPS), diunggah ke Google Drive `developer@webekspres.co.id` pada `backup website/glubee.id/dd-mm-yyyy-HHmm`, dan hanya 7 versi harian terakhir yang disimpan.
 - Production tier dan RPO/RTO harus disetujui sebelum go-live; usulan awal untuk review: RPO <=24 jam, RTO <=8 jam.
 - Restore drill dilakukan sebelum rilis dan berkala; hasil dicatat.
 - Restore wajib menjalankan deletion-tombstone reconciliation agar akun/data yang sudah dihapus tidak aktif kembali. Prosedur dan fungsi `private.reconcile_deletions_after_restore` di `deploy/README.md` (Rekonsiliasi penghapusan akun setelah restore).
@@ -299,7 +299,7 @@ Metric minimum:
 - deletion due/failed/overdue;
 - backup age dan restore-drill age.
 
-Implementasi awal (ADR-0001; per 29 September 2026 belum aktif, GLB-037): Healthchecks.io free memantau job backup (gagal atau tidak jalan), UptimeRobot free memantau `glubee.id`, `api.glubee.id/auth/v1/health`, masa berlaku SSL, dan domain. Alert email ke `mk.webekspres@gmail.com`. Kedua layanan tidak menerima data pengguna. Ketentuan penggunaan komersial paket free wajib diverifikasi sebelum go-live.
+Implementasi awal (ADR-0001, GLB-037): Healthchecks.io free memantau job backup, gagal atau tidak jalan (aktif sejak 6 Oktober 2026, check `glubee.id`), UptimeRobot free memantau `glubee.id`, `api.glubee.id/auth/v1/health`, masa berlaku SSL, dan domain. Alert email ke `mk.webekspres@gmail.com`. Kedua layanan tidak menerima data pengguna. Ketentuan penggunaan komersial paket free wajib diverifikasi sebelum go-live.
 
 Log terstruktur memakai correlation ID, actor class, event type, object ID pseudonymous, dan outcome. Alert operasional tidak membawa nilai gula darah atau isi pesan. Akses log dibatasi dan memiliki retensi.
 

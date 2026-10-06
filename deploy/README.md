@@ -108,6 +108,8 @@ Halaman admin ada di `https://glubee.id/admin-xyz` (cari akun, ubah status denga
 ```
 
 - `pg_dump -Fc` langsung dienkripsi dengan `age` (plaintext tidak pernah menyentuh disk), diunggah ke `gdrive:backup website/glubee.id/dd-mm-yyyy-HHmm/`, lalu hanya 7 folder terbaru yang disimpan.
+- Remote `gdrive` (My Drive `developer@webekspres.co.id`, scope `drive.file`) wajib memakai OAuth client Desktop milik project GCP Webekspres (audience Internal). Client bawaan rclone berbagi kuota dengan semua pengguna rclone dan gagal `403 rateLimitExceeded` (26 Sep–6 Okt 2026). rclone v1.53 di VPS tidak menyimpan `client_id` lewat `rclone config update`: tulis `client_id`/`client_secret` langsung di `~/.config/rclone/rclone.conf`, lalu `rclone config reconnect gdrive:` lewat SSH `-L 53682:127.0.0.1:53682` (auto config `y`, team drive `n`).
+- Scope `drive.file` hanya melihat file yang dibuat client yang sama: untuk restore, unduh file `.age` lewat Drive web, atau pakai remote rclone dengan client yang sama.
 - Healthchecks.io menerima ping `/start`, sukses, atau `/fail` (dengan 1 KB log terakhir). Email alert datang bila gagal **atau** tidak berjalan.
 - Log: `/opt/glubee/backup/backup.log`.
 - Menambah domain lain: jalankan script yang sama dengan `<domain> <stack-dir>` miliknya, dengan variabel `BACKUP_*` di `.env` stack tersebut.
@@ -117,7 +119,7 @@ Halaman admin ada di `https://glubee.id/admin-xyz` (cari akun, ubah status denga
 Di laptop yang memegang private key, ke Supabase lokal (`bun run db:start`):
 
 ```bash
-rclone copy "gdrive:backup website/glubee.id/<dd-mm-yyyy-HHmm>" ./restore
+rclone copy "gdrive:backup website/glubee.id/<dd-mm-yyyy-HHmm>" ./restore   # atau unduh dari Drive web ke ./restore
 age -d -i ~/glubee-backup.agekey ./restore/glubee.id.dump.age > ./restore/glubee.dump
 pg_restore -h 127.0.0.1 -p 54322 -U postgres -d postgres --clean --if-exists --no-owner ./restore/glubee.dump
 bun run db:test
