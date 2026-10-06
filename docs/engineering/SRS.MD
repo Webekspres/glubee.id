@@ -264,7 +264,7 @@ Status: PENDING, default-off.
 - Supabase self-hosted (ADR-0001) tidak memiliki backup otomatis. Backup harian 02:00 WIB: `pg_dump` (schema `auth` + `public`) dienkripsi dengan `age` (private key disimpan di luar VPS), diunggah ke Google Drive `mk.webekspres@gmail.com` pada `backup website/glubee.id/dd-mm-yyyy-HHmm`, dan hanya 7 versi harian terakhir yang disimpan.
 - Production tier dan RPO/RTO harus disetujui sebelum go-live; usulan awal untuk review: RPO <=24 jam, RTO <=8 jam.
 - Restore drill dilakukan sebelum rilis dan berkala; hasil dicatat.
-- Restore wajib menjalankan deletion-tombstone reconciliation agar akun/data yang sudah dihapus tidak aktif kembali.
+- Restore wajib menjalankan deletion-tombstone reconciliation agar akun/data yang sudah dihapus tidak aktif kembali. Prosedur dan fungsi `private.reconcile_deletions_after_restore` di `deploy/README.md` (Rekonsiliasi penghapusan akun setelah restore).
 - Backup database tidak otomatis mencakup object storage; keduanya memiliki prosedur terpisah.
 
 ## 11. Keamanan

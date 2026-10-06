@@ -54,11 +54,13 @@ select ok(public.request_account_deletion() ? 'id','owner requests again');
 reset role;
 update public.deletion_requests set requested_at = now() - interval '4 days', scheduled_for = now() - interval '1 day'
 where user_id = 'b4000000-0000-4000-8000-000000000001' and state = 'pending';
+create temp table due_request as
+select id from public.deletion_requests where user_id = 'b4000000-0000-4000-8000-000000000001' and state = 'pending';
 select is(private.execute_due_deletions(),1,'one due account executed');
 select is((select count(*) from auth.users where id='b4000000-0000-4000-8000-000000000001'),0::bigint,'auth user removed');
 select is((select count(*) from public.glucose_entries where user_id='b4000000-0000-4000-8000-000000000001'),0::bigint,'health data removed by cascade');
 select is((select count(*) from public.deletion_tombstones where subject_hash = extensions.digest('b4000000-0000-4000-8000-000000000001','sha256')),1::bigint,'tombstone created');
-select is((select state from public.deletion_requests where executed_at is not null and user_id is null),'completed','request kept as anonymous completed record');
+select is((select state || ':' || (user_id is null) from public.deletion_requests where id = (select id from due_request)),'completed:true','request kept as anonymous completed record');
 select is(private.execute_due_deletions(),0,'running again is idempotent');
 select is((select count(*) from public.consent_receipts where user_id='b4000000-0000-4000-8000-000000000001'),0::bigint,'consent receipts removed with account');
 

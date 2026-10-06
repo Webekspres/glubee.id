@@ -123,7 +123,39 @@ pg_restore -h 127.0.0.1 -p 54322 -U postgres -d postgres --clean --if-exists --n
 bun run db:test
 ```
 
-Setelah restore, jalankan rekonsiliasi `deletion_tombstones` (SRS §10.2) sebelum data dipakai. Hapus `./restore` setelah selesai.
+Setelah restore, jalankan rekonsiliasi penghapusan akun (di bawah) sebelum data dipakai. Hapus `./restore` setelah selesai.
+
+### Rekonsiliasi penghapusan akun setelah restore (wajib)
+
+Backup lama masih memuat akun yang sudah dihapus setelah backup dibuat, dan tidak tahu permintaan hapus yang diajukan atau dibatalkan sesudahnya. Tanpa langkah ini, akun terhapus hidup lagi (melanggar hak penghapusan UU PDP) atau akun yang batal dihapus ikut terhapus oleh `pg_cron`. Tabel `deletion_tombstones` ikut ter-restore ke versi lama, jadi datanya harus diambil **sebelum** restore.
+
+`DB` di bawah adalah URL database yang dipulihkan: production lewat tunnel (`?sslmode=disable`) atau Supabase lokal saat drill.
+
+1. **Sebelum restore**, bila database lama masih bisa dibaca, ekspor tombstone dan permintaan aktif (`mkdir -p ./restore` dulu):
+   ```bash
+   psql "$DB" -Atc "select coalesce(jsonb_agg(jsonb_build_object('subject_hash',encode(subject_hash,'hex'),'deleted_at',deleted_at,'backup_expiry_after',backup_expiry_after)),'[]') from public.deletion_tombstones" > ./restore/tombstones.json
+   psql "$DB" -Atc "select coalesce(jsonb_agg(jsonb_build_object('user_id',user_id,'requested_at',requested_at,'scheduled_for',scheduled_for,'previous_account_status',previous_account_status)),'[]') from public.deletion_requests where state in ('pending','failed') and user_id is not null" > ./restore/active-requests.json
+   ```
+   Bila database lama sudah tidak bisa dibaca, ambil tombstone dari backup **terbaru** (restore dulu ke Supabase lokal, jalankan perintah pertama di sana) dan lewati `active-requests.json`. Risiko yang tersisa ditulis di laporan insiden: penghapusan setelah backup terbaru tidak tercatat, dan pembatalan setelah backup terbaru tidak diketahui.
+2. Production: hentikan app agar tidak ada penulisan baru: `docker compose stop app`.
+3. Restore (perintah `pg_restore` di atas, dengan `$DB` sebagai tujuan).
+4. **Langsung** matikan eksekusi otomatis supaya `pg_cron` tidak menghapus akun sebelum rekonsiliasi:
+   ```bash
+   psql "$DB" -c "select cron.unschedule('glubee-execute-deletions')"
+   ```
+   Backup yang lebih tua dari migration terbaru belum punya job ini (abaikan error `could not find valid entry`) atau fungsi rekonsiliasi. Terapkan migration yang tertinggal dulu: `bunx supabase db push --db-url "$DB"`, lalu ulangi `cron.unschedule` karena migration deletion membuat job baru.
+5. Rekonsiliasi. Tanpa `active-requests.json`, ganti `:'a'::jsonb` dengan `null` dan hapus `-v a=...`:
+   ```bash
+   echo "select private.reconcile_deletions_after_restore(:'t'::jsonb, :'a'::jsonb)" |
+     psql "$DB" -v t="$(cat ./restore/tombstones.json)" -v a="$(cat ./restore/active-requests.json)"
+   ```
+   Query dikirim lewat stdin karena psql tidak mengganti variabel `:'t'` pada `-c`. Hasilnya `{"removed": n, "reinstated": n, "cancelled": n}`: akun bertombstone yang dihapus lagi, permintaan baru yang dipasang lagi dengan jadwal aslinya, dan permintaan yang dibatalkan lagi. Aman dijalankan ulang (hasil kedua bernilai 0). Catat angkanya di laporan insiden/drill.
+6. Nyalakan lagi eksekusi otomatis, lalu app:
+   ```bash
+   psql "$DB" -c "select cron.schedule('glubee-execute-deletions', '*/15 * * * *', 'select private.execute_due_deletions()')"
+   docker compose start app
+   ```
+7. Hapus `./restore` (berisi hash akun dan dump).
 
 ## Update image (sebulan sekali, di luar jam puncak)
 

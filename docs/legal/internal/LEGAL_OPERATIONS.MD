@@ -58,7 +58,7 @@ Ekspor mandiri (GLB-023, 1 Oktober 2026): pengguna mengunduh salinan JSON dari P
 - Pada request: stop schedule/job baru, suppress queue, revoke active session sesuai desain, dan kirim receipt.
 - Setelah masa jeda tiga hari (3×24 jam) berakhir: eksekusi idempotent, hapus/anonymize data aktif, cabut subscription/token, hapus export, dan buat tombstone minimum.
 - Catat kategori berhasil/gagal tanpa nilai kesehatan.
-- Reconcile tombstone setelah setiap restore.
+- Reconcile tombstone setelah setiap restore. Prosedur: `deploy/README.md`.
 - Jadwal backup expiry didokumentasikan; backup tidak dipakai untuk operasi normal setelah deletion.
 
 ## 7. Manajemen insiden data
