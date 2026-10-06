@@ -119,7 +119,7 @@ export async function api<T>(
   options?: RequestInit,
 ): Promise<{
   data: T;
-  meta?: { nextCursor?: string | null; timezone?: Timezone };
+  meta?: { nextCursor?: string | null; timezone?: Timezone; week?: string; today?: string };
 }> {
   let response: Response;
   try {

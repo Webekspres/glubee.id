@@ -150,6 +150,11 @@ export function Records({
       >
         <div className="page-heading-aside">
           {/* Tanpa maskot: data adalah fokus di sini. Maskot muncul di empty state grafik. */}
+          {history && (
+            <Link className="button" href="/reports">
+              Unduh laporan
+            </Link>
+          )}
           <button className="button primary" onClick={() => setModal(true)}>
             + Catat gula darah
           </button>

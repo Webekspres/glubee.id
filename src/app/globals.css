@@ -2060,3 +2060,135 @@ main#main.is-leaving {
     padding-right: 64px;
   }
 }
+
+/* GLB-018: kalender jadwal mingguan. Daftar per hari (bukan grid 7 kolom) agar
+   terbaca sama di ponsel dan desktop. */
+.schedule-notice {
+  margin-bottom: 16px;
+}
+.week-nav {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: "prev title next";
+  align-items: center;
+  gap: 8px;
+}
+.week-nav h2 {
+  grid-area: title;
+  text-align: center;
+  font-size: 20px;
+  margin: 0;
+}
+.week-prev {
+  grid-area: prev;
+}
+.week-next {
+  grid-area: next;
+}
+.range-short {
+  display: none;
+}
+.week-today {
+  text-align: center;
+  margin: 4px 0 0;
+}
+.week-days {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.week-day {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.week-day h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+.week-day.today h3 {
+  color: var(--teal);
+}
+.schedule-items {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.schedule-item {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  align-items: start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--tile);
+  border-radius: var(--radius-control);
+}
+.schedule-item.dimmed {
+  background: #eef3f1;
+}
+.schedule-item.dimmed .schedule-title,
+.schedule-item.dimmed .schedule-time {
+  color: var(--muted);
+}
+.schedule-time {
+  font-weight: 700;
+  font-size: 17px;
+  margin: 0;
+}
+.schedule-body p {
+  margin: 0;
+}
+.schedule-title {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.schedule-body .badge {
+  margin-top: 6px;
+}
+.badge.muted-badge {
+  background: #e3e9e7;
+  color: #3d4f4b;
+}
+.schedule-actions {
+  gap: 0;
+}
+.schedule-actions .button {
+  min-height: 44px;
+  padding: 0 10px;
+}
+.button.quiet.danger-text {
+  color: var(--danger);
+}
+@media (max-width: 768px) {
+  /* Judul rentang di baris sendiri, tombol sebelumnya/berikutnya di bawahnya. */
+  .week-nav {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "title title" "prev next";
+  }
+  .week-nav h2 {
+    font-size: 18px;
+  }
+  .week-next {
+    justify-self: end;
+  }
+  .range-long {
+    display: none;
+  }
+  .range-short {
+    display: inline;
+  }
+  .schedule-item {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .schedule-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+}
