@@ -33,6 +33,8 @@ export interface SendEmailResult {
   success: boolean;
   messageId?: string;
   error?: string;
+  /** Kode SMTP (mis. 421, 550) atau kode jaringan Node (mis. ETIMEDOUT) untuk menentukan retry. */
+  errorCode?: string;
 }
 
 /**
@@ -185,9 +187,11 @@ export async function sendEmail(
     };
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : String(err);
+    const e = err as { responseCode?: number; code?: string };
     return {
       success: false,
       error: errorMsg,
+      errorCode: e.responseCode ? String(e.responseCode) : e.code,
     };
   }
 }

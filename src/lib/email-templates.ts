@@ -557,6 +557,33 @@ export function createDeletionCancelledEmail(params: {
   return { subject, html: renderEmailLayout(data) };
 }
 
+/**
+ * Pengingat jadwal (GLB-019). Hanya nama kegiatan dan waktu: tanpa nama obat, dosis,
+ * nilai, atau saran medis. Subjek tidak memuat nama kegiatan agar pratinjau layar kunci
+ * tidak memperlihatkan isi jadwal.
+ */
+export function createScheduleReminderEmail(params: {
+  recipientName: string;
+  title: string;
+  when: string;
+  shortTime: string;
+  scheduleUrl: string;
+}): { subject: string; html: string } {
+  const subject = `Pengingat jadwal Glubee pukul ${params.shortTime}`;
+  const data: EmailTemplateData = {
+    subject,
+    badgeLabel: "PENGINGAT JADWAL",
+    urgencyLevel: "reminder",
+    recipientName: params.recipientName,
+    headline: params.title,
+    bodyParagraphs: [`Jadwal Anda: ${params.when}.`, "Detail jadwal dapat dilihat di aplikasi."],
+    actionButton: { label: "Buka jadwal", url: params.scheduleUrl },
+    legalDisclaimer:
+      "Anda menerima email ini karena membuat jadwal di Glubee.id. Jadwal yang dijeda atau dihapus tidak dikirimi pengingat. Glubee tidak memberikan diagnosis atau saran pengobatan.",
+  };
+  return { subject, html: renderEmailLayout(data) };
+}
+
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, "&amp;")
