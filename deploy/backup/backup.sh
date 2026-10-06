@@ -2,7 +2,7 @@
 # Backup harian terenkripsi ke Google Drive (ADR-0001, SRS §10.2).
 #
 #   backup.sh <domain> <stack-dir>
-#   contoh (cron adminweb, TZ server WIB):  0 2 * * * /opt/glubee/backup/backup.sh glubee.id /opt/glubee
+#   contoh (cron adminweb, TZ server WIB):  37 2 * * * /opt/glubee/backup/backup.sh glubee.id /opt/glubee
 #
 # Konfigurasi dibaca dari <stack-dir>/.env:
 #   BACKUP_AGE_RECIPIENT  public key age (age1...). Private key TIDAK boleh ada di VPS.
@@ -50,7 +50,13 @@ docker exec "$DB" pg_dump -U postgres -Fc postgres | age -r "$RECIPIENT" > "$FIL
 SIZE=$(stat -c %s "$FILE")
 [ "$SIZE" -gt 1024 ] || { echo "hasil dump terlalu kecil ($SIZE byte)"; false; }
 
-rclone copyto "$FILE" "$BASE/$STAMP/$DOMAIN.dump.age"
+# Kuota Drive bisa habis sesaat (403 rateLimitExceeded); rclone lama tidak mengulang saat mencari folder.
+for try in 1 2 3 4 5; do
+  rclone copyto "$FILE" "$BASE/$STAMP/$DOMAIN.dump.age" && break
+  [ "$try" -lt 5 ] || { echo "unggah gagal setelah $try percobaan"; false; }
+  echo "unggah gagal (percobaan $try), ulang dalam 2 menit"
+  sleep 120
+done
 echo "terunggah: $BASE/$STAMP ($SIZE byte)"
 
 # Rotasi: nama folder dd-mm-yyyy-HHmm tidak urut secara leksikal, jadi diurutkan lewat kunci yyyymmddHHMM.

@@ -101,10 +101,10 @@ Halaman admin ada di `https://glubee.id/admin-xyz` (cari akun, ubah status denga
 
 ## Backup
 
-`backup/backup.sh` berjalan lewat crontab `adminweb` pukul 02:00 (zona server WIB):
+`backup/backup.sh` berjalan lewat crontab `adminweb` pukul 02:37 (zona server WIB; bukan jam bulat karena kuota Drive client bersama rclone sering habis di jam bulat):
 
 ```cron
-0 2 * * * /opt/glubee/backup/backup.sh glubee.id /opt/glubee
+37 2 * * * /opt/glubee/backup/backup.sh glubee.id /opt/glubee
 ```
 
 - `pg_dump -Fc` langsung dienkripsi dengan `age` (plaintext tidak pernah menyentuh disk), diunggah ke `gdrive:backup website/glubee.id/dd-mm-yyyy-HHmm/`, lalu hanya 7 folder terbaru yang disimpan.
