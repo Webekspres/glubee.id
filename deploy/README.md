@@ -11,6 +11,8 @@ Keputusan arsitektur: [ADR-0001](../docs/engineering/adr/0001-self-host-supabase
 | `nginx/glubee.id.conf` | Proxy ke app, `limit_req` untuk `/api/auth/` dan `POST /api/consents/cookie`, buffer header 16k untuk cookie sesi OAuth. |
 | `nginx/api.glubee.id.conf` | Pengganti gateway: path publik terbatas, path lain hanya dari subnet container. |
 | `.env.example` | Template `/opt/glubee/.env`. |
+| `cron/dispatch.sh` | Memanggil dispatcher pengingat tiap menit (crontab `adminweb`). |
+| `backup/backup.sh` | Backup harian terenkripsi ke Google Drive. |
 | `generate-keys.sh` | Membuat password DB, `JWT_SECRET`, `ANON_KEY`, `SERVICE_ROLE_KEY`, `CRON_SECRET`. |
 
 ## Aturan VPS
@@ -98,6 +100,19 @@ Halaman admin ada di `https://glubee.id/admin-xyz` (cari akun, ubah status denga
 
 - nginx: `glubee.id/api/auth/` 10 request/menit per IP (burst 5); `POST /api/consents/cookie` 10/menit per IP (burst 5); path publik `api.glubee.id` 30/menit per IP (burst 10).
 - GoTrue melihat semua panggilan server sebagai satu IP (container app), jadi limit per-IP-nya dilonggarkan. Limit email tetap 100/jam global untuk menjaga kuota Brevo.
+
+## Pengingat jadwal (GLB-019)
+
+`pg_cron` membuat job pengingat tiap menit di database. Pengiriman email dilakukan app lewat `POST /api/internal/jobs/dispatch`, dipanggil `cron/dispatch.sh` dari crontab `adminweb`:
+
+```cron
+* * * * * /opt/glubee/cron/dispatch.sh /opt/glubee
+```
+
+- `.env`: `CRON_SECRET` minimal 32 karakter (`openssl rand -hex 24`), `REMINDER_EMAIL_ENABLED=false` sampai uji kolektif, `REMINDER_EMAIL_DAILY_CAP=150` (sisa kuota Brevo 300/hari untuk email login/reset). Setelah mengubah `.env`: `docker compose up -d app`.
+- nginx menolak `/api/internal/` dari internet (404); skrip memanggil `127.0.0.1:<APP_HOST_PORT>` langsung.
+- Log hanya berisi panggilan yang gagal: `/opt/glubee/cron/dispatch.log`. Status job: tabel `notification_jobs` (`queued/processing/sent/failed/suppressed/cancelled`) dan alasan per percobaan di `notification_attempts.error_class` (`stale`, `schedule_paused`, `account_inactive`, `quota_exceeded`, `smtp_4xx/5xx`, `max_attempts`, ...).
+- Selama flag mati, job tetap dibuat; saat diaktifkan, job yang terlambat lebih dari 2 jam disuppress `stale`, bukan dikirim.
 
 ## Backup
 

@@ -195,3 +195,6 @@ services:
       SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
       SMTP_REPLY_TO: ${SMTP_REPLY_TO}
       CRON_SECRET: ${CRON_SECRET}
+      # Pengingat jadwal (GLB-019): mati sampai uji kolektif.
+      REMINDER_EMAIL_ENABLED: ${REMINDER_EMAIL_ENABLED:-false}
+      REMINDER_EMAIL_DAILY_CAP: ${REMINDER_EMAIL_DAILY_CAP:-150}
