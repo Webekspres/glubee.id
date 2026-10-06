@@ -50,7 +50,7 @@ test("user downloads own data as JSON after confirming password", async ({ page,
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toMatch(/^glubee-data-\d{4}-\d{2}-\d{2}\.json$/);
   const data = JSON.parse(await readFile((await download.path())!, "utf8"));
-  expect(data.schemaVersion).toBe(1);
+  expect(data.schemaVersion).toBe(2);
   expect(data.account.email).toBe(me.email);
   expect(data.account.timezone).toBe("WITA");
   expect(data.glucoseEntries.map((e: { valueMgDl: number }) => Number(e.valueMgDl)).sort()).toEqual([101, 102, 103]);

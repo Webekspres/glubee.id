@@ -140,7 +140,7 @@ select throws_ok(
   'second active deletion request is rejected'
 );
 select throws_ok(
-  $$insert into public.schedules (user_id, category, title, local_time, timezone_code, recurrence_rule) values ('10000000-0000-0000-0000-000000000001', 'glucose_check', 'Pending recurrence', '08:00', 'WIB', 'weekly')$$,
+  $$insert into public.schedules (user_id, category, title, local_date, local_time, timezone_code, recurrence_rule) values ('10000000-0000-0000-0000-000000000001', 'glucose_check', 'Pending recurrence', current_date + 1, '08:00', 'WIB', 'weekly')$$,
   '23514',
   'new row for relation "schedules" violates check constraint "schedules_pending_recurrence_check"',
   'pending recurrence remains disabled'

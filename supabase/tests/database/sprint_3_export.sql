@@ -30,7 +30,7 @@ select is(public.export_my_data()->'account'->>'email','ekspor-pemilik@example.t
 select ok(not (public.export_my_data()::text like '%ekspor-lain%'),'export never includes another user');
 select ok(not (public.export_my_data()::text like '%250%'),'export excludes other user health values');
 select is(jsonb_array_length(public.export_my_data()->'consentReceipts'),3,'consent receipts included');
-select is(public.export_my_data()->>'schemaVersion','1','schema version present');
+select is(public.export_my_data()->>'schemaVersion','2','schema version present');
 select is((select count(*) from public.data_exports where user_id='a3000000-0000-4000-8000-000000000001'),6::bigint,'each export is recorded');
 select is((select count(*) from public.data_exports where user_id='a3000000-0000-4000-8000-000000000001' and object_ref is not null),0::bigint,'no stored file reference');
 
