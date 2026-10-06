@@ -25,7 +25,7 @@ const ui = Atkinson_Hyperlegible_Next({
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl()),
-  title: "Glubee",
+  title: { default: "Glubee", template: "%s · Glubee" },
   description: "Pencatatan dan pemantauan gula darah.",
   robots: { index: false, follow: false },
   openGraph: {

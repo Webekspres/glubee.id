@@ -1,5 +1,8 @@
 import { TransitionLink as Link } from "@/components/TransitionLink";
 import { Mascot } from "@/components/Mascot";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Halaman tidak ditemukan" };
 
 export default function NotFound() {
   return (

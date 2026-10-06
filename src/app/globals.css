@@ -288,6 +288,10 @@ h3,
 }
 .footer-bottom nav a,
 .footer-bottom nav .text-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
   color: #dbe6ea;
   text-decoration: underline;
 }
