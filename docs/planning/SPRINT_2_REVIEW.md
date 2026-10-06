@@ -84,3 +84,47 @@ Artefak QA di `test-results/` diabaikan Git dan dapat dibuat ulang melalui `bun 
 - Jadwal, kontak darurat, notifikasi, ekspor/penghapusan akun tetap sprint berikutnya.
 
 Dokumen rencana lama, termasuk `IMPLEMENTATION_PLAN_SPRINT_2.md` dan `PANDUAN_TESTING_TAMPILAN.md` yang sudah ada sebagai file untracked milik pengguna, tidak ditimpa. Jika berbeda dengan hasil implementasi (misalnya aktivasi label medis atau struktur laporan), gunakan keputusan terbaru BRD dan review ini. Tidak ada perubahan live ClickUp, DNS, pengiriman email eksternal, deployment, atau migrasi produksi pada pekerjaan ini.
+
+---
+
+# Penutupan Sprint 2 — 6 Oktober 2026
+
+Sprint 2 berakhir 7 Oktober 2026 (buffer 5–7 Oktober). Sejak review 15 September, aplikasi pindah ke VPS Webekspres dan **live di `https://glubee.id` sejak 24 September** (ADR-0001), dengan login Google, email Brevo, backup harian, dan monitoring. Production di-deploy otomatis dari `dev` selama `GO_LIVE` belum `true`; `main` tertinggal 59 commit dan baru dipakai saat rilis (GLB-029).
+
+## Status task Sprint 2
+
+| Task | Status | Catatan |
+|---|---|---|
+| GLB-010 Panduan desain | Selesai kecuali aset klien | `docs/design/README.md` (warna, tipografi, state, layout, maskot). Menunggu font berlisensi dan logo final (GLB-E01). |
+| GLB-011–015 Auth, catatan, dashboard, PDF, legal | Menunggu UAT | Live dan diuji developer; status "update required" = review/UAT klien. Legal 0.2 dipublikasikan tanpa label DRAF (keputusan owner 1 Okt). |
+| GLB-016 QA & demo | Sisa demo klien | QA developer lulus (lokal + live publik). Akun demo dengan 14 hari data dibuat dari `/admin-xyz`. Belum: sesi demo ke klien dan catatan masukannya. |
+| GLB-036 Self-host VPS | Selesai | |
+| GLB-037 Backup & monitoring | Hampir selesai | Backup cron gagal 26 Sep–6 Okt (kuota client OAuth bawaan rclone); diperbaiki dengan client Internal milik Webekspres + retry, Healthchecks dan UptimeRobot aktif. Sisa: verifikasi run otomatis 7 Okt 02:37. |
+| GLB-039, 041, 045, 046 | Selesai | Brevo/DNS email, rate limit cookie, sinkron dokumen, perbaikan UX. |
+| GLB-040 Audit live | Bagian publik selesai | Temuan www, judul tab, target sentuh footer diperbaiki 6 Okt. Sisa: checklist alur login oleh manusia (developer AI tidak login di production). |
+| GLB-042 Token Cloudflare | Terbuka | Token kedaluwarsa 1 Okt; DNS saat ini diurus manual lewat dashboard. Perlu keputusan: perbarui token atau tutup task. |
+| GLB-E03 Paket produksi, GLB-E04 Review legal | Menunggu klien/owner | E04 kini juga mencakup retensi bukti persetujuan setelah akun dihapus. |
+
+Dikerjakan lebih awal dari Sprint 3: GLB-023 ekspor data (live), GLB-024 penghapusan akun (live, sisa uji live dengan akun uji), GLB-025 admin status akun (live, menunggu review), rekonsiliasi penghapusan setelah restore (runbook di `deploy/README.md`).
+
+## Bukti pengujian (6 Oktober 2026)
+
+| Pemeriksaan | Hasil |
+|---|---|
+| Lint, TypeScript, unit test | Lulus, 38 test / 121 assertion |
+| pgTAP | Lulus, 6 file (termasuk `sprint_3_deletion`, `sprint_3_restore`) |
+| Playwright lokal | Lulus 6/6 (2,3 menit): admin, hapus akun + batal, ekspor JSON, ingat saya, perjalanan Sprint 2 (isolasi, tiga zona, PDF, privasi), versi legal dan sesi kedaluwarsa |
+| Live publik | Semua halaman 200/404 sesuai, link internal utuh, console bersih, tanpa scroll horizontal di 390 dan 1440 px, header keamanan lengkap, API `no-store`, www → glubee.id |
+| Backup | Backup manual + tes sukses 6 Okt; alert gagal Healthchecks teruji |
+
+## Blocker dan risiko sebelum Sprint 3
+
+1. **UAT klien belum terjadi.** GLB-011–016 tidak bisa ditutup tanpa demo dan persetujuan penerima UAT. Risiko menumpuk ke Sprint 4 (GLB-030 UAT, 27 Okt).
+2. **Keputusan produk tertunda:** batas nilai glukosa dan batas waktu ukur (GLB-043), evaluasi tinggi/normal/rendah (GLB-P01), dua celah klasifikasi di atas.
+3. **Legal (GLB-E04)** dan **paket produksi (GLB-E03)** belum diputuskan; keduanya syarat go-live (GLB-032).
+4. **Aset klien (GLB-E01):** font dan logo final.
+5. **Alur rilis:** production berjalan dari `dev`. Sebelum go-live, `main` harus dikejar dan deploy dipindah ke `main` (GLB-029/033).
+
+## Forecast Sprint 3 (8–21 Oktober)
+
+Tidak ada perubahan scope. Urutan replan GLB-044 tetap: 018 jadwal (8–9) → 019 dispatcher pengingat (12–13) → 020 push/email fallback (14–15) → 021 kontak darurat (16–19) → 022 pencabutan kontak (20) → 026 review (21). Karena 023, 024, dan 025 sudah dikerjakan, sisa kapasitas Sprint 3 dipakai untuk GLB-048 (rombak PDF) dan buffer risiko 019/020 (pertama kali aplikasi mengirim notifikasi terjadwal).

@@ -1,8 +1,8 @@
 # Design Documentation
 
-Folder ini disiapkan untuk `DESIGN.MD` dan aset referensi desain yang telah disetujui.
+Dokumen ini adalah panduan desain Glubee (`DESIGN.MD` di GLB-010): warna, tipografi, layout, state, dan pemakaian maskot.
 
-`DESIGN.MD` belum dibuat karena brand guideline dan aset final (file font berlisensi, logo, PNG maskot) masih menunggu klien. `BR-PEND-008` baru terpenuhi sebagian.
+Status per 6 Oktober 2026: maskot final dan brief visual klien sudah diterapkan. Yang masih menunggu klien (GLB-E01): file font berlisensi (Ellak, Morally Serif) dan logo final. `BR-PEND-008` terpenuhi kecuali dua aset itu.
 
 ## Riwayat
 
@@ -23,6 +23,18 @@ Folder ini disiapkan untuk `DESIGN.MD` dan aset referensi desain yang telah dise
 | Maskot | `public/brand/mascot.webp` (netral) | **Final** dari klien 30 Sep 2026 (PNG 9000 px transparan, di-trim dan diperkecil ke 420 px WebP). Dipakai di beranda, dashboard, halaman masuk/daftar, empty state grafik, dan 404 lewat komponen `Mascot`. |
 
 Token warna ada di `:root` pada `src/app/globals.css`. Permukaan terang (`.panel`, `.dialog`, `.notice`, dan lainnya) mendefinisikan ulang token teks, sehingga komponen tidak perlu tahu sedang berada di atas latar gelap atau terang.
+
+## State dan layout
+
+| State | Komponen | Perilaku |
+| --- | --- | --- |
+| Error form | `useFieldErrors()` di `src/components/Ui.tsx`, aturan di `src/lib/validation.ts` | Pesan di bawah field (`.field-error`, `aria-describedby`), fokus ke field pertama yang salah |
+| Error halaman/API | `ErrorMessage` | `role="alert"`, bahasa Indonesia, tanpa detail teknis |
+| Loading | `Loading` (opsional maskot netral + loader sel madu) | Label teks selalu ada; animasi mati saat "kurangi gerakan" |
+| Kosong | `.empty` di `EntryTable` dan `TrendChart` | Maskot mencari (riwayat) atau istirahat (grafik) + satu ajakan bertindak |
+| 404 | `src/app/not-found.tsx` | Maskot mencari, tombol kembali ke beranda |
+
+Layout: satu kolom di 768 px ke bawah (lebar uji 390 px), navigasi aplikasi pindah ke bottom bar (`.mobile-bottom-bar`); target sentuh minimal 44 px; tanpa scroll horizontal. Desktop diuji pada 1440 px. Panduan uji: [`../PANDUAN_TESTING_TAMPILAN.md`](../PANDUAN_TESTING_TAMPILAN.md).
 
 ## Belum diterapkan
 
