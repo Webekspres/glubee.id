@@ -108,7 +108,7 @@ Keputusan teknis: [ADR-0001](../../engineering/adr/0001-self-host-supabase-on-vp
 | GitHub / GHCR (`webekspres`) | Source code dan image aplikasi; tanpa data pengguna | Global (GitHub) | Tidak memproses data pribadi pengguna. |
 | Brevo (akun `glubeebuddy@gmail.com`) | Alamat email dan isi email transaksional (verifikasi, reset password; nanti undangan/pengingat) | Brevo SAS, Prancis/Uni Eropa — lokasi pemrosesan dan subprocessor wajib diverifikasi | Aktif untuk SMTP production sejak 29 September 2026; domain glubee.id terverifikasi (DKIM, DMARC `p=none`). Paket Free 300 email/hari. Belum: DPA, MFA akun, dan kepemilikan akun (akun Glubee/klien) dicatat resmi. |
 | Google Identity (OAuth login) | Nama, email, dan ID akun Google saat pengguna memilih "Lanjutkan dengan Google" | Global (Google) | Aktif sejak 29 September 2026. OAuth client di project GCP Webekspres; consent screen perlu status "In production" sebelum UAT. |
-| Healthchecks.io, UptimeRobot | Tidak ada data pengguna: hanya status job backup, URL publik, dan status HTTP | Global | Healthchecks.io aktif sejak 6 Oktober 2026; UptimeRobot belum (GLB-037). Ketentuan komersial paket free wajib diverifikasi sebelum go-live. |
+| Healthchecks.io, UptimeRobot | Tidak ada data pengguna: hanya status job backup, URL publik, dan status HTTP | Global | Healthchecks.io dan UptimeRobot (2 monitor: `glubee.id`, keyword `api.glubee.id/auth/v1/health`) aktif sejak 6 Oktober 2026 (GLB-037). Ketentuan komersial paket free wajib diverifikasi sebelum go-live. |
 
 Kontak pengguna sementara: email transaksional memakai `Reply-To: glubeebuddy@gmail.com` karena glubee.id belum memiliki MX; `support@glubee.id` dan `privacy@glubee.id` belum aktif.
 

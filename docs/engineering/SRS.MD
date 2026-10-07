@@ -301,7 +301,7 @@ Metric minimum:
 - deletion due/failed/overdue;
 - backup age dan restore-drill age.
 
-Implementasi awal (ADR-0001, GLB-037): Healthchecks.io free memantau job backup, gagal atau tidak jalan (aktif sejak 6 Oktober 2026, check `glubee.id`), UptimeRobot free memantau `glubee.id`, `api.glubee.id/auth/v1/health`, masa berlaku SSL, dan domain. Alert email ke `mk.webekspres@gmail.com`. Kedua layanan tidak menerima data pengguna. Ketentuan penggunaan komersial paket free wajib diverifikasi sebelum go-live.
+Implementasi awal (ADR-0001, GLB-037): Healthchecks.io free memantau job backup, gagal atau tidak jalan (aktif sejak 6 Oktober 2026, check `glubee.id`), UptimeRobot free (aktif sejak 6 Oktober 2026) memantau `glubee.id` (HTTP) dan `api.glubee.id/auth/v1/health` (keyword) tiap 5 menit; monitor masa berlaku SSL dan domain belum dipasang. Alert email ke `mk.webekspres@gmail.com`. Kedua layanan tidak menerima data pengguna. Ketentuan penggunaan komersial paket free wajib diverifikasi sebelum go-live.
 
 Log terstruktur memakai correlation ID, actor class, event type, object ID pseudonymous, dan outcome. Alert operasional tidak membawa nilai gula darah atau isi pesan. Akses log dibatasi dan memiliki retensi.
 
