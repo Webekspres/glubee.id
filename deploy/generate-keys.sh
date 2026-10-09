@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Membuat POSTGRES_PASSWORD, JWT_SECRET, ANON_KEY, SERVICE_ROLE_KEY, CRON_SECRET untuk /opt/glubee/.env.
+# Membuat POSTGRES_PASSWORD, JWT_SECRET, ANON_KEY, SERVICE_ROLE_KEY, CRON_SECRET, DATA_ENCRYPTION_KEY untuk /opt/glubee/.env.
 # Hasil dicetak ke stdout; salin manual ke .env. Jangan jalankan ulang di environment yang sudah berisi data:
 # JWT_SECRET baru membatalkan semua sesi, dan POSTGRES_PASSWORD baru tidak mengubah password role yang sudah ada.
 set -euo pipefail
@@ -22,3 +22,4 @@ echo "JWT_SECRET=$jwt_secret"
 echo "ANON_KEY=$(sign "$jwt_secret" anon)"
 echo "SERVICE_ROLE_KEY=$(sign "$jwt_secret" service_role)"
 echo "CRON_SECRET=$(openssl rand -hex 32)"
+echo "DATA_ENCRYPTION_KEY=$(openssl rand -base64 32)"

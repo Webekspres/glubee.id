@@ -19,7 +19,7 @@ update public.profiles set account_status='deletion_pending'
 where user_id in ('b5000000-0000-4000-8000-00000000000a','b5000000-0000-4000-8000-00000000000c','b5000000-0000-4000-8000-00000000000d');
 insert into public.consent_receipts(user_id,consent_type,document_version,decision,method)
 select p.user_id,n.consent_type,n.document_version,'accept','database_test' from public.profiles p cross join public.notice_versions n
-where p.user_id::text like 'b5000000-%' and n.consent_type<>'cookie';
+where p.user_id::text like 'b5000000-%' and n.consent_type in ('age_and_region','legal_documents','health_data');
 insert into public.glucose_entries(user_id,original_value,original_unit,normalized_mg_dl,measurement_context,measured_at)
 values ('b5000000-0000-4000-8000-00000000000a',110,'mg/dL',110,'random',now()-interval '1 hour');
 insert into public.deletion_requests(user_id,requested_at,scheduled_for,previous_account_status)

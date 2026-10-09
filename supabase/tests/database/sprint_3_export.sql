@@ -11,7 +11,7 @@ update public.profiles set name='Synthetic Export',birth_date='1970-01-01',sex='
 where user_id in ('a3000000-0000-4000-8000-000000000001','a3000000-0000-4000-8000-000000000002');
 insert into public.consent_receipts(user_id,consent_type,document_version,decision,method)
 select p.user_id,n.consent_type,n.document_version,'accept','database_test' from public.profiles p cross join public.notice_versions n
-where p.user_id in ('a3000000-0000-4000-8000-000000000001','a3000000-0000-4000-8000-000000000002') and n.consent_type<>'cookie';
+where p.user_id in ('a3000000-0000-4000-8000-000000000001','a3000000-0000-4000-8000-000000000002') and n.consent_type in ('age_and_region','legal_documents','health_data');
 insert into public.glucose_entries(user_id,original_value,original_unit,normalized_mg_dl,measurement_context,measured_at,note)
 select 'a3000000-0000-4000-8000-000000000001',100+i,'mg/dL',100+i,'fasting',now()-interval '1 day'+i*interval '1 minute','catatan '||i from generate_series(1,3)i;
 insert into public.glucose_entries(user_id,original_value,original_unit,normalized_mg_dl,measurement_context,measured_at)

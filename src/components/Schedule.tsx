@@ -10,6 +10,7 @@ import {
 import { api, type Profile, type Timezone } from "@/lib/ui";
 import { ErrorMessage, Loading, Modal, PageHeading, useFieldErrors } from "./Ui";
 import { Mascot } from "./Mascot";
+import { PushReminders } from "./PushReminders";
 
 // GLB-018 / FR-SCHEDULE-001: kalender mingguan sederhana. Tanpa tombol "Sudah dilakukan"
 // dan tanpa pengulangan sampai BR-PEND-006 diputuskan klien.
@@ -91,9 +92,7 @@ export function ScheduleCalendar({ profile }: { profile: Profile }) {
         </div>
       </PageHeading>
 
-      <p className="notice schedule-notice">
-        Pengingat otomatis untuk jadwal sedang disiapkan. Untuk saat ini, jadwal tampil di halaman ini.
-      </p>
+      <PushReminders />
       <ErrorMessage error={error} />
 
       {!view ? (
