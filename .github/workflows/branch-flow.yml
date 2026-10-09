@@ -1,0 +1,59 @@
+name: Alur branch
+
+# Menjaga alur merge: fitur/* -> dev -> staging -> main
+# - PR divalidasi saat dibuka / disinkronkan / dibuka ulang.
+# - Branch fitur dihapus otomatis setelah PR di-merge; dev/staging/main tidak dihapus.
+#   (Setelan repo "Automatically delete head branches" dimatikan agar dev/staging aman.)
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, closed]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  alur:
+    name: fitur -> dev -> staging -> main
+    if: github.event.action != 'closed'
+    runs-on: arc-ci
+    timeout-minutes: 5
+    steps:
+      - name: Periksa base dan head PR
+        run: |
+          set -eu
+          base="${{ github.base_ref }}"
+          head="${{ github.head_ref }}"
+          fail() {
+            echo "::error::Alur salah: $head -> $base. Yang benar: fitur/* -> dev, dev -> staging -> main."
+            exit 1
+          }
+          case "$head" in
+            dev)     case "$base" in staging|main) : ;; *) fail ;; esac ;;
+            staging) [ "$base" = main ] || fail ;;
+            main)    fail ;;
+            *)       [ "$base" = dev ] || fail ;;
+          esac
+          echo "Alur OK: $head -> $base"
+
+  hapus-branch:
+    name: Hapus branch fitur
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true
+    runs-on: arc-ci
+    timeout-minutes: 5
+    steps:
+      - name: Hapus branch head jika bukan branch tetap
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          set -eu
+          case "$HEAD_REF" in
+            dev|staging|main|"") echo "branch tetap, dilewati"; exit 0 ;;
+          esac
+          code=$(curl -sS -o /dev/null -w "%{http_code}" -X DELETE \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/git/refs/heads/$HEAD_REF" || echo 000)
+          echo "DELETE $HEAD_REF -> HTTP $code"
