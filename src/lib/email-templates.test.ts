@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 import {
   createEmergencyAlertEmail,
   createGlucoseReminderEmail,
+  createContactAcceptedEmail,
   createContactInviteEmail,
   createAuthVerifyEmail,
   createPasswordResetEmail,
@@ -66,19 +67,28 @@ describe("Email Templates Production (Refined Variant B)", () => {
     expect(email.html).toContain("PT. Webekspres Teknologi Indonesia");
   });
 
-  it("generates contact invite email with PDP compliance notice", () => {
+  it("generates contact invite email without health data or pending alert promises", () => {
     const email = createContactInviteEmail({
       recipientName: "Siti Rahma",
-      inviterName: "Budi Santoso",
-      acceptUrl: "https://glubee.id/contacts/accept?token=123",
-      declineUrl: "https://glubee.id/contacts/decline?token=123",
+      inviterName: "Budi <Santoso>",
+      inviteUrl: "https://glubee.id/invite#abc",
+      expiresText: "Jumat, 16 Oktober 2026 pukul 10.00 WIB",
     });
 
-    expect(email.subject).toBe("Budi Santoso Mengundang Anda Menjadi Kontak Darurat di Glubee");
-    expect(email.html).toContain("UU Perlindungan Data Pribadi (UU PDP)");
-    expect(email.html).toContain("https://glubee.id/contacts/accept?token=123");
-    expect(email.html).toContain("https://glubee.id/contacts/decline?token=123");
-    expect(email.html).toContain("PT. Webekspres Teknologi Indonesia");
+    expect(email.subject).toBe("Budi <Santoso> mengundang Anda sebagai kontak darurat di Glubee");
+    expect(email.html).toContain("https://glubee.id/invite#abc");
+    expect(email.html).toContain("Budi &lt;Santoso&gt;");
+    expect(email.html).not.toContain("Budi <Santoso>");
+    expect(email.html).toContain("16 Oktober 2026");
+    expect(email.html).not.toMatch(/mg\/dL|sangat tinggi|sangat rendah/);
+  });
+
+  it("generates contact accepted email with a stop link and no health data", () => {
+    const email = createContactAcceptedEmail({ contactName: "Siti", inviterName: "Budi", stopUrl: "https://glubee.id/contact-stop#xyz" });
+    expect(email.subject).toBe("Anda kini kontak darurat Budi di Glubee");
+    expect(email.html).toContain("https://glubee.id/contact-stop#xyz");
+    expect(email.html).toContain("belum mengirim pemberitahuan");
+    expect(email.html).not.toMatch(/mg\/dL/);
   });
 
   it("generates auth verification email with OTP metric card", () => {

@@ -362,49 +362,56 @@ export function createGlucoseReminderEmail(params: {
 }
 
 /**
- * 3. Undangan Menjadi Kontak Darurat
+ * 3. Undangan Menjadi Kontak Darurat (GLB-021, CNT-CONTACT-ACCEPT-001)
+ * Tanpa data kesehatan: hanya nama pengundang dan tautan sekali pakai. Pemberitahuan ke kontak
+ * (keterlambatan pencatatan, nilai) masih PENDING, jadi email tidak menjanjikannya.
  */
 export function createContactInviteEmail(params: {
   recipientName: string;
   inviterName: string;
-  acceptUrl: string;
-  declineUrl?: string;
+  inviteUrl: string;
+  expiresText: string;
 }): { subject: string; html: string } {
-  const subject = `${params.inviterName} Mengundang Anda Menjadi Kontak Darurat di Glubee`;
-
+  const subject = `${params.inviterName} mengundang Anda sebagai kontak darurat di Glubee`;
   const data: EmailTemplateData = {
     subject,
-    badgeLabel: "UNDANGAN DARURAT",
+    badgeLabel: "UNDANGAN KONTAK DARURAT",
     urgencyLevel: "info",
     recipientName: params.recipientName,
-    headline: `Dukungan Anda Sangat Berarti untuk ${params.inviterName}`,
+    headline: `${params.inviterName} memilih Anda sebagai kontak darurat`,
     bodyParagraphs: [
-      `${params.inviterName} menggunakan Glubee.id untuk memantau catatan diabetes hariannya dan telah menunjuk Anda sebagai Kontak Darurat terpercaya.`,
-      "Jika Anda menerima undangan ini, sistem Glubee hanya akan mengirimi Anda email pemberitahuan bila terdapat catatan kadar gula darah yang sangat tinggi atau sangat rendah (kondisi darurat).",
+      `${params.inviterName} memakai Glubee untuk mencatat gula darah dan ingin menjadikan Anda kontak darurat.`,
+      "Buka tautan di bawah untuk membaca penjelasannya, lalu pilih terima atau tolak. Anda tidak perlu membuat akun dan tidak mendapat akses ke catatan pengguna.",
+      `Tautan hanya bisa dipakai sekali dan berlaku sampai ${params.expiresText}.`,
     ],
-    focalMetric: {
-      value: "Peran Kontak",
-      unit: "Darurat",
-      statusLabel: "Maks. 2 Kontak per Akun",
-      timestamp: "Perlu Persetujuan Anda",
-    },
-    actionButton: {
-      label: "Terima & Konfirmasi Undangan",
-      url: params.acceptUrl,
-      subtext: "Anda dapat membatalkan persetujuan ini kapan saja",
-    },
-    secondaryAction: params.declineUrl
-      ? {
-          label: "Tolak Undangan Ini",
-          url: params.declineUrl,
-        }
-      : undefined,
-    importantNotice:
-      `Sesuai UU Perlindungan Data Pribadi (UU PDP), Glubee tidak akan membagikan data riwayat kesehatan ${params.inviterName} kepada Anda sebelum Anda memberikan persetujuan eksplisit melalui tombol di atas.`,
-    legalDisclaimer:
-      `Dikirim oleh Glubee.id atas inisiatif ${params.inviterName}. Hubungi glubeebuddy@gmail.com untuk bantuan dan informasi privasi.`,
+    actionButton: { label: "Lihat undangan", url: params.inviteUrl },
+    legalDisclaimer: `Dikirim oleh Glubee atas permintaan ${params.inviterName}. Abaikan email ini bila Anda tidak mengenal pengirimnya; tanpa tindakan Anda, tidak ada yang berubah. Bantuan: glubeebuddy@gmail.com.`,
   };
+  return { subject, html: renderEmailLayout(data) };
+}
 
+/**
+ * 3b. Konfirmasi kontak darurat + tautan berhenti (GLB-022). Tetap tanpa data kesehatan.
+ */
+export function createContactAcceptedEmail(params: {
+  contactName: string;
+  inviterName: string;
+  stopUrl: string;
+}): { subject: string; html: string } {
+  const subject = `Anda kini kontak darurat ${params.inviterName} di Glubee`;
+  const data: EmailTemplateData = {
+    subject,
+    badgeLabel: "KONTAK DARURAT",
+    urgencyLevel: "info",
+    recipientName: params.contactName,
+    headline: "Terima kasih telah menerima undangan",
+    bodyParagraphs: [
+      `Anda kini terdaftar sebagai kontak darurat ${params.inviterName}. Saat ini Glubee belum mengirim pemberitahuan apa pun kepada kontak darurat; pemberitahuan baru berjalan setelah fiturnya disetujui dan divalidasi.`,
+      "Simpan email ini. Anda dapat berhenti menjadi kontak darurat kapan saja melalui tombol di bawah, tanpa perlu menghubungi pengguna.",
+    ],
+    actionButton: { label: "Berhenti menjadi kontak darurat", url: params.stopUrl },
+    legalDisclaimer: `Dikirim oleh Glubee karena Anda menerima undangan dari ${params.inviterName}. Bantuan: glubeebuddy@gmail.com.`,
+  };
   return { subject, html: renderEmailLayout(data) };
 }
 

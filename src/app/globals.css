@@ -2066,6 +2066,92 @@ main#main.is-leaving {
 .schedule-notice {
   margin-bottom: 16px;
 }
+.today-schedule .section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.today-schedule-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+.today-schedule-list li {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+.today-schedule-list time {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.today-schedule-title {
+  overflow-wrap: anywhere;
+}
+.today-schedule-state {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.today-schedule-list li.is-due .today-schedule-state {
+  color: var(--ink);
+  font-weight: 600;
+}
+.contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.contact-list li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.contact-list li > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.contact-list .small.muted {
+  overflow-wrap: anywhere;
+}
+.contact-state {
+  justify-items: start;
+}
+.badge.state-pending {
+  background: var(--soft);
+  color: var(--ink);
+}
+.badge.state-declined,
+.badge.state-expired {
+  background: #eef1f1;
+  color: var(--muted);
+}
+.invitation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.push-reminders {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.push-reminders p {
+  margin: 0;
+  flex: 1 1 260px;
+}
+.push-reminders .message {
+  flex-basis: 100%;
+}
 .week-nav {
   display: grid;
   grid-template-columns: auto 1fr auto;

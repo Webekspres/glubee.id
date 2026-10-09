@@ -41,7 +41,7 @@ from (
     ('40000000-0000-0000-0000-000000000004'::uuid)
 ) users(user_id)
 cross join public.notice_versions versions
-where versions.consent_type <> 'cookie';
+where versions.consent_type in ('age_and_region', 'legal_documents', 'health_data');
 
 update public.profiles set account_status = 'active';
 
