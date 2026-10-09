@@ -44,6 +44,8 @@ const MESSAGES: Record<string, string> = {
   emergency_contact_limit_reached: "Maksimal dua kontak darurat aktif atau menunggu persetujuan.",
   contact_not_pending: "Undangan hanya bisa dikirim ulang untuk kontak yang belum menjawab.",
   contact_not_found: "Kontak tidak ditemukan.",
+  contact_opted_out: "Kontak ini sudah berhenti sendiri dan tidak dapat diundang lagi.",
+  contact_not_revocable: "Kontak ini sudah tidak aktif.",
   not_allowed: "Lengkapi profil dan persetujuan terlebih dahulu.",
 };
 

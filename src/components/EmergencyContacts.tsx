@@ -28,6 +28,7 @@ export function EmergencyContacts({ zone }: { zone: Timezone }) {
   const [view, setView] = useState<{ items: Contact[]; enabled: boolean; shareConsented: boolean } | null>(null),
     [error, setError] = useState<unknown>(null),
     [inviting, setInviting] = useState(false),
+    [removing, setRemoving] = useState<Contact | null>(null),
     [busy, setBusy] = useState<string | null>(null),
     [message, setMessage] = useState(""),
     [revision, setRevision] = useState(0);
@@ -56,6 +57,24 @@ export function EmergencyContacts({ zone }: { zone: Timezone }) {
       setRevision((r) => r + 1);
     } catch (e) {
       setError(e);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  // GLB-022: pencabutan oleh pengguna; tautan kontak berhenti berlaku.
+  async function revoke(c: Contact) {
+    setBusy(c.id);
+    setError(null);
+    setMessage("");
+    try {
+      await api(`/api/emergency-contacts/${c.id}`, { method: "DELETE" });
+      setRemoving(null);
+      setMessage(`${c.name} tidak lagi menjadi kontak darurat Anda.`);
+      setRevision((r) => r + 1);
+    } catch (e) {
+      setError(e);
+      setRemoving(null);
     } finally {
       setBusy(null);
     }
@@ -100,6 +119,11 @@ export function EmergencyContacts({ zone }: { zone: Timezone }) {
                     {busy === c.id ? "Mengirim…" : "Kirim ulang undangan"}
                   </button>
                 )}
+                {c.state !== "declined" && (
+                  <button className="text-button" onClick={() => setRemoving(c)} disabled={busy === c.id}>
+                    {c.state === "active" ? "Cabut" : "Batalkan undangan"}
+                  </button>
+                )}
               </div>
             </li>
           ))}
@@ -116,6 +140,24 @@ export function EmergencyContacts({ zone }: { zone: Timezone }) {
         ) : (
           <p className="small muted">Undangan kontak darurat belum dibuka.</p>
         ))}
+      {removing && (
+        <Modal title="Cabut kontak darurat" onClose={() => setRemoving(null)} busy={busy === removing.id}>
+          <div className="stack">
+            <p>
+              {removing.name} ({removing.email}) tidak akan lagi menjadi kontak darurat Anda. Tautan di email mereka berhenti
+              berlaku. Anda dapat mengundangnya lagi nanti.
+            </p>
+            <div className="invitation-actions">
+              <button className="button danger" onClick={() => revoke(removing)} disabled={busy === removing.id}>
+                {busy === removing.id ? "Memproses…" : "Cabut kontak"}
+              </button>
+              <button className="button" onClick={() => setRemoving(null)} disabled={busy === removing.id}>
+                Batal
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
       {inviting && view && (
         <Modal title="Undang kontak darurat" onClose={() => setInviting(false)}>
           <InviteForm

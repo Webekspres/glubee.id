@@ -3,6 +3,9 @@ begin;
 create extension if not exists pgtap with schema extensions;
 select plan(23);
 
+-- Job lain di database lokal (data demo/e2e) tidak boleh ikut terklaim; dibatalkan dalam transaksi ini saja.
+update public.notification_jobs set state = 'cancelled' where state in ('queued', 'processing');
+
 -- A punya subscription push, D tidak; keduanya email terverifikasi, WIB.
 insert into auth.users(instance_id,id,aud,role,email,email_confirmed_at,raw_app_meta_data,raw_user_meta_data,created_at,updated_at)
 values

@@ -391,6 +391,31 @@ export function createContactInviteEmail(params: {
 }
 
 /**
+ * 3b. Konfirmasi kontak darurat + tautan berhenti (GLB-022). Tetap tanpa data kesehatan.
+ */
+export function createContactAcceptedEmail(params: {
+  contactName: string;
+  inviterName: string;
+  stopUrl: string;
+}): { subject: string; html: string } {
+  const subject = `Anda kini kontak darurat ${params.inviterName} di Glubee`;
+  const data: EmailTemplateData = {
+    subject,
+    badgeLabel: "KONTAK DARURAT",
+    urgencyLevel: "info",
+    recipientName: params.contactName,
+    headline: "Terima kasih telah menerima undangan",
+    bodyParagraphs: [
+      `Anda kini terdaftar sebagai kontak darurat ${params.inviterName}. Saat ini Glubee belum mengirim pemberitahuan apa pun kepada kontak darurat; pemberitahuan baru berjalan setelah fiturnya disetujui dan divalidasi.`,
+      "Simpan email ini. Anda dapat berhenti menjadi kontak darurat kapan saja melalui tombol di bawah, tanpa perlu menghubungi pengguna.",
+    ],
+    actionButton: { label: "Berhenti menjadi kontak darurat", url: params.stopUrl },
+    legalDisclaimer: `Dikirim oleh Glubee karena Anda menerima undangan dari ${params.inviterName}. Bantuan: glubeebuddy@gmail.com.`,
+  };
+  return { subject, html: renderEmailLayout(data) };
+}
+
+/**
  * 4. Verifikasi Alamat Email (Registrasi Akun Baru)
  */
 export function createAuthVerifyEmail(params: {

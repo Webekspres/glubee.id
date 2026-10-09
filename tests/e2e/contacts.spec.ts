@@ -22,6 +22,11 @@ async function activeUser(page: Page, tag: string) {
   });
 }
 
+async function mails(to: string) {
+  const body = await (await fetch("http://127.0.0.1:54324/api/v1/search?query=" + encodeURIComponent("to:" + to))).json();
+  return (body.messages ?? []) as { ID: string; Subject: string }[];
+}
+
 async function inviteLink(to: string) {
   let id = "";
   await expect
@@ -100,9 +105,57 @@ test("user invites two contacts; one accepts, one declines, without accounts", a
   expect((await again.json()).error.message).toContain("sudah menolak");
 });
 
+// GLB-022: kontak berhenti lewat tautan di email konfirmasi; pengguna mencabut dari profil.
+test("contact stops via the confirmation link and user revokes from the profile", async ({ page, browser }) => {
+  await activeUser(page, "cabut");
+  const ts = Date.now();
+  const cici = `cici-${ts}@example.test`, dodi = `dodi-${ts}@example.test`;
+  expect((await page.request.post("/api/emergency-contacts", { data: { name: "Cici", email: cici, shareAccepted: true } })).status()).toBe(201);
+  expect((await page.request.post("/api/emergency-contacts", { data: { name: "Dodi", email: dodi } })).status()).toBe(201);
+
+  const guest = await browser.newPage();
+  await guest.goto((await inviteLink(cici)).url);
+  await guest.getByRole("button", { name: "Terima undangan" }).click();
+  await expect(guest.getByText("Anda kini kontak darurat Ibu Wati")).toBeVisible();
+
+  // Email konfirmasi berisi tautan berhenti.
+  let stopUrl = "";
+  await expect.poll(async () => (await mails(cici)).length).toBe(2);
+  const confirm = (await mails(cici)).find((m) => m.Subject.startsWith("Anda kini kontak darurat"))!;
+  const html = (await (await fetch("http://127.0.0.1:54324/api/v1/message/" + confirm.ID)).json()).HTML as string;
+  stopUrl = html.match(/href="([^"]*\/contact-stop#[^"]+)"/)![1];
+  await guest.goto("about:blank");
+  await guest.goto(stopUrl);
+  await guest.getByRole("button", { name: "Berhenti menjadi kontak darurat" }).click();
+  await expect(guest.getByText("Anda bukan lagi kontak darurat Ibu Wati")).toBeVisible();
+  await guest.goto("about:blank");
+  await guest.goto(stopUrl);
+  await expect(guest.getByText("Anda bukan lagi kontak darurat Ibu Wati")).toBeVisible();
+  await guest.close();
+
+  // Kontak yang berhenti tidak bisa diundang ulang.
+  const again = await page.request.post("/api/emergency-contacts", { data: { name: "Cici", email: cici } });
+  expect((await again.json()).error.message).toContain("berhenti sendiri");
+
+  // Pengguna membatalkan undangan Dodi; tautan undangannya mati.
+  const dodiLink = (await inviteLink(dodi)).url;
+  await page.goto("/profile");
+  const section = page.getByRole("region", { name: "Kontak darurat" });
+  await section.getByRole("button", { name: "Batalkan undangan" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Cabut kontak" }).click();
+  await expect(section.getByText("Dodi tidak lagi menjadi kontak darurat Anda.")).toBeVisible();
+  await expect(section.getByText("Belum ada kontak darurat.")).toBeVisible();
+  const g2 = await browser.newPage();
+  await g2.goto(dodiLink);
+  await expect(g2.getByText("Undangan ini sudah dijawab.")).toBeVisible();
+  await g2.close();
+});
+
 test("invalid or tampered tokens reveal nothing", async ({ page }) => {
   await page.goto("/invite#" + "A".repeat(43));
   await expect(page.getByText("Undangan tidak ditemukan.")).toBeVisible();
   const r = await page.request.post("/api/contact-invitations", { data: { token: "short" } });
   expect(r.status()).toBe(404);
+  await page.goto("/contact-stop#" + "B".repeat(43));
+  await expect(page.getByText("Tautan tidak ditemukan.")).toBeVisible();
 });
