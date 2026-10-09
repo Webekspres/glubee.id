@@ -12,7 +12,7 @@ where user_id in ('b4000000-0000-4000-8000-000000000001','b4000000-0000-4000-800
 update public.profiles set account_status='suspended' where user_id='b4000000-0000-4000-8000-000000000002';
 insert into public.consent_receipts(user_id,consent_type,document_version,decision,method)
 select p.user_id,n.consent_type,n.document_version,'accept','database_test' from public.profiles p cross join public.notice_versions n
-where p.user_id in ('b4000000-0000-4000-8000-000000000001','b4000000-0000-4000-8000-000000000002') and n.consent_type<>'cookie';
+where p.user_id in ('b4000000-0000-4000-8000-000000000001','b4000000-0000-4000-8000-000000000002') and n.consent_type in ('age_and_region','legal_documents','health_data');
 insert into public.glucose_entries(user_id,original_value,original_unit,normalized_mg_dl,measurement_context,measured_at)
 values ('b4000000-0000-4000-8000-000000000001',120,'mg/dL',120,'random',now()-interval '1 hour');
 insert into public.notification_jobs(user_id,type,channel,dedupe_key,due_at)

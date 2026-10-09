@@ -14,6 +14,7 @@ import { BirthDateInput, ErrorMessage } from "./Ui";
 import { leavePage } from "./TransitionLink";
 import { ExportData } from "./ExportData";
 import { AccountDeletion } from "./AccountDeletion";
+import { EmergencyContacts } from "./EmergencyContacts";
 const versions: Record<string, string> = {
   age_and_region: APP_CONFIG.noticeVersions.ageAndRegion,
   legal_documents: APP_CONFIG.noticeVersions.legalDocuments,
@@ -180,6 +181,7 @@ export function ProfileForm({
                         age_and_region: "Usia & wilayah",
                         legal_documents: "Dokumen layanan",
                         health_data: "Data kesehatan",
+                        contact_share: "Undangan kontak darurat",
                       } as Record<string, string>
                     )[r.consent_type] ?? r.consent_type}
                   </strong>
@@ -202,6 +204,7 @@ export function ProfileForm({
               ))}
             </ul>
           </section>
+          <EmergencyContacts zone={profile.timezone_code ?? "WIB"} />
           <section className="panel stack">
             <h2>Privasi & hak Anda</h2>
             <button

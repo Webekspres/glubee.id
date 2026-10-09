@@ -12,7 +12,7 @@ update public.profiles set name='Pak Budi',birth_date='1960-01-01',sex='male',ti
 where user_id::text like 'b8000000-%';
 insert into public.consent_receipts(user_id,consent_type,document_version,decision,method)
 select p.user_id,n.consent_type,n.document_version,'accept','database_test' from public.profiles p cross join public.notice_versions n
-where p.user_id::text like 'b8000000-%' and n.consent_type<>'cookie';
+where p.user_id::text like 'b8000000-%' and n.consent_type in ('age_and_region','legal_documents','health_data');
 
 create function pg_temp.hash(p text) returns bytea language sql as $$ select extensions.digest(p, 'sha256') $$;
 

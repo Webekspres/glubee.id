@@ -203,5 +203,7 @@ services:
       VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
       VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
       VAPID_SUBJECT: ${VAPID_SUBJECT:-}
+      # Undangan kontak darurat (GLB-021): mati sampai uji kolektif (kuota Brevo).
+      CONTACT_INVITES_ENABLED: ${CONTACT_INVITES_ENABLED:-false}
       # Enkripsi field push/kontak di aplikasi; jangan diganti setelah ada data (data lama tak terbaca).
       DATA_ENCRYPTION_KEY: ${DATA_ENCRYPTION_KEY}

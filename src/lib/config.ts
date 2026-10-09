@@ -5,6 +5,8 @@ export const APP_CONFIG = {
     ageAndRegion: "CNT-AGE-001@0.1-draft-2026-09-09",
     legalDocuments: "CNT-LEGAL-001@0.2-draft-2026-09-15",
     healthData: "CNT-HEALTH-001@0.2-draft-2026-09-15",
+    contactShare: "CNT-CONTACT-SHARE-001@0.2-draft-2026-09-15",
+    contactAccept: "CNT-CONTACT-ACCEPT-001@0.2-draft-2026-09-15",
   },
   medicalEvaluationEnabled: false,
   valueAlertsEnabled: false,
