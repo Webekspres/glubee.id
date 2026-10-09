@@ -29,10 +29,56 @@ export function dispatchAuthorized(header: string | null, secret: string | undef
 
 export function reminderSettings(env: Record<string, string | undefined> = process.env) {
   const cap = Number(env.REMINDER_EMAIL_DAILY_CAP);
+  const vapid = {
+    publicKey: env.VAPID_PUBLIC_KEY ?? "",
+    privateKey: env.VAPID_PRIVATE_KEY ?? "",
+    subject: env.VAPID_SUBJECT ?? "",
+  };
   return {
     enabled: env.REMINDER_EMAIL_ENABLED === "true",
     dailyCap: Number.isInteger(cap) && cap >= 0 ? cap : 150,
+    // Push butuh flag + kunci VAPID lengkap; tanpa salah satunya pengguna tidak bisa berlangganan.
+    push: env.REMINDER_PUSH_ENABLED === "true" && Boolean(vapid.publicKey && vapid.privateKey && vapid.subject),
+    vapid,
   };
+}
+
+// GLB-020: hasil Web Push per subscription. 404/410 = subscription mati (nonaktifkan);
+// 429/5xx/jaringan = coba lagi; selain itu (400/403/413: payload/VAPID salah) gagal permanen.
+export type PushOutcome = "sent" | "gone" | "retry" | "failed";
+
+export function classifyPush(statusCode: number | undefined): PushOutcome {
+  if (statusCode !== undefined && statusCode >= 200 && statusCode < 300) return "sent";
+  if (statusCode === 404 || statusCode === 410) return "gone";
+  if (statusCode === undefined || statusCode === 429 || statusCode >= 500) return "retry";
+  return "failed";
+}
+
+// Satu job push dikirim ke semua perangkat pengguna: cukup satu yang berhasil.
+export function combinePush(outcomes: PushOutcome[]): DispatchResult {
+  if (outcomes.includes("sent")) return { result: "sent", errorClass: null };
+  if (outcomes.includes("retry")) return { result: "retry", errorClass: "push_retry" };
+  if (outcomes.includes("failed")) return { result: "failed", errorClass: "push_failed" };
+  return { result: "failed", errorClass: "push_gone" };
+}
+
+export type PushSubscriptionInput = { endpoint: string; keys: { p256dh: string; auth: string } };
+
+// Bentuk PushSubscription.toJSON() dari browser. Endpoint wajib https (layanan push browser).
+export function validatePushSubscription(value: unknown): PushSubscriptionInput | null {
+  if (!value || typeof value !== "object") return null;
+  const { endpoint, keys } = value as { endpoint?: unknown; keys?: { p256dh?: unknown; auth?: unknown } };
+  if (typeof endpoint !== "string" || endpoint.length > 2048) return null;
+  try {
+    if (new URL(endpoint).protocol !== "https:") return null;
+  } catch {
+    return null;
+  }
+  const b64url = /^[A-Za-z0-9_-]+={0,2}$/;
+  const p256dh = keys?.p256dh, auth = keys?.auth;
+  if (typeof p256dh !== "string" || typeof auth !== "string") return null;
+  if (!b64url.test(p256dh) || !b64url.test(auth) || p256dh.length > 200 || auth.length > 100) return null;
+  return { endpoint, keys: { p256dh, auth } };
 }
 
 // "Rabu, 8 Oktober 2026 pukul 07.30 WIB" dari tanggal/jam lokal jadwal (bukan zona server).

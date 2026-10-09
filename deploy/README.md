@@ -114,6 +114,16 @@ Halaman admin ada di `https://glubee.id/admin-xyz` (cari akun, ubah status denga
 - Log hanya berisi panggilan yang gagal: `/opt/glubee/cron/dispatch.log`. Status job: tabel `notification_jobs` (`queued/processing/sent/failed/suppressed/cancelled`) dan alasan per percobaan di `notification_attempts.error_class` (`stale`, `schedule_paused`, `account_inactive`, `quota_exceeded`, `smtp_4xx/5xx`, `max_attempts`, ...).
 - Selama flag mati, job tetap dibuat; saat diaktifkan, job yang terlambat lebih dari 2 jam disuppress `stale`, bukan dikirim.
 
+### Browser push (GLB-020)
+
+Per occurrence hanya satu pengingat: push bila pengguna punya subscription aktif, selain itu email. Push yang gagal (subscription hilang `no_subscription`, ditolak `push_gone`/`push_failed`, retry habis) otomatis membuat job email fallback. Subscription 404/410 dinonaktifkan.
+
+1. Kunci VAPID (sekali per lingkungan, jangan dipakai bersama staging/production):
+   `bunx web-push generate-vapid-keys` (di mesin developer; `web-push` ter-bundle di image, tidak bisa dipanggil dari container)
+2. `.env`: `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT=mailto:glubeebuddy@gmail.com`, `DATA_ENCRYPTION_KEY` (dari `generate-keys.sh`; simpan juga di password manager), lalu `REMINDER_PUSH_ENABLED=true` saat uji. `docker compose up -d app`.
+3. Mematikan push lagi: set flag `false` **dan** `update public.push_subscriptions set active = false;` supaya pengingat kembali lewat email (job push tidak diproses selama flag mati).
+- iPhone/iPad hanya menerima push bila Glubee dipasang lewat "Tambahkan ke Layar Utama" (iOS 16.4+).
+
 ## Backup
 
 `backup/backup.sh` berjalan lewat crontab `adminweb` pukul 02:37 (zona server WIB; bukan jam bulat karena kuota Drive client bersama rclone sering habis di jam bulat):

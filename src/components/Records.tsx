@@ -14,6 +14,7 @@ import { EntryTable } from "./EntryTable";
 import { TrendChart } from "./TrendChart";
 import { PageHeading, ErrorMessage, Loading, Modal } from "./Ui";
 import { GlucoseEntryForm } from "./GlucoseEntryForm";
+import { TodaySchedule } from "./TodaySchedule";
 import { APP_CONFIG } from "@/lib/config";
 
 type Summary = {
@@ -165,6 +166,8 @@ export function Records({
         <Icon name="info" className="disclaimer-icon" />
         <p>{APP_CONFIG.disclaimer}</p>
       </div>
+
+      {!history && <TodaySchedule />}
 
       <div className="mobile-filter-wrapper">
         <RangeFilter

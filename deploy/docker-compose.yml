@@ -198,3 +198,10 @@ services:
       # Pengingat jadwal (GLB-019): mati sampai uji kolektif.
       REMINDER_EMAIL_ENABLED: ${REMINDER_EMAIL_ENABLED:-false}
       REMINDER_EMAIL_DAILY_CAP: ${REMINDER_EMAIL_DAILY_CAP:-150}
+      # Browser push (GLB-020): mati sampai uji kolektif; butuh ketiga kunci VAPID.
+      REMINDER_PUSH_ENABLED: ${REMINDER_PUSH_ENABLED:-false}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_SUBJECT: ${VAPID_SUBJECT:-}
+      # Enkripsi field push/kontak di aplikasi; jangan diganti setelah ada data (data lama tak terbaca).
+      DATA_ENCRYPTION_KEY: ${DATA_ENCRYPTION_KEY}
