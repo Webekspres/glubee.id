@@ -4,6 +4,7 @@ name: Alur branch
 # - PR divalidasi saat dibuka / disinkronkan / dibuka ulang.
 # - Branch fitur dihapus otomatis setelah PR di-merge; dev/staging/main tidak dihapus.
 #   (Setelan repo "Automatically delete head branches" dimatikan agar dev/staging aman.)
+# Runner ARC mewajibkan container, jadi job dijalankan di image CI org.
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize, closed]
@@ -17,6 +18,8 @@ jobs:
     name: fitur -> dev -> staging -> main
     if: github.event.action != 'closed'
     runs-on: arc-ci
+    container:
+      image: ghcr.io/webekspres/ci-node:22
     timeout-minutes: 5
     steps:
       - name: Periksa base dan head PR
@@ -40,6 +43,8 @@ jobs:
     name: Hapus branch fitur
     if: github.event.action == 'closed' && github.event.pull_request.merged == true
     runs-on: arc-ci
+    container:
+      image: ghcr.io/webekspres/ci-node:22
     timeout-minutes: 5
     steps:
       - name: Hapus branch head jika bukan branch tetap
