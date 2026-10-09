@@ -99,7 +99,7 @@ Sprint 2 berakhir 7 Oktober 2026 (buffer 5–7 Oktober). Sejak review 15 Septemb
 | GLB-011–015 Auth, catatan, dashboard, PDF, legal | Menunggu UAT | Live dan diuji developer; status "update required" = review/UAT klien. Legal 0.2 dipublikasikan tanpa label DRAF (keputusan owner 1 Okt). |
 | GLB-016 QA & demo | Sisa demo klien | QA developer lulus (lokal + live publik). Akun demo dengan 14 hari data dibuat dari `/admin-xyz`. Belum: sesi demo ke klien dan catatan masukannya. |
 | GLB-036 Self-host VPS | Selesai | |
-| GLB-037 Backup & monitoring | Hampir selesai | Backup cron gagal 26 Sep–6 Okt (kuota client OAuth bawaan rclone); diperbaiki dengan client Internal milik Webekspres + retry, Healthchecks dan UptimeRobot aktif. Sisa: verifikasi run otomatis 7 Okt 02:37. |
+| GLB-037 Backup & monitoring | Selesai | Backup cron gagal 26 Sep–6 Okt (kuota client OAuth bawaan rclone); diperbaiki dengan client Internal milik Webekspres + retry, Healthchecks dan UptimeRobot aktif. Run otomatis 7 Okt 02:37 sukses; GLB-037 complete 7 Okt. |
 | GLB-039, 041, 045, 046 | Selesai | Brevo/DNS email, rate limit cookie, sinkron dokumen, perbaikan UX. |
 | GLB-040 Audit live | Bagian publik selesai | Temuan www, judul tab, target sentuh footer diperbaiki 6 Okt. Sisa: checklist alur login oleh manusia (developer AI tidak login di production). |
 | GLB-042 Token Cloudflare | Terbuka | Token kedaluwarsa 1 Okt; DNS saat ini diurus manual lewat dashboard. Perlu keputusan: perbarui token atau tutup task. |
